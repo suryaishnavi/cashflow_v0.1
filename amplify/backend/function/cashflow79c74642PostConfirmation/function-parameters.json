@@ -1,0 +1,25 @@
+{
+  "trigger": true,
+  "modules": [
+    "custom"
+  ],
+  "parentResource": "cashflow79c74642",
+  "functionName": "cashflow79c74642PostConfirmation",
+  "resourceName": "cashflow79c74642PostConfirmation",
+  "parentStack": "auth",
+  "triggerEnvs": "[]",
+  "triggerDir": "C:\\snapshot\\repo\\build\\node_modules\\@aws-amplify\\amplify-category-auth\\provider-utils\\awscloudformation\\triggers\\PostConfirmation",
+  "triggerTemplate": "PostConfirmation.json.ejs",
+  "triggerEventPath": "PostConfirmation.event.json",
+  "roleName": "cashflow79c74642PostConfirmation",
+  "skipEdit": true,
+  "permissions": {
+    "api": {
+      "cashflow": [
+        "Query",
+        "Mutation",
+        "Subscription"
+      ]
+    }
+  }
+}

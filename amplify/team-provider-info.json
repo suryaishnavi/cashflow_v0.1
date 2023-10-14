@@ -1,0 +1,31 @@
+{
+  "prod": {
+    "awscloudformation": {
+      "AuthRoleName": "amplify-cashflow-prod-03211-authRole",
+      "UnauthRoleArn": "arn:aws:iam::018583355998:role/amplify-cashflow-prod-03211-unauthRole",
+      "AuthRoleArn": "arn:aws:iam::018583355998:role/amplify-cashflow-prod-03211-authRole",
+      "Region": "ap-south-1",
+      "DeploymentBucketName": "amplify-cashflow-prod-03211-deployment",
+      "UnauthRoleName": "amplify-cashflow-prod-03211-unauthRole",
+      "StackName": "amplify-cashflow-prod-03211",
+      "StackId": "arn:aws:cloudformation:ap-south-1:018583355998:stack/amplify-cashflow-prod-03211/a3017e70-0e0a-11ee-bdda-026d4555fef8",
+      "AmplifyAppId": "dn8dlir8eul4b",
+      "AuthTriggerTemplateURL": "https://s3.amazonaws.com/amplify-cashflow-prod-03211-deployment/amplify-cfn-templates/auth/auth-trigger-cloudformation-template.json"
+    },
+    "categories": {
+      "auth": {
+        "cashflow79c74642": {}
+      },
+      "function": {
+        "cashflow79c74642PostConfirmation": {
+          "deploymentBucketName": "amplify-cashflow-prod-03211-deployment",
+          "s3Key": "amplify-builds/cashflow79c74642PostConfirmation-6466567055626b2b6748-build.zip"
+        },
+        "sendOTPtoDelete": {
+          "deploymentBucketName": "amplify-cashflow-prod-03211-deployment",
+          "s3Key": "amplify-builds/sendOTPtoDelete-744550706c70554e7756-build.zip"
+        }
+      }
+    }
+  }
+}

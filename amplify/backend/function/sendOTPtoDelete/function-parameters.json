@@ -1,0 +1,28 @@
+{
+  "permissions": {
+    "api": {
+      "cashflow": [
+        "Query",
+        "Mutation",
+        "Subscription"
+      ]
+    },
+    "auth": {
+      "cashflow79c74642": [
+        "create",
+        "read",
+        "update",
+        "delete"
+      ]
+    },
+    "function": {
+      "cashflow79c74642PostConfirmation": [
+        "create",
+        "read",
+        "update",
+        "delete"
+      ]
+    }
+  },
+  "lambdaLayers": []
+}

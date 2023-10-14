@@ -1,0 +1,283 @@
+{
+    "@@locale": "te",
+    "appTitle": "క్యాష్ ఫ్లో",
+    "welcomeScreen": "{welcome, select, welcome{క్యాష్ ఫ్లోకు స్వాగతం} appSubtitle{మీ ఆర్థిక సామ్రాజ్యాన్ని శక్తివంతం చేయండి} appDescription{క్యాష్ ఫ్లోతో మీ ఫైనాన్స్ వ్యాపారాన్ని సులభతరం చేయండి - కస్టమర్ లు, రుణాలు, కలెక్షన్లు మరియు రిపోర్టులను సజావుగా నిర్వహించండి.} language{మీ ప్రపంచం, మీ పదాలు - మీకు ఇష్టమైన భాషను ఎంచుకోండి!} other{}}",
+    "@welcomeScreen": {
+        "placeholders": {
+            "welcome": {
+                "type": "String"
+            }
+        }
+    },
+    "wait": "దయచేసి వేచి ఉండండి",
+    "signin": "సైన్ ఇన్",
+    "create": "ఖాతా సృష్టించండి",
+    "welcome": "మీకు స్వాగతం",
+    "name": "పేరు",
+    "nameHint": "పేరు నమోదు చేయండి",
+    "nameError": "పేరు తప్పనిసరిగా ఉండాలి",
+    "email": "ఇమెయిల్ ఐడి",
+    "emailHint": "ఇమెయిల్ ఐడి నమోదు చేయండి",
+    "emailError": "చెల్లని ఇమెయిల్ చిరునామా",
+    "mobile": "ఫోన్ నంబర్",
+    "mobileHint": "ఫోన్ నంబర్ నమోదు చేయండి",
+    "mobileError": "చెల్లని ఫోన్ నంబర్",
+    "password": "పాస్వర్డ్",
+    "passwordHint": "పాస్వర్డ్ నమోదు చేయండి",
+    "passwordError": "పాస్‌వర్డ్ తప్పనిసరిగా కనీసం 8 అక్షరాల పొడవు ఉండాలి",
+    "forgotPassword": "పాస్వర్డ్ మర్చిపోయారా?",
+    "newPassword": "కొత్త పాస్వర్డ్",
+    "submit": "సమర్పించు",
+    "confirm": "నిర్ధారించండి",
+    "close": "మూసివేయి",
+    "cancel": "రద్దు చేయి",
+    "signup": "ఖాతా సృష్టించు",
+    "signout": "సైన్ అవుట్",
+    "language": "భాష",
+    "delete": "తొలగించు",
+    "add": "జోడించు",
+    "emiTable": "వాయిదాల పట్టిక",
+    "number": "సంఖ్య",
+    "date": "తేదీ",
+    "dueDate": "వాయిదా గడువు తేదీ",
+    "installmentDate": "వారాలు",
+    "paidDate": "చెల్లింపు తేదీ",
+    "paidAmount": "చెల్లింపు మొత్తం",
+    "loanDate": "అప్పు ఇచ్చిన తేదీ",
+    "loanEnd": "రుణ ముగింపు తేదీ",
+    "confirmLoanDetails": "లోన్ వివరాలు నిర్ధారించండి",
+    "emiPaid": "చెల్లింపు మొత్తం",
+    "amount": "డబ్బు",
+    "givenAmount": "ఇచ్చిన డబ్బు",
+    "balance": "బాకీ మొత్తం",
+    "totalInstallments": "మొత్తం వాయిదాలు",
+    "installmentAmount": "వాయిదా కి",
+    "currentInstallment": "ప్రస్తుత వాయిదా",
+    "paidInstallments": "చెల్లించిన వాయిదాలు",
+    "gettingData": "దయచేసి వేచి ఉండండి...\nమేము మీ డేటాను లోడ్ చేస్తున్నాము",
+    "greet": "హాయ్, {userName}",
+    "@greet": {
+        "placeholders": {
+            "userName": {
+                "type": "String",
+                "example": "Bob"
+            }
+        }
+    },
+    "circle": "లైన్లు",
+    "selectCircle": "లైన్ ఎంచుకోండి",
+    "reports": "రిపోర్టులు",
+    "profile": "{Profile, select, name{ప్రొఫైల్} name2{మీ ప్రొఫైల్} other{}}",
+    "@profile": {
+        "placeholders": {
+            "Profile": {
+                "type": "String"
+            }
+        }
+    },
+    "yourCircle": "మీ లైన్లు",
+    "addCircle": "లైన్లు జోడించు",
+    "selectCity": "నగరాన్ని ఎంచుకోండి",
+    "allCities": "అన్నీ నగరాలు",
+    "noCities": "మీరు ఇంకా నగరాలను సృష్టించనట్లు కనిపిస్తోంది.",
+    "addNewCity": "కొత్త నగరాన్ని జోడించండి",
+    "cityName": "నగరం పేరు",
+    "cityNameHint": "నగరం పేరు నమోదు చేయండి",
+    "cityNameError": "నగరం పేరు తప్పనిసరిగా 3 అక్షరాలు కంటే ఎక్కువ ఉండాలి",
+    "circleName": "లైన్ పేరు",
+    "circleNameHint": "లైన్ పేరు నమోదు చేయండి",
+    "circleNameError": "లైన్ పేరు తప్పనిసరిగా 3 అక్షరాలు కంటే ఎక్కువ ఉండాలి",
+    "errorMsg": "ఎక్కడో తప్పు జరిగింది. మళ్లీ లోడ్ చేయడానికి ప్రయత్నించండి.",
+    "tryAgain": "దయచేసి మళ్లీ ప్రయత్నించండి",
+    "createCircleBtn": "లైన్ సృష్టించు",
+    "noCircle": "హాయ్! కొత్త లైన్‌ను రూపొందించడానికి మరియు ప్రారంభించడానికి 'లైన్ సృష్టించు' బటన్‌ను నొక్కండి.",
+    "circleType": "వారానికోసారి, రోజువారీ లేదా నెలవారీ",
+    "getWeekDay": "{weekDay, select, SUNDAY{ఆదివారం} MONDAY{సోమవారం} TUESDAY{మంగళవారం} WEDNESDAY{బుధవారం} THURSDAY{గురువారం} FRIDAY{శుక్రవారం} SATURDAY{శనివారం} DAILY{రోజువారీ} MONTHLY{నెలవారీ} other{}}",
+    "@getWeekDay": {
+        "placeholders": {
+            "weekDay": {
+                "type": "String"
+            }
+        }
+    },
+    "generateReport": "రిపోర్టు సృష్టించు",
+    "retry": "రిట్రీ",
+    "noCirclesFound": "మీరు ఇంకా ఏ లైన్ సర్కిల్‌లను సృష్టించనట్లు కనిపిస్తోంది.",
+    "noInternet": "నెట్‌వర్క్‌కు కనెక్ట్ చేయడం సాధ్యం కాలేదు",
+    "connected": "నెట్‌వర్క్‌కు కనెక్ట్ చేయబడింది",
+    "preview": "ప్రివ్యూ",
+    "subscription": "చెల్లింపు వివరాలు",
+    "status": "స్థితి",
+    "endDate": "చివరి తేదీ",
+    "upgrade": "అప్ గ్రేడ్",
+    "settings": "యాప్ సెట్టింగ్‌లు",
+    "customers": "ఖాతాదారులు",
+    "sortCustomer": "నగరాల వారీగా కస్టమర్లను క్రమబద్ధీకరించండి",
+    "noCustomers": "క్రింద ఉన్న '+ఖాతాదారుని జోడించండి' బటన్ నొక్కడం ద్వారా మీ మొదటి కస్టమర్ ని జోడించండి",
+    "addCustomer": "ఖాతాదారుని జోడించండి",
+    "customerName": "ఖాతాదారుని పేరు",
+    "customerNameHint": "ఖాతాదారుని పేరు నమోదు చేయండి",
+    "customerNameError": "ఖాతాదారుని పేరు తప్పనిసరిగా 3 అక్షరాలు కంటే ఎక్కువ ఉండాలి",
+    "customerMobile": "ఖాతాదారుని మొబైల్",
+    "customerMobileHint": "ఖాతాదారుని మొబైల్ నంబర్ నమోదు చేయండి",
+    "customerMobileError": "ఖాతాదారుని మొబైల్ నంబర్ తప్పనిసరిగా ఉండాలి",
+    "showCustomerProfile": "ఖాతాదారుని ప్రొఫైల్",
+    "call": "కాల్ చేయండి",
+    "createLoan": "{createLoan, select, name{లోన్ సృష్టించండి} new{కొత్త లోన్} old{పాత లోన్} additional{అదనపు రుణం} other{}}",
+    "@createLoan": {
+        "placeholders": {
+            "createLoan": {
+                "type": "String"
+            }
+        }
+    },
+    "loanDetails": "లోన్ వివరాలు",
+    "activeLoans": "క్రియాశీల లోన్‌లు",
+    "loanBookID": "లోన్ పుస్తకం ఐడీ",
+    "closedLoans": "ముగిసిన లోన్‌లు",
+    "loanUpdateSuccess": "లోన్ అప్‌డేట్ చేయబడింది",
+    "loanUpdateFailed": "లోన్ అప్‌డేట్ చేయడం విఫలమైంది",
+    "noLoans": "మీరు ఇంకా లోన్‌లను సృష్టించనట్లు కనిపిస్తోంది.",
+    "daysLeft": "తొలగించడానికి రోజులు మిగిలి ఉన్నాయి",
+    "noEmis": "ఈ లోన్ కోసం ఇంకా ఏ వాయిదాలు లేవు.",
+    "updateCollectionAmount": "కలెక్షన్ అమౌంట్ నవీకరించు",
+    "enterCollectionAmount": "కలెక్షన్ అమౌంట్ నమోదు చేయండి",
+    "loanCloseReason": "వినియోగదారు ద్వారా మూసివేయబడింది",
+    "loanClosed": "లోన్ ముగిసింది",
+    "warning": "హెచ్చరిక",
+    "loanCloseWarning": "మీరు ఈ రుణాన్ని క్లోజ్ చేయాలని అనుకుంటున్నారా? ఒకవేళ మీరు అలా చేస్తే, రాబోయే 30 రోజుల్లో మీ లోన్ డేటా తొలగించబడుతుంది మరియు మీరు దానిని రద్దు చేయలేరు.",
+    "closeLoan": "లోన్ ముగించు",
+    "loanRefinancing": "లోన్ రిఫైనాన్సింగ్",
+    "changeLoanAmount": "లోన్ అమౌంట్ మార్చు",
+    "loanCreated": "లోన్ విజయవంతంగా సృష్టించబడింది",
+    "difference": "{days, select, yesterday{నిన్న చెల్లించాల్సి ఉంది} today{ఈరోజు గడువు} tomorrow{రేపు గడువు} positive{మిగిలి ఉన్న రోజులు} negative{రోజులు గడిచిపోయాయి} other{}}",
+    "@difference": {
+        "placeholders": {
+            "days": {
+                "type": "String"
+            }
+        }
+    },
+    "loanRepayments": "లోన్ చెల్లింపులు",
+    "payEmiBtn": "వాయిదా చెల్లింపు",
+    "labelRepaymentAmount": "తిరిగి చెల్లించే మొత్తాన్ని నమోదు చేయండి",
+    "hintRepaymentAmount": "తిరిగి చెల్లించే వాయిదా మొత్తాన్ని నమోదు చేయండి",
+    "noActiveLoans": "క్రియాశీల రుణాలు లేవు",
+    "inActiveCustomer": "ఈ కస్టమర్ కి ఎలాంటి క్రియాశీల రుణాలు లేవు. ఈ కస్టమర్ ని ఇన్ యాక్టివ్ గా మీరు మార్క్ చేయవచ్చు.\n\nమీరు కొత్త లోన్ ఇచ్చినప్పుడు ఈ కస్టమర్ ఆటోమేటిక్ గా యాక్టివ్ అవుతాడు",
+    "markInactive": "ఇన్ యాక్టివ్ మార్క్ చేయి",
+    "updateAmount": "అమౌంట్ నవీకరించు",
+    "updateAmountLabel": "కొత్త మొత్తాన్ని నమోదు చేయండి",
+    "updateAmountHint": "కొత్త వాయిదా మొత్తాన్ని నమోదు చేయండి",
+    "updateAmountError": "దయచేసి చెల్లుబాటు అయ్యే వాయిదా మొత్తాన్ని నమోదు చేయండి",
+    "createCustomer": "{createCustomer, select, name{కస్టమర్‌ని సృష్టించండి} new{కొత్త ఖాతాదారు} old{పాత ఖాతాదారు} other{}}",
+    "@createCustomer": {
+        "placeholders": {
+            "createCustomer": {
+                "type": "String"
+            }
+        }
+    },
+    "identityField": "{identityField, select, label{యూనిక్ ఐడీ (ఆధార్ కార్డు)} hint{12 అంకెల ఆధార్ నంబర్‌ను నమోదు చేయండి} error1{దయచేసి ఆధార్ కార్డు నెంబరు నమోదు చేయండి} error2{కస్టమర్ ఇప్పటికే ఉన్నారు} other{}}",
+    "@identityField": {
+        "placeholders": {
+            "identityField": {
+                "type": "String"
+            }
+        }
+    },
+    "nameField": "{nameField, select, label{కస్టమర్ పేరు} hint{కస్టమర్ పేరు నమోదు చేయండి} error{దయచేసి కస్టమర్ పేరు నమోదు చేయండి} other{}}",
+    "@nameField": {
+        "placeholders": {
+            "nameField": {
+                "type": "String"
+            }
+        }
+    },
+    "mobileNumberField": "{mobileNumberField, select, label{మొబైల్ నంబర్} hint{మొబైల్ నంబర్ నమోదు చేయండి} error{దయచేసి 10 అంకెల మొబైల్ నంబర్‌ని నమోదు చేయండి} other{}}",
+    "@mobileNumberField": {
+        "placeholders": {
+            "mobileNumberField": {
+                "type": "String"
+            }
+        }
+    },
+    "addressField": "{addressField, select, label{కస్టమర్ చిరునామా} hint{కస్టమర్ చిరునామాను నమోదు చేయండి} error{దయచేసి చిరునామా నమోదు చేయండి} other{}}",
+    "@addressField": {
+        "placeholders": {
+            "addressField": {
+                "type": "String"
+            }
+        }
+    },
+    "loanIdField": "{loanIdField, select, label{లోన్ పుస్తకం ఐడీ} hint{లోన్ పుస్తకం ఐడీ నమోదు చేయండి} error{దయచేసి లోన్ పుస్తకం ఐడీ నమోదు చేయండి} other{}}",
+    "@loanIdField": {
+        "placeholders": {
+            "loanIdField": {
+                "type": "String"
+            }
+        }
+    },
+    "totalGivenAmountField": "{totalGivenAmountField, select, label{ఇవ్వబడ్డ మొత్తాన్ని మాత్రమే నమోదు చేయండి} hint{ఇచ్చిన డబ్బు} error{దయచేసి మొత్తం ఇచ్చిన డబ్బు నమోదు చేయండి} error2{ఇచ్చిన మొత్తం 100 కంటే తక్కువ} other{}}",
+    "@totalGivenAmountField": {
+        "placeholders": {
+            "totalGivenAmountField": {
+                "type": "String"
+            }
+        }
+    },
+    "installmentAmountField": "{installmentAmountField, select, label{వాయిదా మొత్తాన్ని నమోదు చేయండి} hint{ప్రతి వాయిదా కి} error{దయచేసి వాయిదా మొత్తం నమోదు చేయండి} error2{వాయిదా మొత్తం 100 కంటే తక్కువ} other{}}",
+    "@installmentAmountField": {
+        "placeholders": {
+            "installmentAmountField": {
+                "type": "String"
+            }
+        }
+    },
+    "totalInstallmentsField": "{totalInstallmentsField, select, label{మొత్తం వాయిదాలు నమోదు చేయండి} hint{మొత్తం వాయిదాలు (12)} error{దయచేసి మొత్తం వాయిదాలు నమోదు చేయండి} error2{మొత్తం వాయిదాలు 1 కంటే తక్కువ} error3{మొత్తం వాయిదాలు 200కు మించరాదు} other{}}",
+    "@totalInstallmentsField": {
+        "placeholders": {
+            "totalInstallmentsField": {
+                "type": "String"
+            }
+        }
+    },
+    "paidInstallmentsField": "{paidInstallmentsField, select, label{చెల్లించిన వాయిదాలు నమోదు చేయండి} hint{చెల్లించిన వాయిదాలు (6)} error{దయచేసి చెల్లించిన వాయిదాలు నమోదు చేయండి} error2{చెల్లించిన వాయిదాలు 1 కంటే తక్కువ} error3{చెల్లించిన వాయిదాలు 200కు మించరాదు} error4{చెల్లించిన వాయిదాలు మొత్తం వాయిదాల కంటే ఎక్కువ} error5{మొత్తం వాయిదాలు అవసరం} other{}}",
+    "@paidInstallmentsField": {
+        "placeholders": {
+            "paidInstallmentsField": {
+                "type": "String"
+            }
+        }
+    },
+    "collectibleAmount": "చెల్లించవలసిన మొత్తం",
+    "loanCreationError": "లోన్‌ని సృష్టించడం సాధ్యం కాలేదు,\nదయచేసి మళ్లీ ప్రయత్నించండి",
+    "enterNewLoanDetails": "కొత్త లోన్ వివరాలను నమోదు చేయండి",
+    "enterExistingLoanDetails": "పాత లోన్ వివరాలను నమోదు చేయండి",
+    "scanAadhar": "ఆధార్ QRని స్కాన్ చేయండి",
+    "aadhaarscanInfo": "అన్ని ఆధార్ కార్డ్ డేటా సరిగ్గా స్కాన్ కాకపోవచ్చు, దయచేసి స్కాన్ చేయకపోతే మాన్యువల్‌గా ఫారమ్‌ను పూరించండి",
+    "scan": "స్కాన్ చేయండి",
+    "confirmPageTxt": "{confirmPageTxt, select, welcome{క్యాష్ ఫ్లోకు స్వాగతం! మీరు మీ ఖాతాను విజయవంతంగా సృష్టించారు.} confirm{మీ ఇమెయిల్ ఖాతాను ధృవీకరించండి} verfication{మేము 6-అంకెల ధృవీకరణ కోడ్‌ని పంపాము} resend{కోడ్ అందలేదా?} label{ధృవీకరణ కోడ్} hint{6-అంకెల ధృవీకరణ కోడ్‌ను నమోదు చేయండి} newCodeSent{కొత్త ధృవీకరణ కోడ్ పంపబడింది} resendTxt{కోడ్‌ని మళ్లీ పంపండి} sentTxt{కోడ్ పంపబడింది} backToSignIn{సైన్ ఇన్ చేయడానికి తిరిగి వెళ్లండి} other{}}",
+    "@confirmPageTxt": {
+        "placeholders": {
+            "confirmPageTxt": {
+                "type": "String"
+            }
+        }
+    },
+    "resetPasswordPageTxt": "{resetPasswordPageTxt, select, heading{రీసెట్ పాస్వర్డ్} valid{దయచేసి సరైన ఈమెయిల్ ఇవ్వండి} title{మీ ఇమెయిల్‌ను నమోదు చేయండి} label{ఇమెయిల్ చిరునామా} hint{మీ ఈ మెయిల్ వివరాలని నమోదు చేయండి} title2{కొత్త పాస్ వర్డ్ మరియు OTP ఎంటర్ చేయండి} otpField{మీ ఇమెయిల్ చిరునామాకు పంపిన OTPని నమోదు చేయండి} label2{కొత్త పాస్వర్డ్} hint2{మీ కొత్త పాస్‌వర్డ్‌ని నమోదు చేయండి} label3{OTP} hint3{మీ OTPని నమోదు చేయండి} passwordBtnTxt{పాస్‌వర్డ్ మార్చబడింది} other{}}",
+    "@resetPasswordPageTxt": {
+        "placeholders": {
+            "resetPasswordPageTxt": {
+                "type": "String"
+            }
+        }
+    },
+    "deleteOptionsTxt": "{deleteOptionsTxt, select, delLoan{లోన్ తొలగించండి} delLoanPopupHeading{మీరు ఈ రుణాన్ని ఖచ్చితంగా తొలగించాలనుకుంటున్నారా?} delCustomer{ఖాతాదారుని తొలగించండి} delCustomerMsg{మీరు ఈ ఖాతాదారుని ఖచ్చితంగా తొలగించాలనుకుంటున్నారా?} delCircle{లైన్ తొలగించండి} delCircleMsg{మీరు ఖచ్చితంగా ఈ లైన్ ని తొలగించాలనుకుంటున్నారా?} delCity{నగరాన్ని తొలగించండి} delUser{యాప్ వినియోగదారుని తొలగించండి} delete{తొలగించండి} other{}}",
+    "@deleteOptionsTxt": {
+        "placeholders": {
+            "deleteOptionsTxt": {
+                "type": "String"
+            }
+        }
+    }
+}
