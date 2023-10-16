@@ -101,7 +101,7 @@ class PdfApi {
                 height: 25,
                 color: index % 2 == 0 ? PdfColors.grey100 : PdfColors.white,
                 alignment: pw.Alignment.centerLeft,
-                child: pw.Text(customer.loanIdentity,
+                child: pw.Text(loan.loanIdentity,
                     style: pw.TextStyle(
                       fontSize: 12,
                       font: customFont,

@@ -125,6 +125,8 @@ class EmiCubit extends Cubit<EmiState> {
         emiAmount: loan.emiAmount,
         paidAmount: newAmount,
         paidDate: newDate,
+        loanIdentity: loan.loanIdentity,
+        loanStatus: loan.status
       );
     }
     getEmis(loan: loan);

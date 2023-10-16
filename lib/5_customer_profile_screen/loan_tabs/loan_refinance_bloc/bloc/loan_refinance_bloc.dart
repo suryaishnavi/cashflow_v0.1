@@ -1,3 +1,4 @@
+import 'package:cashflow/0_repositories/customers_and_loan_data_repository.dart';
 import 'package:cashflow/4_customer_screen/loan_creation_bloc/loan_creation_bloc/loan_creation_bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -13,13 +14,16 @@ class LoanRefinanceBloc extends Bloc<LoanRefinanceEvent, LoanRefinanceState> {
   final ScreensCubit screensCubit;
   final UpdateLoanDialogCubit updateLoanDialogCubit;
   final LoanCreationBloc loanCreationBloc;
+  final CustomerAndLoanDataRepository customerAndLoanDataRepository;
 
   late Loan oldLoan;
   late int balanceAmount;
+  late String loanIdentity;
   LoanRefinanceBloc({
     required this.screensCubit,
     required this.updateLoanDialogCubit,
     required this.loanCreationBloc,
+    required this.customerAndLoanDataRepository,
   }) : super(LoanRefinanceLoadingState()) {
     on<OldLoanRefinanceEvent>(_onOldLoanRefinanceEvent);
     on<GivenAmountChangedEvent>(_onGivenAmountChangedEvent);
@@ -31,7 +35,12 @@ class LoanRefinanceBloc extends Bloc<LoanRefinanceEvent, LoanRefinanceState> {
   _onOldLoanRefinanceEvent(
     OldLoanRefinanceEvent event,
     Emitter<LoanRefinanceState> emit,
-  ) {
+  ) async {
+    final LoanSerialNumber loanSerialNumber =
+        await customerAndLoanDataRepository.getCircleCurrentSerialNo(
+      circleId: screensCubit.currentCircle.circle!.id,
+    );
+    loanIdentity = loanSerialNumber.serialNumber;
     oldLoan = event.oldLoan;
     try {
       final int givenAmount = event.oldLoan.givenAmount;
@@ -49,6 +58,23 @@ class LoanRefinanceBloc extends Bloc<LoanRefinanceEvent, LoanRefinanceState> {
         emiAmount: emiAmount,
         emiCount: emiCount,
         startDate: DateTime.parse(DateTime.now().toString().split(' ')[0]),
+        loanIdentity: loanIdentity,
+      ));
+    } catch (e) {
+      emit(LoanRefinanceFailure(message: e.toString()));
+    }
+  }
+
+  _onModifyLoanDetailsEvent(
+    EditLoanDetailsEvent event,
+    Emitter<LoanRefinanceState> emit,
+  ) async {
+    try {
+      emit(ModifyLoanDetailsState(
+        givenAmount: state.props[0] as int,
+        emiAmount: state.props[3] as int,
+        emiCount: state.props[4] as int,
+        loanIdentity: loanIdentity,
       ));
     } catch (e) {
       emit(LoanRefinanceFailure(message: e.toString()));
@@ -73,17 +99,6 @@ class LoanRefinanceBloc extends Bloc<LoanRefinanceEvent, LoanRefinanceState> {
     }
   }
 
-  _onModifyLoanDetailsEvent(
-    EditLoanDetailsEvent event,
-    Emitter<LoanRefinanceState> emit,
-  ) async {
-    try {
-      emit(ModifyLoanDetailsState());
-    } catch (e) {
-      emit(LoanRefinanceFailure(message: e.toString()));
-    }
-  }
-
   _onCloseLoanEditEvent(
     CloseLoanEditEvent event,
     Emitter<LoanRefinanceState> emit,
@@ -98,6 +113,7 @@ class LoanRefinanceBloc extends Bloc<LoanRefinanceEvent, LoanRefinanceState> {
         emiAmount: oldLoan.emiAmount,
         emiCount: oldLoan.totalEmis,
         startDate: oldLoan.dateOfCreation.getDateTime(),
+        loanIdentity: loanIdentity,
       ));
     } catch (e) {
       emit(LoanRefinanceFailure(message: e.toString()));
@@ -115,6 +131,7 @@ class LoanRefinanceBloc extends Bloc<LoanRefinanceEvent, LoanRefinanceState> {
       final int emiCount = event.emiCount;
       final DateTime startDate = event.startDate;
       final int newGivenAmount = givenAmount - balanceAmount;
+      final String modifiedloanIdentity = event.loanIdentity;
       emit(LoanRefinanceInitialState(
         oldLoan: oldLoan,
         balanceAmount: balanceAmount,
@@ -123,6 +140,7 @@ class LoanRefinanceBloc extends Bloc<LoanRefinanceEvent, LoanRefinanceState> {
         emiAmount: emiAmount,
         emiCount: emiCount,
         startDate: startDate,
+        loanIdentity: modifiedloanIdentity,
       ));
     } catch (e) {
       emit(LoanRefinanceFailure(message: e.toString()));
@@ -139,6 +157,7 @@ class LoanRefinanceBloc extends Bloc<LoanRefinanceEvent, LoanRefinanceState> {
       final int givenAmount = state.props[0] as int;
       final int emiAmount = state.props[3] as int;
       final int emiCount = state.props[4] as int;
+      final String modifiedloanIdentity = state.props[6] as String;
       // debug print all the values
       // emit(LoanRefinanceLoadingState());
       // close old lone by passing emi amount to update loan dialog cubit
@@ -156,6 +175,7 @@ class LoanRefinanceBloc extends Bloc<LoanRefinanceEvent, LoanRefinanceState> {
         emiAmount: '$emiAmount',
         totalEmis: '$emiCount',
         date: modifiedDate,
+        loanIdentity: modifiedloanIdentity,
       ));
     } catch (e) {
       emit(LoanRefinanceFailure(message: e.toString()));

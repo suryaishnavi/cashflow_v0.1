@@ -97,7 +97,7 @@ class UpdateLoanDialogCubit extends Cubit<UpdateLoanDialogState> {
         emiNumber: loan.paidEmis + 1,
         appUserId: loan.sub,
         customerName: customer.customerName,
-        loanIdentity: customer.loanIdentity,
+        loanIdentity: loan.loanIdentity,
         emiAmount: emiAmount,
         loanId: loan.id,
         paidAmount: paidAmount,
@@ -121,9 +121,11 @@ class UpdateLoanDialogCubit extends Cubit<UpdateLoanDialogState> {
       );
       // * update customer
       await customerDataRepo.updateCustomerLoanUpdatedDate(
+        loanIdentity: loan.loanIdentity,
         customer: customer,
         paidAmount: paidAmount,
         emiAmount: emiAmount,
+        loanStatus: loanStatus,
       );
       emit(LoanUpdatedState(customer: customer));
     } catch (e) {

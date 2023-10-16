@@ -15,6 +15,7 @@ class LoanRefinanceInitialState extends LoanRefinanceState {
   final int emiAmount;
   final int emiCount;
   final DateTime startDate;
+  final String loanIdentity;
   const LoanRefinanceInitialState({
     required this.oldLoan,
     required this.givenAmount,
@@ -23,6 +24,7 @@ class LoanRefinanceInitialState extends LoanRefinanceState {
     required this.emiAmount,
     required this.emiCount,
     required this.startDate,
+    required this.loanIdentity,
   });
 
   @override
@@ -33,7 +35,10 @@ class LoanRefinanceInitialState extends LoanRefinanceState {
         emiAmount,
         emiCount,
         startDate,
+        loanIdentity,
       ];
+
+      
 
   LoanRefinanceInitialState copyWith({
     Loan? oldLoan,
@@ -43,6 +48,7 @@ class LoanRefinanceInitialState extends LoanRefinanceState {
     int? emiAmount,
     int? emiCount,
     DateTime? startDate,
+    String? loanIdentity,
   }) {
     return LoanRefinanceInitialState(
       oldLoan: oldLoan ?? this.oldLoan,
@@ -52,6 +58,7 @@ class LoanRefinanceInitialState extends LoanRefinanceState {
       emiAmount: emiAmount ?? this.emiAmount,
       emiCount: emiCount ?? this.emiCount,
       startDate: startDate ?? this.startDate,
+      loanIdentity: loanIdentity ?? this.loanIdentity,
     );
   }
 }
@@ -74,4 +81,19 @@ final class LoanRefinanceFailure extends LoanRefinanceState {
   List<Object> get props => [message];
 }
 
-final class ModifyLoanDetailsState extends LoanRefinanceState {}
+final class ModifyLoanDetailsState extends LoanRefinanceState {
+  final int givenAmount;
+  final int emiAmount;
+  final int emiCount;
+  final String loanIdentity;
+
+  const ModifyLoanDetailsState({
+    required this.givenAmount,
+    required this.emiAmount,
+    required this.emiCount,
+    required this.loanIdentity,
+  });
+
+  @override
+  List<Object> get props => [givenAmount, emiAmount, emiCount, loanIdentity];
+}

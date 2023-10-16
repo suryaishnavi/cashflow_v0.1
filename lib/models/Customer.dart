@@ -33,7 +33,7 @@ class Customer extends amplify_core.Model {
   final String? _customerName;
   final String? _phone;
   final String? _address;
-  final String? _loanIdentity;
+  final List<String>? _loanIdentity;
   final amplify_core.TemporalDate? _dateOfCreation;
   final amplify_core.TemporalDate? _newLoanAddedDate;
   final PaymentDetails? _paymentInfo;
@@ -134,7 +134,7 @@ class Customer extends amplify_core.Model {
     }
   }
   
-  String get loanIdentity {
+  List<String> get loanIdentity {
     try {
       return _loanIdentity!;
     } catch(e) {
@@ -211,7 +211,7 @@ class Customer extends amplify_core.Model {
   
   const Customer._internal({required this.id, required sub, required uId, required customerName, required phone, required address, required loanIdentity, required dateOfCreation, newLoanAddedDate, paymentInfo, customerStatus, city, longitude, latitude, required circleID, loans, createdAt, updatedAt}): _sub = sub, _uId = uId, _customerName = customerName, _phone = phone, _address = address, _loanIdentity = loanIdentity, _dateOfCreation = dateOfCreation, _newLoanAddedDate = newLoanAddedDate, _paymentInfo = paymentInfo, _customerStatus = customerStatus, _city = city, _longitude = longitude, _latitude = latitude, _circleID = circleID, _loans = loans, _createdAt = createdAt, _updatedAt = updatedAt;
   
-  factory Customer({String? id, required String sub, required String uId, required String customerName, required String phone, required String address, required String loanIdentity, required amplify_core.TemporalDate dateOfCreation, amplify_core.TemporalDate? newLoanAddedDate, PaymentDetails? paymentInfo, CustomerStatus? customerStatus, CityDetails? city, double? longitude, double? latitude, required String circleID, List<Loan>? loans}) {
+  factory Customer({String? id, required String sub, required String uId, required String customerName, required String phone, required String address, required List<String> loanIdentity, required amplify_core.TemporalDate dateOfCreation, amplify_core.TemporalDate? newLoanAddedDate, PaymentDetails? paymentInfo, CustomerStatus? customerStatus, CityDetails? city, double? longitude, double? latitude, required String circleID, List<Loan>? loans}) {
     return Customer._internal(
       id: id == null ? amplify_core.UUID.getUUID() : id,
       sub: sub,
@@ -219,7 +219,7 @@ class Customer extends amplify_core.Model {
       customerName: customerName,
       phone: phone,
       address: address,
-      loanIdentity: loanIdentity,
+      loanIdentity: loanIdentity != null ? List<String>.unmodifiable(loanIdentity) : loanIdentity,
       dateOfCreation: dateOfCreation,
       newLoanAddedDate: newLoanAddedDate,
       paymentInfo: paymentInfo,
@@ -245,7 +245,7 @@ class Customer extends amplify_core.Model {
       _customerName == other._customerName &&
       _phone == other._phone &&
       _address == other._address &&
-      _loanIdentity == other._loanIdentity &&
+      DeepCollectionEquality().equals(_loanIdentity, other._loanIdentity) &&
       _dateOfCreation == other._dateOfCreation &&
       _newLoanAddedDate == other._newLoanAddedDate &&
       _paymentInfo == other._paymentInfo &&
@@ -271,7 +271,7 @@ class Customer extends amplify_core.Model {
     buffer.write("customerName=" + "$_customerName" + ", ");
     buffer.write("phone=" + "$_phone" + ", ");
     buffer.write("address=" + "$_address" + ", ");
-    buffer.write("loanIdentity=" + "$_loanIdentity" + ", ");
+    buffer.write("loanIdentity=" + (_loanIdentity != null ? _loanIdentity!.toString() : "null") + ", ");
     buffer.write("dateOfCreation=" + (_dateOfCreation != null ? _dateOfCreation!.format() : "null") + ", ");
     buffer.write("newLoanAddedDate=" + (_newLoanAddedDate != null ? _newLoanAddedDate!.format() : "null") + ", ");
     buffer.write("paymentInfo=" + (_paymentInfo != null ? _paymentInfo!.toString() : "null") + ", ");
@@ -287,7 +287,7 @@ class Customer extends amplify_core.Model {
     return buffer.toString();
   }
   
-  Customer copyWith({String? uId, String? customerName, String? phone, String? address, String? loanIdentity, amplify_core.TemporalDate? dateOfCreation, amplify_core.TemporalDate? newLoanAddedDate, PaymentDetails? paymentInfo, CustomerStatus? customerStatus, CityDetails? city, double? longitude, double? latitude, String? circleID, List<Loan>? loans}) {
+  Customer copyWith({String? uId, String? customerName, String? phone, String? address, List<String>? loanIdentity, amplify_core.TemporalDate? dateOfCreation, amplify_core.TemporalDate? newLoanAddedDate, PaymentDetails? paymentInfo, CustomerStatus? customerStatus, CityDetails? city, double? longitude, double? latitude, String? circleID, List<Loan>? loans}) {
     return Customer._internal(
       id: id,
       sub: sub,
@@ -312,7 +312,7 @@ class Customer extends amplify_core.Model {
     ModelFieldValue<String>? customerName,
     ModelFieldValue<String>? phone,
     ModelFieldValue<String>? address,
-    ModelFieldValue<String>? loanIdentity,
+    ModelFieldValue<List<String>?>? loanIdentity,
     ModelFieldValue<amplify_core.TemporalDate>? dateOfCreation,
     ModelFieldValue<amplify_core.TemporalDate?>? newLoanAddedDate,
     ModelFieldValue<PaymentDetails?>? paymentInfo,
@@ -350,7 +350,7 @@ class Customer extends amplify_core.Model {
       _customerName = json['customerName'],
       _phone = json['phone'],
       _address = json['address'],
-      _loanIdentity = json['loanIdentity'],
+      _loanIdentity = json['loanIdentity']?.cast<String>(),
       _dateOfCreation = json['dateOfCreation'] != null ? amplify_core.TemporalDate.fromString(json['dateOfCreation']) : null,
       _newLoanAddedDate = json['newLoanAddedDate'] != null ? amplify_core.TemporalDate.fromString(json['newLoanAddedDate']) : null,
       _paymentInfo = json['paymentInfo']?['serializedData'] != null
@@ -474,7 +474,8 @@ class Customer extends amplify_core.Model {
     modelSchemaDefinition.addField(amplify_core.ModelFieldDefinition.field(
       key: Customer.LOANIDENTITY,
       isRequired: true,
-      ofType: amplify_core.ModelFieldType(amplify_core.ModelFieldTypeEnum.string)
+      isArray: true,
+      ofType: amplify_core.ModelFieldType(amplify_core.ModelFieldTypeEnum.collection, ofModelName: amplify_core.ModelFieldTypeEnum.string.name)
     ));
     
     modelSchemaDefinition.addField(amplify_core.ModelFieldDefinition.field(

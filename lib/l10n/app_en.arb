@@ -577,7 +577,7 @@
       }
     }
   },
-  "loanIdField": "{loanIdField, select, label{Loan Book Id (Optional)} hint{Enter Loan Book Id (Optional)} error{Please enter Loan ID} other{}}",
+  "loanIdField": "{loanIdField, select, label{Loan Book Id} hint{Enter Loan Book Id} error{Please enter Loan ID} other{}}",
   "@loanIdField": {
     "description": "Loan ID Field",
     "placeholders": {

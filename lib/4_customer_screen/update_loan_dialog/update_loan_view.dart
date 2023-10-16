@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/rendering.dart';
+// import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
@@ -25,41 +25,41 @@ class UpdateLoanView extends StatefulWidget {
 }
 
 class _UpdateLoanViewState extends State<UpdateLoanView> {
-  late ScrollController _controller;
-  bool _isVisible = true;
+  // late ScrollController _controller;
+  // bool _isVisible = true;
 
-  void _listen() {
-    final ScrollDirection direction = _controller.position.userScrollDirection;
-    if (direction == ScrollDirection.forward) {
-      _show();
-    } else if (direction == ScrollDirection.reverse) {
-      _hide();
-    }
-  }
+  // void _listen() {
+  //   final ScrollDirection direction = _controller.position.userScrollDirection;
+  //   if (direction == ScrollDirection.forward) {
+  //     _show();
+  //   } else if (direction == ScrollDirection.reverse) {
+  //     _hide();
+  //   }
+  // }
 
-  void _show() {
-    if (!_isVisible) {
-      setState(() => _isVisible = true);
-    }
-  }
+  // void _show() {
+  //   if (!_isVisible) {
+  //     setState(() => _isVisible = true);
+  //   }
+  // }
 
-  void _hide() {
-    if (_isVisible) {
-      setState(() => _isVisible = false);
-    }
-  }
+  // void _hide() {
+  //   if (_isVisible) {
+  //     setState(() => _isVisible = false);
+  //   }
+  // }
 
   @override
   void initState() {
     super.initState();
-    _controller = ScrollController();
-    _controller.addListener(_listen);
+    // _controller = ScrollController();
+    // _controller.addListener(_listen);
   }
 
   @override
   void dispose() {
-    _controller.removeListener(_listen);
-    _controller.dispose();
+    // _controller.removeListener(_listen);
+    // _controller.dispose();
     super.dispose();
   }
 
@@ -137,29 +137,29 @@ class _UpdateLoanViewState extends State<UpdateLoanView> {
           },
         ),
       ),
-      floatingActionButton: _isVisible
-          ? FloatingActionButton.extended(
-              extendedPadding: const EdgeInsets.symmetric(horizontal: 48.0),
-              extendedTextStyle:
-                  Theme.of(context).textTheme.bodyLarge!.copyWith(
-                        fontWeight: FontWeight.bold,
-                      ),
-              onPressed: () {
-                if (_formKey.currentState!.validate()) {
-                  _formKey.currentState!.save();
-                  context.read<CustomerBloc>().add(
-                        ScrollPositionEvent(
-                          scrollPosition: widget.scrollPosition,
-                        ),
-                      );
-                  Navigator.pop(context);
-                }
-              },
-              icon: const Icon(Icons.check),
-              label: Text(AppLocalizations.of(context)!.payEmiBtn),
-            )
-          : null,
-      floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
+      // floatingActionButton: _isVisible
+      //     ? FloatingActionButton.extended(
+      //         extendedPadding: const EdgeInsets.symmetric(horizontal: 48.0),
+      //         extendedTextStyle:
+      //             Theme.of(context).textTheme.bodyLarge!.copyWith(
+      //                   fontWeight: FontWeight.bold,
+      //                 ),
+      //         onPressed: () {
+      //           if (_formKey.currentState!.validate()) {
+      //             _formKey.currentState!.save();
+      //             context.read<CustomerBloc>().add(
+      //                   ScrollPositionEvent(
+      //                     scrollPosition: widget.scrollPosition,
+      //                   ),
+      //                 );
+      //             Navigator.pop(context);
+      //           }
+      //         },
+      //         icon: const Icon(Icons.check),
+      //         label: Text(AppLocalizations.of(context)!.payEmiBtn),
+      //       )
+      //     : null,
+      // floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
       body: GestureDetector(
         onTap: () => FocusScope.of(context).unfocus(),
         child: Column(
@@ -170,51 +170,65 @@ class _UpdateLoanViewState extends State<UpdateLoanView> {
             Flexible(
               child: Form(
                 key: _formKey,
-                child: GridView.builder(
-                  controller: _controller,
+                child: ListView.separated(
+                  // controller: _controller,
                   physics: const BouncingScrollPhysics(
                     parent: AlwaysScrollableScrollPhysics(),
                   ),
                   padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                  gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                    crossAxisSpacing: 24.0,
-                    mainAxisSpacing: 24.0,
-                    crossAxisCount: 1,
-                  ),
                   itemCount: widget.loans.length,
                   itemBuilder: (context, index) => Container(
                     padding: const EdgeInsets.all(16.0),
                     decoration: BoxDecoration(
-                      color: getColor(
-                          dueDate:
-                              widget.loans[index].nextDueDate.getDateTime()),
-                      borderRadius: BorderRadius.circular(8),
-                    ),
+                        color: getColor(
+                            dueDate:
+                                widget.loans[index].nextDueDate.getDateTime()),
+                        borderRadius: BorderRadius.circular(16),
+                        boxShadow: [
+                          BoxShadow(
+                            color: Colors.grey.withOpacity(0.5),
+                            spreadRadius: 1,
+                            blurRadius: 2,
+                            offset: const Offset(0, 3),
+                          ),
+                        ]),
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.stretch,
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       mainAxisSize: MainAxisSize.min,
                       children: [
-                        RichText(
-                          textAlign: TextAlign.center,
-                          text: TextSpan(
-                            text: AppLocalizations.of(context)!.balance,
-                            style: DefaultTextStyle.of(context).style,
-                            children: <TextSpan>[
-                              TextSpan(
-                                text:
-                                    ' \u{20B9}${intl.NumberFormat('#,##,###').format(widget.loans[index].collectibleAmount)} - \u{20B9}${intl.NumberFormat('#,##,###').format(widget.loans[index].paidAmount)} = ',
-                                style: const TextStyle(
-                                    fontWeight: FontWeight.w600),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            RichText(
+                              textAlign: TextAlign.center,
+                              text: TextSpan(
+                                text: 'ID - ${widget.loans[index].loanIdentity} : ',
+                                style: TextStyle(
+                                  color: Theme.of(context).primaryColor,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                                children: <TextSpan>[
+                                  TextSpan(
+                                      text:
+                                          '\u{20B9}${intl.NumberFormat('#,##,###').format(widget.loans[index].collectibleAmount)} - \u{20B9}${intl.NumberFormat('#,##,###').format(widget.loans[index].paidAmount)} = ',
+                                      style: const TextStyle(
+                                        color: Colors.black,
+                                        fontWeight: FontWeight.w500,
+                                      ),
+                                    ),
+                                  TextSpan(
+                                      text:
+                                          '\u{20B9}${intl.NumberFormat('#,##,###').format(widget.loans[index].collectibleAmount - widget.loans[index].paidAmount)}',
+                                      style: const TextStyle(
+                                        color: Colors.red,
+                                        fontWeight: FontWeight.bold,
+                                      ),
+                                    ),
+                                ]
                               ),
-                              TextSpan(
-                                text:
-                                    '\u{20B9}${intl.NumberFormat('#,##,###').format(widget.loans[index].collectibleAmount - widget.loans[index].paidAmount)}',
-                                style: const TextStyle(
-                                    fontWeight: FontWeight.bold),
-                              ),
-                            ],
-                          ),
+                            ),
+                          ],
                         ),
                         const Divider(color: Colors.white),
                         Row(
@@ -313,62 +327,65 @@ class _UpdateLoanViewState extends State<UpdateLoanView> {
                           ),
                         ),
                         // const
-                        const SizedBox(height: 16.0),
-                        TextFormField(
-                          style: const TextStyle(
-                            fontWeight: FontWeight.bold,
-                          ),
-                          // format like currency
-                          inputFormatters: [
-                            FilteringTextInputFormatter.digitsOnly,
-                            LengthLimitingTextInputFormatter(6),
-                            TextInputFormatter.withFunction(
-                              (oldValue, newValue) {
-                                final numericValue =
-                                    int.tryParse(newValue.text);
-                                if (numericValue != null) {
-                                  final formatter =
-                                      intl.NumberFormat.simpleCurrency(
-                                    locale: 'en_IN',
-                                    decimalDigits: 0,
-                                  );
-                                  final newText = formatter.format(
-                                      numericValue); // Divide by 100 to format as currency
-                                  return TextEditingValue(
-                                    text: newText,
-                                    selection: TextSelection.collapsed(
-                                        offset: newText.length),
-                                  );
-                                }
-                                return newValue;
-                              },
-                            ),
-                          ],
-                          decoration: InputDecoration(
-                            filled: true,
-                            fillColor: Colors.white,
-                            isDense: true,
-                            labelText: AppLocalizations.of(context)!
-                                .labelRepaymentAmount,
-                            hintText: AppLocalizations.of(context)!
-                                .hintRepaymentAmount,
-                          ),
-                          keyboardType: TextInputType.number,
-                          onSaved: (newValue) {
-                            if (newValue == null || newValue == '') return;
-                            final numericValue = int.parse(newValue
-                                .replaceAll(',', '')
-                                .replaceAll('₹', ''));
-                            context.read<UpdateLoanDialogCubit>().updateLoan(
-                                  customer: widget.customer,
-                                  loan: widget.loans[index],
-                                  emiValue: numericValue.toString(),
-                                );
-                          },
-                        ),
+
+                        // TextFormField(
+                        //   style: const TextStyle(
+                        //     fontWeight: FontWeight.bold,
+                        //   ),
+                        //   // format like currency
+                        //   inputFormatters: [
+                        //     FilteringTextInputFormatter.digitsOnly,
+                        //     LengthLimitingTextInputFormatter(6),
+                        //     TextInputFormatter.withFunction(
+                        //       (oldValue, newValue) {
+                        //         final numericValue =
+                        //             int.tryParse(newValue.text);
+                        //         if (numericValue != null) {
+                        //           final formatter =
+                        //               intl.NumberFormat.simpleCurrency(
+                        //             locale: 'en_IN',
+                        //             decimalDigits: 0,
+                        //           );
+                        //           final newText = formatter.format(
+                        //               numericValue); // Divide by 100 to format as currency
+                        //           return TextEditingValue(
+                        //             text: newText,
+                        //             selection: TextSelection.collapsed(
+                        //                 offset: newText.length),
+                        //           );
+                        //         }
+                        //         return newValue;
+                        //       },
+                        //     ),
+                        //   ],
+                        //   decoration: InputDecoration(
+                        //     filled: true,
+                        //     fillColor: Colors.white,
+                        //     isDense: true,
+                        //     labelText: AppLocalizations.of(context)!
+                        //         .labelRepaymentAmount,
+                        //     hintText: AppLocalizations.of(context)!
+                        //         .hintRepaymentAmount,
+                        //   ),
+                        //   keyboardType: TextInputType.number,
+                        //   onSaved: (newValue) {
+                        //     if (newValue == null || newValue == '') return;
+                        //     final numericValue = int.parse(newValue
+                        //         .replaceAll(',', '')
+                        //         .replaceAll('₹', ''));
+                        //     context.read<UpdateLoanDialogCubit>().updateLoan(
+                        //           customer: widget.customer,
+                        //           loan: widget.loans[index],
+                        //           emiValue: numericValue.toString(),
+                        //         );
+                        //   },
+                        // ),
                       ],
                     ),
                   ),
+                  separatorBuilder: (BuildContext context, int index) {
+                    return const SizedBox(height: 16.0);
+                  },
                 ),
               ),
             ),

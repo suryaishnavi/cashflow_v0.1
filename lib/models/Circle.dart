@@ -31,7 +31,6 @@ class Circle extends amplify_core.Model {
   final String? _sub;
   final String? _circleName;
   final WeekDay? _day;
-  final int? _serialNumber;
   final String? _appuserID;
   final List<City>? _cities;
   final List<Customer>? _customers;
@@ -100,10 +99,6 @@ class Circle extends amplify_core.Model {
     }
   }
   
-  int? get serialNumber {
-    return _serialNumber;
-  }
-  
   String get appuserID {
     try {
       return _appuserID!;
@@ -133,15 +128,14 @@ class Circle extends amplify_core.Model {
     return _updatedAt;
   }
   
-  const Circle._internal({required this.id, required sub, required circleName, required day, serialNumber, required appuserID, cities, customers, createdAt, updatedAt}): _sub = sub, _circleName = circleName, _day = day, _serialNumber = serialNumber, _appuserID = appuserID, _cities = cities, _customers = customers, _createdAt = createdAt, _updatedAt = updatedAt;
+  const Circle._internal({required this.id, required sub, required circleName, required day, required appuserID, cities, customers, createdAt, updatedAt}): _sub = sub, _circleName = circleName, _day = day, _appuserID = appuserID, _cities = cities, _customers = customers, _createdAt = createdAt, _updatedAt = updatedAt;
   
-  factory Circle({String? id, required String sub, required String circleName, required WeekDay day, int? serialNumber, required String appuserID, List<City>? cities, List<Customer>? customers}) {
+  factory Circle({String? id, required String sub, required String circleName, required WeekDay day, required String appuserID, List<City>? cities, List<Customer>? customers}) {
     return Circle._internal(
       id: id == null ? amplify_core.UUID.getUUID() : id,
       sub: sub,
       circleName: circleName,
       day: day,
-      serialNumber: serialNumber,
       appuserID: appuserID,
       cities: cities != null ? List<City>.unmodifiable(cities) : cities,
       customers: customers != null ? List<Customer>.unmodifiable(customers) : customers);
@@ -159,7 +153,6 @@ class Circle extends amplify_core.Model {
       _sub == other._sub &&
       _circleName == other._circleName &&
       _day == other._day &&
-      _serialNumber == other._serialNumber &&
       _appuserID == other._appuserID &&
       DeepCollectionEquality().equals(_cities, other._cities) &&
       DeepCollectionEquality().equals(_customers, other._customers);
@@ -177,7 +170,6 @@ class Circle extends amplify_core.Model {
     buffer.write("sub=" + "$_sub" + ", ");
     buffer.write("circleName=" + "$_circleName" + ", ");
     buffer.write("day=" + (_day != null ? amplify_core.enumToString(_day)! : "null") + ", ");
-    buffer.write("serialNumber=" + (_serialNumber != null ? _serialNumber!.toString() : "null") + ", ");
     buffer.write("appuserID=" + "$_appuserID" + ", ");
     buffer.write("createdAt=" + (_createdAt != null ? _createdAt!.format() : "null") + ", ");
     buffer.write("updatedAt=" + (_updatedAt != null ? _updatedAt!.format() : "null"));
@@ -186,13 +178,12 @@ class Circle extends amplify_core.Model {
     return buffer.toString();
   }
   
-  Circle copyWith({String? circleName, WeekDay? day, int? serialNumber, String? appuserID, List<City>? cities, List<Customer>? customers}) {
+  Circle copyWith({String? circleName, WeekDay? day, String? appuserID, List<City>? cities, List<Customer>? customers}) {
     return Circle._internal(
       id: id,
       sub: sub,
       circleName: circleName ?? this.circleName,
       day: day ?? this.day,
-      serialNumber: serialNumber ?? this.serialNumber,
       appuserID: appuserID ?? this.appuserID,
       cities: cities ?? this.cities,
       customers: customers ?? this.customers);
@@ -201,7 +192,6 @@ class Circle extends amplify_core.Model {
   Circle copyWithModelFieldValues({
     ModelFieldValue<String>? circleName,
     ModelFieldValue<WeekDay>? day,
-    ModelFieldValue<int?>? serialNumber,
     ModelFieldValue<String>? appuserID,
     ModelFieldValue<List<City>?>? cities,
     ModelFieldValue<List<Customer>?>? customers
@@ -211,7 +201,6 @@ class Circle extends amplify_core.Model {
       sub: sub,
       circleName: circleName == null ? this.circleName : circleName.value,
       day: day == null ? this.day : day.value,
-      serialNumber: serialNumber == null ? this.serialNumber : serialNumber.value,
       appuserID: appuserID == null ? this.appuserID : appuserID.value,
       cities: cities == null ? this.cities : cities.value,
       customers: customers == null ? this.customers : customers.value
@@ -223,7 +212,6 @@ class Circle extends amplify_core.Model {
       _sub = json['sub'],
       _circleName = json['circleName'],
       _day = amplify_core.enumFromString<WeekDay>(json['day'], WeekDay.values),
-      _serialNumber = (json['serialNumber'] as num?)?.toInt(),
       _appuserID = json['appuserID'],
       _cities = json['cities'] is List
         ? (json['cities'] as List)
@@ -241,7 +229,7 @@ class Circle extends amplify_core.Model {
       _updatedAt = json['updatedAt'] != null ? amplify_core.TemporalDateTime.fromString(json['updatedAt']) : null;
   
   Map<String, dynamic> toJson() => {
-    'id': id, 'sub': _sub, 'circleName': _circleName, 'day': amplify_core.enumToString(_day), 'serialNumber': _serialNumber, 'appuserID': _appuserID, 'cities': _cities?.map((City? e) => e?.toJson()).toList(), 'customers': _customers?.map((Customer? e) => e?.toJson()).toList(), 'createdAt': _createdAt?.format(), 'updatedAt': _updatedAt?.format()
+    'id': id, 'sub': _sub, 'circleName': _circleName, 'day': amplify_core.enumToString(_day), 'appuserID': _appuserID, 'cities': _cities?.map((City? e) => e?.toJson()).toList(), 'customers': _customers?.map((Customer? e) => e?.toJson()).toList(), 'createdAt': _createdAt?.format(), 'updatedAt': _updatedAt?.format()
   };
   
   Map<String, Object?> toMap() => {
@@ -249,7 +237,6 @@ class Circle extends amplify_core.Model {
     'sub': _sub,
     'circleName': _circleName,
     'day': _day,
-    'serialNumber': _serialNumber,
     'appuserID': _appuserID,
     'cities': _cities,
     'customers': _customers,
@@ -262,7 +249,6 @@ class Circle extends amplify_core.Model {
   static final SUB = amplify_core.QueryField(fieldName: "sub");
   static final CIRCLENAME = amplify_core.QueryField(fieldName: "circleName");
   static final DAY = amplify_core.QueryField(fieldName: "day");
-  static final SERIALNUMBER = amplify_core.QueryField(fieldName: "serialNumber");
   static final APPUSERID = amplify_core.QueryField(fieldName: "appuserID");
   static final CITIES = amplify_core.QueryField(
     fieldName: "cities",
@@ -311,12 +297,6 @@ class Circle extends amplify_core.Model {
       key: Circle.DAY,
       isRequired: true,
       ofType: amplify_core.ModelFieldType(amplify_core.ModelFieldTypeEnum.enumeration)
-    ));
-    
-    modelSchemaDefinition.addField(amplify_core.ModelFieldDefinition.field(
-      key: Circle.SERIALNUMBER,
-      isRequired: false,
-      ofType: amplify_core.ModelFieldType(amplify_core.ModelFieldTypeEnum.int)
     ));
     
     modelSchemaDefinition.addField(amplify_core.ModelFieldDefinition.field(

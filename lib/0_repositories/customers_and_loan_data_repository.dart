@@ -31,7 +31,7 @@ class CustomerAndLoanDataRepository {
 
   //! --- create customer
   Future<Customer> createCustomer({
-    String? loanIdentity,
+    required String loanIdentity,
     required CityDetails city,
     required String appUser,
     required String uId,
@@ -49,7 +49,7 @@ class CustomerAndLoanDataRepository {
       address: address,
       dateOfCreation: TemporalDate.fromString(date),
       city: city,
-      loanIdentity: loanIdentity ?? '-',
+      loanIdentity: [loanIdentity],
       customerStatus: CustomerStatus.ACTIVE,
       circleID: circleID,
     );
@@ -68,8 +68,12 @@ class CustomerAndLoanDataRepository {
     required String loanIdentity,
     required String newLoanAddedDate,
   }) async {
+    final List<String> newLoanIdentity = [
+      ...customer.loanIdentity,
+      loanIdentity
+    ];
     final updatedCustomer = customer.copyWith(
-      loanIdentity: loanIdentity,
+      loanIdentity: newLoanIdentity,
       newLoanAddedDate: TemporalDate.fromString(newLoanAddedDate),
       customerStatus: CustomerStatus.ACTIVE,
     );
@@ -95,6 +99,7 @@ class CustomerAndLoanDataRepository {
     required bool isAddtionalLoan,
     required bool isNewLoan,
     required int paidEmis,
+    required String loanIdentity,
   }) async {
     // If it is not a new loan then paid amount will be paid emis * emi amount
     final paidAmount = !isNewLoan ? (paidEmis * loanEmiAmount) : 0;
@@ -118,7 +123,7 @@ class CustomerAndLoanDataRepository {
       dateOfCreation: TemporalDate.fromString(loanIssuedDate),
       status: LoanStatus.ACTIVE,
       customerID: customer.id,
-      loanIdentity: customer.loanIdentity,
+      loanIdentity: loanIdentity,
       endDate: TemporalDate.fromString(
         emiCalc.calculateLoanEndDate(
           loanTakenDate: DateTime.parse(loanIssuedDate),
@@ -151,6 +156,7 @@ class CustomerAndLoanDataRepository {
     required WeekDay emiFrequency,
     required bool isAddtionalLoan,
     required int paidEmis,
+    required String loanIdentity,
   }) async {
     bool allEmisCreated = true;
 
@@ -175,6 +181,7 @@ class CustomerAndLoanDataRepository {
               isAddtionalLoan: isAddtionalLoan,
               paidDate: dueDate,
               paidAmount: singleEmiAmount,
+              loanIdentity: loanIdentity,
               status: EmiStatus.PAID,
             );
           } catch (e) {
@@ -204,6 +211,7 @@ class CustomerAndLoanDataRepository {
               isAddtionalLoan: isAddtionalLoan,
               paidDate: dueDate,
               paidAmount: singleEmiAmount,
+              loanIdentity: loanIdentity,
               status: EmiStatus.PAID,
             );
           } catch (e) {
@@ -231,6 +239,7 @@ class CustomerAndLoanDataRepository {
               isAddtionalLoan: isAddtionalLoan,
               paidDate: dueDate,
               paidAmount: singleEmiAmount,
+              loanIdentity: loanIdentity,
               status: EmiStatus.PAID,
             );
           } catch (e) {
@@ -253,6 +262,7 @@ class CustomerAndLoanDataRepository {
     required Loan loan,
     required bool isAddtionalLoan,
     required EmiStatus status,
+    required String loanIdentity,
     DateTime? paidDate,
     int? paidAmount,
   }) async {
@@ -264,7 +274,7 @@ class CustomerAndLoanDataRepository {
       loanID: loanID,
       customerName: customer.customerName,
       isExtraEmi: false,
-      loanIdentity: customer.loanIdentity,
+      loanIdentity: loanIdentity,
       paidDate: paidDate != null
           ? TemporalDate.fromString(paidDate.toString().split(' ')[0])
           : null,
@@ -282,7 +292,7 @@ class CustomerAndLoanDataRepository {
     }
   }
 
-  Future<String> updateLoanSerialNumber({
+  Future<void> updateLoanSerialNumber({
     required LoanSerialNumber loanSerialNumber,
     required String serialNo,
   }) async {
@@ -292,7 +302,6 @@ class CustomerAndLoanDataRepository {
         serialNumber: serialNo,
       );
       await Amplify.DataStore.save(updatedLoanSerialNumber);
-      return updatedLoanSerialNumber.serialNumber;
     } catch (e) {
       rethrow;
     }

@@ -435,19 +435,17 @@ class CustomerListTile extends StatelessWidget {
                 // : const SizedBox.shrink(),
               ],
             ),
-            customer.loanIdentity == '-'
-                ? const SizedBox.shrink()
-                : Text(
-                    'ID: ${customer.loanIdentity}'.toUpperCase(),
-                    style: TextStyle(
-                      fontWeight: FontWeight.w600,
-                      color: isCLUpdTdy()
-                          ? amountPaid().color
-                          : isNewCustomer().isNewCustomer
-                              ? isNewCustomer().color
-                              : Colors.black,
-                    ),
-                  )
+            Text(
+              'ID: ${customer.loanIdentity}'.toUpperCase(),
+              style: TextStyle(
+                fontWeight: FontWeight.w600,
+                color: isCLUpdTdy()
+                    ? amountPaid().color
+                    : isNewCustomer().isNewCustomer
+                        ? isNewCustomer().color
+                        : Colors.black,
+              ),
+            )
           ],
         ),
       ),
@@ -640,7 +638,7 @@ class CustomerSearchDelegate extends SearchDelegate {
         if (customer.customerName.toLowerCase().contains(lowercaseQuery)) {
           result.add(customer);
         } else if (customer.phone.substring(3).startsWith(lowercaseQuery) ||
-            (customer.loanIdentity.startsWith(lowercaseQuery))) {
+            (customer.loanIdentity.contains(lowercaseQuery))) {
           result.add(customer);
         }
       }
@@ -673,7 +671,7 @@ class CustomerSearchDelegate extends SearchDelegate {
                       .where((element) => (element.phone
                               .substring(3)
                               .startsWith(lowercaseQuery) ||
-                          (element.loanIdentity.startsWith(lowercaseQuery))))
+                          (element.loanIdentity.contains(lowercaseQuery))))
                       .toList();
           return ListView.builder(
             itemBuilder: (context, index) {
@@ -701,12 +699,10 @@ class CustomerSearchDelegate extends SearchDelegate {
                       style: const TextStyle(fontWeight: FontWeight.w500),
                     ),
                     const SizedBox(width: 4.0),
-                    suggestionList[index].loanIdentity != '-'
-                        ? Text(
-                            '| ID: ${suggestionList[index].loanIdentity}',
-                            style: const TextStyle(fontWeight: FontWeight.w500),
-                          )
-                        : const SizedBox.shrink()
+                    Text(
+                      '| ID: ${suggestionList[index].loanIdentity}',
+                      style: const TextStyle(fontWeight: FontWeight.w500),
+                    )
                   ],
                 ),
               );

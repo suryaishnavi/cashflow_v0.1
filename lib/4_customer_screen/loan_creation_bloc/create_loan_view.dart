@@ -64,35 +64,41 @@ class _CreateLoanViewState extends State<CreateLoanView> {
         }
       },
       builder: (context, state) {
-        if (state is LoanCreationLoadingState) {
-          return const LoadingView();
-        } else if (state is LoanCreationSuccessState) {
-          return LoanSuccessScreen(
-            createdLoanId: '${state.loanIdentity}',
-          );
-        } else if (state is LoanCreationErrorState) {
-          return const LoanCreationErrorScreen();
+        switch (state) {
+          case LoanCreationLoadingState():
+            return const LoadingView();
+          case LoanCreationSuccessState():
+            return LoanSuccessScreen(
+              createdLoanId: state.loanIdentity,
+            );
+          case LoanCreationErrorState():
+            return const LoanCreationErrorScreen();
+          case LoanCreationInitial():
+            {
+              _loanIdentityController.text =
+                  widget.isNewLoan ? state.loanIdentity : '';
+              return Scaffold(
+                appBar: !widget.isAdditionalLoan
+                    ? AppBar(
+                        title: widget.isNewLoan
+                            ? Text(l10n().enterNewLoanDetails)
+                            : Text(l10n().enterExistingLoanDetails),
+                      )
+                    : null,
+                body: SingleChildScrollView(
+                  physics: const BouncingScrollPhysics(),
+                  child: Padding(
+                    padding: const EdgeInsets.all(24.0),
+                    child: Column(
+                      children: [
+                        _form(),
+                      ],
+                    ),
+                  ),
+                ),
+              );
+            }
         }
-        return Scaffold(
-          appBar: !widget.isAdditionalLoan
-              ? AppBar(
-                  title: widget.isNewLoan
-                      ? Text(l10n().enterNewLoanDetails)
-                      : Text(l10n().enterExistingLoanDetails),
-                )
-              : null,
-          body: SingleChildScrollView(
-            physics: const BouncingScrollPhysics(),
-            child: Padding(
-              padding: const EdgeInsets.all(24.0),
-              child: Column(
-                children: [
-                  _form(),
-                ],
-              ),
-            ),
-          ),
-        );
       },
     );
   }
@@ -114,7 +120,7 @@ class _CreateLoanViewState extends State<CreateLoanView> {
             const SizedBox(height: 16.0),
           ],
           // *if isAdditionalLoan is true then show loanIdentity field
-          if (widget.isAdditionalLoan && !widget.isNewLoan) ...[
+          if (widget.isAdditionalLoan) ...[
             _loanIdentity(),
             const SizedBox(height: 16.0),
           ],
@@ -551,7 +557,6 @@ class _CreateLoanViewState extends State<CreateLoanView> {
                   ],
                 ),
               ),
-             
               const SizedBox(height: 16.0),
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 24.0),
@@ -588,6 +593,7 @@ class _CreateLoanViewState extends State<CreateLoanView> {
                             paidEmis: _paidEmisController.text,
                             isNewLoan: widget.isNewLoan,
                             date: _dateController.text,
+                            loanIdentity: _loanIdentityController.text,
                           ),
                         );
                   },
@@ -596,7 +602,6 @@ class _CreateLoanViewState extends State<CreateLoanView> {
               ),
             ],
           ),
-        
         );
       },
     );
@@ -646,7 +651,9 @@ class LoanSuccessScreen extends StatelessWidget {
               shadowColor: MaterialStateProperty.all(Colors.green[400]),
               onPressed: () {
                 // reset Loan creation Bloc
-                context.read<LoanCreationBloc>().add(LoanCreationResetEvent());
+                context
+                    .read<LoanCreationBloc>()
+                    .add(LoanCreationInitialEvent());
                 Navigator.pop(context);
               },
               text: l10n().close,
@@ -687,7 +694,9 @@ class LoanCreationErrorScreen extends StatelessWidget {
               foregroundColor: MaterialStateProperty.all(Colors.red[900]),
               shadowColor: MaterialStateProperty.all(Colors.red[400]),
               onPressed: () {
-                context.read<LoanCreationBloc>().add(LoanCreationResetEvent());
+                context
+                    .read<LoanCreationBloc>()
+                    .add(LoanCreationInitialEvent());
                 Navigator.pop(context);
               },
               text: l10n().close,

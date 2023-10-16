@@ -47,11 +47,13 @@ class SubmitModifiedLoanEvent extends LoanRefinanceEvent {
   final int emiAmount;
   final int emiCount;
   final DateTime startDate;
+  final String loanIdentity;
   const SubmitModifiedLoanEvent({
     required this.givenAmount,
     required this.emiAmount,
     required this.emiCount,
     required this.startDate,
+    required this.loanIdentity,
   });
 }
 

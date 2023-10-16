@@ -8,7 +8,6 @@ import '../../circles_helper/screen_helper_cubit/screens_cubit.dart';
 import '../../config/routes/route_constants.dart';
 import '../../info_helper/loading_view.dart';
 import '../../models/ModelProvider.dart';
-// import '../aadhaar_scan/aadhaar_card_scanner.dart';
 import '../loan_creation_bloc/loan_creation_bloc/loan_creation_bloc.dart';
 import 'create_customer_bloc/create_customer_bloc.dart';
 
@@ -54,6 +53,8 @@ class _CreateCustomerViewState extends State<CreateCustomerView> {
             if (state is LoadingCircleCitiesState) {
               return const LoadingView();
             } else if (state is LoadedCircleCitiesState) {
+              loanIdentityController.text =
+                  widget.isNewLoan ? state.loanIdentity : '';
               return SingleChildScrollView(
                 physics: const BouncingScrollPhysics(),
                 child: Column(
@@ -105,15 +106,11 @@ class _CreateCustomerViewState extends State<CreateCustomerView> {
             const SizedBox(height: 8.0),
             _addressField(),
             const SizedBox(height: 8.0),
-            if (!widget.isNewLoan) ...[
-              _loanIdentity(),
-              const SizedBox(height: 8.0),
-            ],
+            _loanIdentity(),
+            const SizedBox(height: 8.0),
             _citysListDropDown(),
             const SizedBox(height: 32.0),
             _submitBtn(),
-            // const SizedBox(height: 24.0),
-            // _scanAadhaar(),
           ],
         ),
       ),
@@ -230,7 +227,13 @@ class _CreateCustomerViewState extends State<CreateCustomerView> {
       controller: loanIdentityController,
       maxLength: 5,
       textInputAction: TextInputAction.next,
-      keyboardType: TextInputType.text,
+      keyboardType: TextInputType.number,
+      validator: (value) {
+        if (value == null || value.isEmpty) {
+          return 'Please enter a valid loan identity';
+        }
+        return null;
+      },
       decoration: InputDecoration(
         isDense: true,
         icon: const Icon(Icons.menu_book),
@@ -293,7 +296,7 @@ class _CreateCustomerViewState extends State<CreateCustomerView> {
         if (_formKey.currentState!.validate()) {
           // * call LoanCreationResetEvent to reset the loan creation state
           BlocProvider.of<LoanCreationBloc>(context)
-              .add(LoanCreationResetEvent());
+              .add(LoanCreationInitialEvent());
           // *on submission first try to save Customer
           try {
             BlocProvider.of<ScreensCubit>(context).showCustomerLoanCreation(
@@ -324,57 +327,4 @@ class _CreateCustomerViewState extends State<CreateCustomerView> {
       ),
     );
   }
-
-  // Widget _scanAadhaar() {
-  //   return OutlinedButton(
-  //       onPressed: () {
-  //         _showWarningDialog();
-  //       },
-  //       child: Text(AppLocalizations.of(context)!.scanAadhar));
-  // }
-
-  // void scanAadhaar() async {
-  //   final value = await Navigator.push(
-  //     context,
-  //     MaterialPageRoute(
-  //       builder: (context) => const AadhaarCardScanner(),
-  //     ),
-  //   );
-  //   setState(() {
-  //     uidController.text = value['uid'];
-  //     nameController.text = value['name'];
-  //     addressController.text = value['address'];
-  //   });
-  // }
-
-  // create a warining dialog for scan aadhaar card and fill the form
-  // all aadhaar card data may not scan properly
-  // void _showWarningDialog() {
-  //   showDialog(
-  //     context: context,
-  //     builder: (context) {
-  //       return AlertDialog(
-  //         title: Row(
-  //           children: [
-  //             Icon(Icons.warning, color: Colors.yellow[900]),
-  //             const SizedBox(width: 16.0),
-  //             Text(AppLocalizations.of(context)!.warning),
-  //           ],
-  //         ),
-  //         content: Text(
-  //           AppLocalizations.of(context)!.aadhaarscanInfo,
-  //         ),
-  //         actions: [
-  //           TextButton(
-  //             onPressed: () {
-  //               Navigator.pop(context);
-  //               scanAadhaar();
-  //             },
-  //             child: Text(AppLocalizations.of(context)!.scan),
-  //           ),
-  //         ],
-  //       );
-  //     },
-  //   );
-  // }
 }

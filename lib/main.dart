@@ -139,6 +139,8 @@ void main() async {
               cityRepository: context.read<CityRepository>(),
               screensCubit: context.read<ScreensCubit>(),
               customerBloc: context.read<CustomerBloc>(),
+              customerAndLoanDataRepository:
+                  context.read<CustomerAndLoanDataRepository>(),
             ),
           ),
           BlocProvider<LoanCreationBloc>(
@@ -198,6 +200,8 @@ void main() async {
               screensCubit: context.read<ScreensCubit>(),
               updateLoanDialogCubit: context.read<UpdateLoanDialogCubit>(),
               loanCreationBloc: context.read<LoanCreationBloc>(),
+              customerAndLoanDataRepository:
+                  context.read<CustomerAndLoanDataRepository>(),
             ),
           ),
           BlocProvider<OverallViewBloc>(
@@ -226,10 +230,9 @@ Future<void> _configureAmplify() async {
   final cognito = AmplifyAuthCognito();
   final dataStore = AmplifyDataStore(
     modelProvider: ModelProvider.instance,
+    authModeStrategy: AuthModeStrategy.multiAuth,
     errorHandler: ((error) async {
       DataStoreEventHandler().dataStorePlugInError(e: error);
-      safePrint(
-          '@@@@@@@@@@@Error in data store: $error @@@@@@@@@@@@@@@@@@@@@@@@@@');
       // await _reinitializeAmplify();
     }),
   );

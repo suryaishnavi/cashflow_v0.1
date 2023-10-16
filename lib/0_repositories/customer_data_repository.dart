@@ -43,18 +43,35 @@ class CustomerDataRepository {
     required Customer customer,
     required int emiAmount,
     required int paidAmount,
+    required String loanIdentity,
+    required LoanStatus loanStatus,
     DateTime? paidDate,
   }) async {
     TemporalDate newpaidDate({required DateTime date}) {
       return TemporalDate.fromString('$paidDate'.split(' ')[0]);
     }
 
+    List<String> updateLoanIdentity() {
+    List<String> oldLoanIdentity = customer.loanIdentity;
+
+      // remove the loanIdentity from oldLoanIdentity
+      List<String> updatedLoanIdentity =
+          oldLoanIdentity.where((id) => id != loanIdentity).toList();
+
+      return updatedLoanIdentity;
+    }
+
+    final List<String> newLoanId = loanStatus == LoanStatus.ACTIVE
+        ? customer.loanIdentity
+        : updateLoanIdentity();
+
     final updatedCustomer = customer.copyWith(
+      loanIdentity: newLoanId,
       paymentInfo: PaymentDetails(
         customerID: customer.id,
         emiAmount: emiAmount,
         paidAmount: paidAmount,
-        loanIdentity: customer.loanIdentity,
+        loanIdentity: loanIdentity,
         paidDate: paidDate != null
             ? newpaidDate(date: paidDate)
             : TemporalDate.fromString(today),

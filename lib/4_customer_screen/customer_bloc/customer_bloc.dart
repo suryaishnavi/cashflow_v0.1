@@ -75,15 +75,16 @@ class CustomerBloc extends Bloc<CustomerEvent, CustomerState> {
   }
 
   int sortCustomers(Customer a, Customer b) {
-    if (a.loanIdentity != '-' && b.loanIdentity != '-') {
-      return a.loanIdentity.compareTo(b.loanIdentity);
-    } else if (a.loanIdentity != '-' && b.loanIdentity == '-') {
-      return -1;
-    } else if (a.loanIdentity == '-' && b.loanIdentity != '-') {
-      return 1;
-    } else {
-      return 0;
-    }
+    // if (a.loanIdentity != '-' && b.loanIdentity != '-') {
+    //   return a.loanIdentity.compareTo(b.loanIdentity);
+    // } else if (a.loanIdentity != '-' && b.loanIdentity == '-') {
+    //   return -1;
+    // } else if (a.loanIdentity == '-' && b.loanIdentity != '-') {
+    //   return 1;
+    // } else {
+    //   return 0;
+    // }
+    return int.parse(a.loanIdentity[0]).compareTo(int.parse(b.loanIdentity[0]));
   }
 
   Future<List<City>> getCities() async {

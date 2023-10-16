@@ -276,6 +276,7 @@ class TestCustomers {
       isAddtionalLoan: false,
       isNewLoan: true,
       paidEmis: 0,
+      loanIdentity: currentSerialNumber.toString(),
     );
 
     const paidEmis = '0';
@@ -294,6 +295,7 @@ class TestCustomers {
             emiFrequency: WeekDay.MONDAY,
             paidEmis: 0,
             isAddtionalLoan: false,
+            loanIdentity: currentSerialNumber.toString(),
           );
     return result;
   }

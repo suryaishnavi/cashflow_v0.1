@@ -1,6 +1,6 @@
 part of 'loan_creation_bloc.dart';
 
-abstract class LoanCreationState extends Equatable {
+sealed class LoanCreationState extends Equatable {
   const LoanCreationState();
   @override
   List<Object> get props => [];
@@ -8,18 +8,19 @@ abstract class LoanCreationState extends Equatable {
 
 class LoanCreationInitial extends LoanCreationState {
   final EmiType emiType;
-  const LoanCreationInitial(this.emiType);
+  final String loanIdentity;
+  const LoanCreationInitial({required this.emiType, required this.loanIdentity});
 }
 
 class LoanCreationLoadingState extends LoanCreationState {}
 
 class LoanCreationSuccessState extends LoanCreationState {
   final String message;
-  final String? loanIdentity;
+  final String loanIdentity;
 
   const LoanCreationSuccessState({
     required this.message,
-    this.loanIdentity,
+    required this.loanIdentity,
   });
 
   @override

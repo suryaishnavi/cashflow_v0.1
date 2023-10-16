@@ -22,7 +22,6 @@ type Circle @model @auth(rules: [{ allow: owner }]) {
   sub: String!
   circleName: String!
   day: WeekDay!
-  serialNumber: Int
   appuserID: ID! @index(name: "byAppUser")
   cities: [City] @hasMany(indexName: "byCircle", fields: ["id"])
   customers: [Customer] @hasMany(indexName: "byCircle", fields: ["id"])
@@ -58,7 +57,7 @@ type Customer @model @auth(rules: [{ allow: owner }]) {
   customerName: String!
   phone: AWSPhone!
   address: String!
-  loanIdentity: String!
+  loanIdentity: [String]!
   dateOfCreation: AWSDate!
   newLoanAddedDate: AWSDate
   paymentInfo: PaymentDetails

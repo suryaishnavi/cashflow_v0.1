@@ -12,5 +12,10 @@ class LoadingCircleCitiesState extends CreateCustomerState {}
 class LoadedCircleCitiesState extends CreateCustomerState {
   final List<City> cities;
   final List<Customer> existingCustomers;
-  const LoadedCircleCitiesState({required this.cities, this.existingCustomers = const []});
+  final String loanIdentity;
+  const LoadedCircleCitiesState({
+    required this.cities,
+    this.existingCustomers = const [],
+    required this.loanIdentity,
+  });
 }

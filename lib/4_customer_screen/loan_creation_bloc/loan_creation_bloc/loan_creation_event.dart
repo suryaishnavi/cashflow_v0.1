@@ -1,11 +1,13 @@
 part of 'loan_creation_bloc.dart';
 
-abstract class LoanCreationEvent extends Equatable {
+sealed class LoanCreationEvent extends Equatable {
   const LoanCreationEvent();
 
   @override
   List<Object> get props => [];
 }
+
+class LoanCreationInitialEvent extends LoanCreationEvent {}
 
 class LoanSubmissionEvent extends LoanCreationEvent {
   final String paidEmis;
@@ -14,7 +16,7 @@ class LoanSubmissionEvent extends LoanCreationEvent {
   final String emiAmount;
   final String totalEmis;
   final String date;
-  // final String endDate;
+  final String loanIdentity;
 
   const LoanSubmissionEvent({
     required this.paidEmis,
@@ -23,7 +25,7 @@ class LoanSubmissionEvent extends LoanCreationEvent {
     required this.emiAmount,
     required this.totalEmis,
     required this.date,
-    // required this.endDate,
+    required this.loanIdentity,
   });
 
   @override
@@ -36,7 +38,7 @@ class LoanSubmissionEvent extends LoanCreationEvent {
 }
 
 class AdditionalLoanCreationEvent extends LoanCreationEvent {
-  final String? loanIdentity;
+  final String loanIdentity;
   final String paidEmis;
   final bool isNewLoan;
   final String givenAmount;
@@ -45,7 +47,7 @@ class AdditionalLoanCreationEvent extends LoanCreationEvent {
   final String date;
 
   const AdditionalLoanCreationEvent({
-    this.loanIdentity,
+    required this.loanIdentity,
     required this.paidEmis,
     required this.isNewLoan,
     required this.givenAmount,
@@ -57,5 +59,3 @@ class AdditionalLoanCreationEvent extends LoanCreationEvent {
   @override
   List<Object> get props => [givenAmount, emiAmount, totalEmis, date];
 }
-
-class LoanCreationResetEvent extends LoanCreationEvent {}

@@ -9,23 +9,34 @@ part 'loan_creation_event.dart';
 part 'loan_creation_state.dart';
 
 class LoanCreationBloc extends Bloc<LoanCreationEvent, LoanCreationState> {
-  CustomerAndLoanDataRepository customerAndLoanDataRepository;
-  ScreensCubit screensCubit;
+  final CustomerAndLoanDataRepository customerAndLoanDataRepository;
+  final ScreensCubit screensCubit;
   LoanCreationBloc({
     required this.screensCubit,
     required this.customerAndLoanDataRepository,
-  }) : super(
-          LoanCreationInitial(
-            (screensCubit.currentCircle.circle!.day == WeekDay.DAILY)
-                ? EmiType.DAILY
-                : (screensCubit.currentCircle.circle!.day == WeekDay.MONTHLY)
-                    ? EmiType.MONTHLY
-                    : EmiType.WEEKLY,
-          ),
-        ) {
+  }) : super(LoanCreationLoadingState()) {
+    on<LoanCreationInitialEvent>(_onLoanCreationInitialEvent);
     on<LoanSubmissionEvent>(_onLoanSubmissionEvent);
     on<AdditionalLoanCreationEvent>(_onAdditionalLoanCreationEvent);
-    on<LoanCreationResetEvent>(_onLoanCreationResetEvent);
+  }
+
+  _onLoanCreationInitialEvent(
+      LoanCreationInitialEvent event, Emitter<LoanCreationState> emit) async {
+    final frequency = screensCubit.currentCircle.circle!.day;
+    final loanIdentity =
+        await customerAndLoanDataRepository.getCircleCurrentSerialNo(
+      circleId: screensCubit.currentCircle.circle!.id,
+    );
+    emit(
+      LoanCreationInitial(
+        emiType: frequency == WeekDay.DAILY
+            ? EmiType.DAILY
+            : frequency == WeekDay.MONTHLY
+                ? EmiType.MONTHLY
+                : EmiType.WEEKLY,
+        loanIdentity: loanIdentity.serialNumber,
+      ),
+    );
   }
 
   _onLoanSubmissionEvent(
@@ -35,12 +46,10 @@ class LoanCreationBloc extends Bloc<LoanCreationEvent, LoanCreationState> {
     emit(LoanCreationLoadingState());
     final customerDetails = screensCubit.onCreationCustomerData;
     final isNewloan = event.isNewLoan;
-    LoanSerialNumber? loanSerialNumber;
-    int serialNo;
+    LoanSerialNumber loanSerialNumber;
     try {
       loanSerialNumber = await customerAndLoanDataRepository
           .getCircleCurrentSerialNo(circleId: customerDetails.circleID);
-      serialNo = int.parse(loanSerialNumber.serialNumber) + 1;
     } catch (e) {
       emit(const LoanCreationErrorState(message: 'Loan creation failed'));
       return;
@@ -52,14 +61,10 @@ class LoanCreationBloc extends Bloc<LoanCreationEvent, LoanCreationState> {
       name: customerDetails.name,
       mobileNumber: customerDetails.phone,
       address: customerDetails.address,
-      city: customerDetails.city as CityDetails,
+      city: customerDetails.city,
       date: event.date,
       circleID: customerDetails.circleID,
-      loanIdentity: isNewloan
-          ? '$serialNo'
-          : customerDetails.loanIdentity!.isNotEmpty
-              ? customerDetails.loanIdentity
-              : '-',
+      loanIdentity: customerDetails.loanIdentity,
     );
 
     // *on success of save customer then save loan
@@ -78,6 +83,7 @@ class LoanCreationBloc extends Bloc<LoanCreationEvent, LoanCreationState> {
       isAddtionalLoan: false,
       isNewLoan: isNewloan,
       paidEmis: event.paidEmis.isEmpty ? 0 : int.parse(event.paidEmis),
+      loanIdentity: customerDetails.loanIdentity,
     );
 
     // *on success of save loan then save emi if paid emis are not empty
@@ -94,24 +100,17 @@ class LoanCreationBloc extends Bloc<LoanCreationEvent, LoanCreationState> {
             emiFrequency: customerDetails.frequency,
             paidEmis: int.parse(event.paidEmis),
             isAddtionalLoan: false,
+            loanIdentity: customerDetails.loanIdentity,
           );
 
     if (result) {
-      if (!isNewloan) {
-        emit(LoanCreationSuccessState(
-          message: 'Loan created successfully',
-          loanIdentity: customer.loanIdentity,
-        ));
-        return;
-      }
-      String updatedLoanSerialNo =
-          await customerAndLoanDataRepository.updateLoanSerialNumber(
+      await customerAndLoanDataRepository.updateLoanSerialNumber(
         loanSerialNumber: loanSerialNumber,
-        serialNo: '$serialNo',
+        serialNo: (int.parse(customerDetails.loanIdentity) + 1).toString(),
       );
       emit(LoanCreationSuccessState(
         message: 'Loan created successfully',
-        loanIdentity: updatedLoanSerialNo,
+        loanIdentity: customerDetails.loanIdentity,
       ));
     } else {
       emit(const LoanCreationErrorState(message: 'Loan creation failed'));
@@ -126,25 +125,21 @@ class LoanCreationBloc extends Bloc<LoanCreationEvent, LoanCreationState> {
     final frequency = screensCubit.currentCircle.circle!.day;
     final currentCustomer = screensCubit.currentCustomer.customer;
     emit(LoanCreationLoadingState());
-    LoanSerialNumber? loanSerialNumber;
-    int serialNo;
+    LoanSerialNumber loanSerialNumber;
     final isNewloan = event.isNewLoan;
     try {
       loanSerialNumber = await customerAndLoanDataRepository
           .getCircleCurrentSerialNo(circleId: currentCustomer!.circleID);
-      serialNo = int.parse(loanSerialNumber.serialNumber) + 1;
     } catch (e) {
       emit(const LoanCreationErrorState(message: 'Loan creation failed'));
       return;
     }
+
+    // *on submission first try to update Customer
     final customer = await customerAndLoanDataRepository.updateCustomer(
       customer: currentCustomer,
       newLoanAddedDate: event.date,
-      loanIdentity: isNewloan
-          ? '$serialNo'
-          : event.loanIdentity!.isNotEmpty
-              ? event.loanIdentity as String
-              : '-',
+      loanIdentity: event.loanIdentity,
     );
 
     // *on success of customer updation then save add new loan to the existing customer
@@ -163,6 +158,7 @@ class LoanCreationBloc extends Bloc<LoanCreationEvent, LoanCreationState> {
       isAddtionalLoan: true,
       isNewLoan: isNewloan,
       paidEmis: event.paidEmis.isEmpty ? 0 : int.parse(event.paidEmis),
+      loanIdentity: event.loanIdentity,
     );
 
     // *on success of save loan then save emi
@@ -179,40 +175,21 @@ class LoanCreationBloc extends Bloc<LoanCreationEvent, LoanCreationState> {
             emiFrequency: frequency,
             paidEmis: int.parse(event.paidEmis),
             isAddtionalLoan: true,
+            loanIdentity: event.loanIdentity,
           );
 
     if (result) {
-      if (!isNewloan) {
-        emit(LoanCreationSuccessState(
-          message: 'Loan created successfully',
-          loanIdentity: customer.loanIdentity,
-        ));
-        return;
-      }
-      String updatedLoanSerialNo =
-          await customerAndLoanDataRepository.updateLoanSerialNumber(
+      final int number = int.parse(event.loanIdentity) + 1;
+      await customerAndLoanDataRepository.updateLoanSerialNumber(
         loanSerialNumber: loanSerialNumber,
-        serialNo: '$serialNo',
+        serialNo: '$number',
       );
       emit(LoanCreationSuccessState(
         message: 'Loan created successfully',
-        loanIdentity: updatedLoanSerialNo,
+        loanIdentity: event.loanIdentity,
       ));
     } else {
       emit(const LoanCreationErrorState(message: 'Loan creation failed'));
     }
-  }
-
-  _onLoanCreationResetEvent(
-      LoanCreationResetEvent event, Emitter<LoanCreationState> emit) {
-    emit(
-      LoanCreationInitial(
-        screensCubit.currentCircle.circle!.day == WeekDay.DAILY
-            ? EmiType.DAILY
-            : screensCubit.currentCircle.circle!.day == WeekDay.MONTHLY
-                ? EmiType.MONTHLY
-                : EmiType.WEEKLY,
-      ),
-    );
   }
 }

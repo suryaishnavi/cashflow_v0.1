@@ -43,8 +43,8 @@ class SyncDataCubit extends Cubit<SyncDataState> {
 
   void modelSyncEvent(event) {
     currentModel++;
-    final percent = (currentModel * percentage) / totalModels;
-    emit(TotalPersentCompleted(percent.toInt()));
+    final int percent = ((currentModel * percentage) / totalModels).ceil();
+    emit(TotalPersentCompleted(percent));
   }
 
   void syncData(event) async {

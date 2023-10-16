@@ -8,8 +8,8 @@ class OnCreationCustomerData {
   final String address;
   final String circleID;
   final WeekDay frequency;
-  final CityDetails? city;
-  final String? loanIdentity;
+  final CityDetails city;
+  final String loanIdentity;
 
   OnCreationCustomerData({
     required this.sub,
@@ -19,7 +19,7 @@ class OnCreationCustomerData {
     required this.phone,
     required this.address,
     required this.circleID,
-    this.city,
-    this.loanIdentity,
+    required this.city,
+    required this.loanIdentity,
   });
 }

@@ -91,7 +91,7 @@ class CustomerProfileView extends StatelessWidget {
                                 onPressed: () {
                                   // call loan creation bloc to reset event
                                   BlocProvider.of<LoanCreationBloc>(context)
-                                      .add(LoanCreationResetEvent());
+                                      .add(LoanCreationInitialEvent());
                                   GoRouter.of(context).pushNamed(
                                       RouteConstants.additionalLoanView);
                                 },

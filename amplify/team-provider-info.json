@@ -25,6 +25,9 @@
           "deploymentBucketName": "amplify-cashflow-prod-03211-deployment",
           "s3Key": "amplify-builds/sendOTPtoDelete-744550706c70554e7756-build.zip"
         }
+      },
+      "api": {
+        "cashflow": {}
       }
     }
   }

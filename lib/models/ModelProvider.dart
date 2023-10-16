@@ -51,7 +51,7 @@ export 'WeekDay.dart';
 
 class ModelProvider implements amplify_core.ModelProviderInterface {
   @override
-  String version = "40621ee89d573484c5a8d851fab8a21d";
+  String version = "a5daa589d2fc12c4bce424580b1bf44f";
   @override
   List<amplify_core.ModelSchema> modelSchemas = [AppUser.schema, Circle.schema, City.schema, Customer.schema, Emi.schema, Loan.schema, LoanSerialNumber.schema, SubscriptionsDetails.schema];
   @override

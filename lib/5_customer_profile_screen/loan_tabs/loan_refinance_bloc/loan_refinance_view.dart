@@ -165,6 +165,7 @@ class _EditNewLoanDetailsState extends State<EditNewLoanDetails> {
   final _emiAmountController = TextEditingController();
   final _emiCountController = TextEditingController();
   final _givenDateController = TextEditingController();
+  final _loanIdentityController = TextEditingController();
   l10n() => AppLocalizations.of(context)!;
 
   @override
@@ -173,12 +174,25 @@ class _EditNewLoanDetailsState extends State<EditNewLoanDetails> {
     _emiAmountController.dispose();
     _emiCountController.dispose();
     _givenDateController.dispose();
+    _loanIdentityController.dispose();
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
-    return _form();
+    return BlocBuilder<LoanRefinanceBloc, LoanRefinanceState>(
+      builder: (context, state) {
+        if (state is ModifyLoanDetailsState) {
+          _givenAmountController.text =
+              '${state.givenAmount}'.replaceAll(',', '');
+          _emiAmountController.text = '${state.emiAmount}'.replaceAll(',', '');
+          _emiCountController.text = '${state.emiCount}'.replaceAll(',', '');
+          _loanIdentityController.text = state.loanIdentity;
+          return _form();
+        }
+        return const Center(child: Text('Something went wrong'));
+      },
+    );
   }
 
   Widget _form() {
@@ -196,6 +210,8 @@ class _EditNewLoanDetailsState extends State<EditNewLoanDetails> {
             _emiAmount(),
             const SizedBox(height: 16.0),
             _totalEmis(),
+            const SizedBox(height: 16.0),
+            _loanIdentity(),
             const SizedBox(height: 16.0),
             _date(),
             const SizedBox(height: 32.0),
@@ -239,6 +255,7 @@ class _EditNewLoanDetailsState extends State<EditNewLoanDetails> {
       ],
       maxLength: 7,
       decoration: InputDecoration(
+        isDense: true,
         icon: const Icon(Icons.currency_rupee),
         hintText: '${l10n().totalGivenAmountField('hint')} (\u20B99,800)',
         labelText: l10n().totalGivenAmountField('label'),
@@ -285,6 +302,7 @@ class _EditNewLoanDetailsState extends State<EditNewLoanDetails> {
         ),
       ],
       decoration: InputDecoration(
+        isDense: true,
         icon: const Icon(Icons.auto_mode),
         hintText: '${l10n().installmentAmountField('hint')} (\u20B91,000)',
         labelText: l10n().installmentAmountField('label'),
@@ -314,6 +332,7 @@ class _EditNewLoanDetailsState extends State<EditNewLoanDetails> {
       ],
       textInputAction: TextInputAction.next,
       decoration: InputDecoration(
+        isDense: true,
         icon: const Icon(Icons.star),
         hintText: l10n().totalInstallmentsField('hint'),
         labelText: l10n().totalInstallmentsField('label'),
@@ -332,6 +351,27 @@ class _EditNewLoanDetailsState extends State<EditNewLoanDetails> {
     );
   }
 
+  Widget _loanIdentity() {
+    return TextFormField(
+      controller: _loanIdentityController,
+      maxLength: 5,
+      textInputAction: TextInputAction.next,
+      keyboardType: TextInputType.number,
+      validator: (value) {
+        if (value == null || value.isEmpty) {
+          return 'Please enter a valid loan identity';
+        }
+        return null;
+      },
+      decoration: InputDecoration(
+        isDense: true,
+        icon: const Icon(Icons.menu_book),
+        labelText: AppLocalizations.of(context)!.loanIdField('label'),
+        hintText: AppLocalizations.of(context)!.loanIdField('hint'),
+      ),
+    );
+  }
+
   DateTime date = DateTime(DateTime.now().year, DateTime.now().month,
       DateTime.now().day); // * default date is today
 
@@ -341,6 +381,7 @@ class _EditNewLoanDetailsState extends State<EditNewLoanDetails> {
       textInputAction: TextInputAction.done,
       style: getLabelStyle(),
       decoration: InputDecoration(
+        isDense: true,
         icon: const Icon(Icons.calendar_today),
         labelText: l10n().loanDate,
       ),
@@ -403,6 +444,7 @@ class _EditNewLoanDetailsState extends State<EditNewLoanDetails> {
                             emiAmount: emiAmount,
                             emiCount: emiCount,
                             startDate: date,
+                            loanIdentity: _loanIdentityController.text,
                           ),
                         );
                   }
