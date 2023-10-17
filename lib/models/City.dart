@@ -21,6 +21,7 @@
 
 import 'ModelProvider.dart';
 import 'package:amplify_core/amplify_core.dart' as amplify_core;
+import 'package:collection/collection.dart';
 
 
 /** This is an auto generated class representing the City type in your schema. */
@@ -29,6 +30,7 @@ class City extends amplify_core.Model {
   final String id;
   final String? _name;
   final String? _circleID;
+  final List<Customer>? _customer;
   final amplify_core.TemporalDateTime? _createdAt;
   final amplify_core.TemporalDateTime? _updatedAt;
 
@@ -81,6 +83,10 @@ class City extends amplify_core.Model {
     }
   }
   
+  List<Customer>? get customer {
+    return _customer;
+  }
+  
   amplify_core.TemporalDateTime? get createdAt {
     return _createdAt;
   }
@@ -89,13 +95,14 @@ class City extends amplify_core.Model {
     return _updatedAt;
   }
   
-  const City._internal({required this.id, required name, required circleID, createdAt, updatedAt}): _name = name, _circleID = circleID, _createdAt = createdAt, _updatedAt = updatedAt;
+  const City._internal({required this.id, required name, required circleID, customer, createdAt, updatedAt}): _name = name, _circleID = circleID, _customer = customer, _createdAt = createdAt, _updatedAt = updatedAt;
   
-  factory City({String? id, required String name, required String circleID}) {
+  factory City({String? id, required String name, required String circleID, List<Customer>? customer}) {
     return City._internal(
       id: id == null ? amplify_core.UUID.getUUID() : id,
       name: name,
-      circleID: circleID);
+      circleID: circleID,
+      customer: customer != null ? List<Customer>.unmodifiable(customer) : customer);
   }
   
   bool equals(Object other) {
@@ -108,7 +115,8 @@ class City extends amplify_core.Model {
     return other is City &&
       id == other.id &&
       _name == other._name &&
-      _circleID == other._circleID;
+      _circleID == other._circleID &&
+      DeepCollectionEquality().equals(_customer, other._customer);
   }
   
   @override
@@ -129,20 +137,23 @@ class City extends amplify_core.Model {
     return buffer.toString();
   }
   
-  City copyWith({String? name}) {
+  City copyWith({String? name, List<Customer>? customer}) {
     return City._internal(
       id: id,
       name: name ?? this.name,
-      circleID: circleID);
+      circleID: circleID,
+      customer: customer ?? this.customer);
   }
   
   City copyWithModelFieldValues({
-    ModelFieldValue<String>? name
+    ModelFieldValue<String>? name,
+    ModelFieldValue<List<Customer>?>? customer
   }) {
     return City._internal(
       id: id,
       name: name == null ? this.name : name.value,
-      circleID: circleID
+      circleID: circleID,
+      customer: customer == null ? this.customer : customer.value
     );
   }
   
@@ -150,17 +161,24 @@ class City extends amplify_core.Model {
     : id = json['id'],
       _name = json['name'],
       _circleID = json['circleID'],
+      _customer = json['customer'] is List
+        ? (json['customer'] as List)
+          .where((e) => e?['serializedData'] != null)
+          .map((e) => Customer.fromJson(new Map<String, dynamic>.from(e['serializedData'])))
+          .toList()
+        : null,
       _createdAt = json['createdAt'] != null ? amplify_core.TemporalDateTime.fromString(json['createdAt']) : null,
       _updatedAt = json['updatedAt'] != null ? amplify_core.TemporalDateTime.fromString(json['updatedAt']) : null;
   
   Map<String, dynamic> toJson() => {
-    'id': id, 'name': _name, 'circleID': _circleID, 'createdAt': _createdAt?.format(), 'updatedAt': _updatedAt?.format()
+    'id': id, 'name': _name, 'circleID': _circleID, 'customer': _customer?.map((Customer? e) => e?.toJson()).toList(), 'createdAt': _createdAt?.format(), 'updatedAt': _updatedAt?.format()
   };
   
   Map<String, Object?> toMap() => {
     'id': id,
     'name': _name,
     'circleID': _circleID,
+    'customer': _customer,
     'createdAt': _createdAt,
     'updatedAt': _updatedAt
   };
@@ -169,6 +187,9 @@ class City extends amplify_core.Model {
   static final ID = amplify_core.QueryField(fieldName: "id");
   static final NAME = amplify_core.QueryField(fieldName: "name");
   static final CIRCLEID = amplify_core.QueryField(fieldName: "circleID");
+  static final CUSTOMER = amplify_core.QueryField(
+    fieldName: "customer",
+    fieldType: amplify_core.ModelFieldType(amplify_core.ModelFieldTypeEnum.model, ofModelName: 'Customer'));
   static var schema = amplify_core.Model.defineSchema(define: (amplify_core.ModelSchemaDefinition modelSchemaDefinition) {
     modelSchemaDefinition.name = "City";
     modelSchemaDefinition.pluralName = "Cities";
@@ -204,6 +225,13 @@ class City extends amplify_core.Model {
       key: City.CIRCLEID,
       isRequired: true,
       ofType: amplify_core.ModelFieldType(amplify_core.ModelFieldTypeEnum.string)
+    ));
+    
+    modelSchemaDefinition.addField(amplify_core.ModelFieldDefinition.hasMany(
+      key: City.CUSTOMER,
+      isRequired: false,
+      ofModelName: 'Customer',
+      associatedKey: Customer.CITY
     ));
     
     modelSchemaDefinition.addField(amplify_core.ModelFieldDefinition.nonQueryField(

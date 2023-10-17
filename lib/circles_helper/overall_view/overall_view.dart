@@ -167,7 +167,7 @@ class _AppNotificationState extends State<AppNotification> {
     _syncQueriesStartedEvent =
         DataStoreEventHandler().syncQueriesEvent.listen((event) {});
 
-    /// outboxMutationEnqueuedEvent
+    ///! outboxMutationEnqueuedEvent
     _outboxMutationEnqueuedEvent =
         DataStoreEventHandler().outboxMutationEnqueuedEvent.listen((event) {
       context

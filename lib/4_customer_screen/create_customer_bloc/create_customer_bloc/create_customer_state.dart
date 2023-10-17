@@ -18,4 +18,19 @@ class LoadedCircleCitiesState extends CreateCustomerState {
     this.existingCustomers = const [],
     required this.loanIdentity,
   });
+
+  LoadedCircleCitiesState copyWith({
+    List<City>? cities,
+    List<Customer>? existingCustomers,
+    String? loanIdentity,
+  }) {
+    return LoadedCircleCitiesState(
+      cities: cities ?? this.cities,
+      existingCustomers: existingCustomers ?? this.existingCustomers,
+      loanIdentity: loanIdentity ?? this.loanIdentity,
+    );
+  }
+
+  @override
+  List<Object> get props => [cities, existingCustomers, loanIdentity];
 }

@@ -23,6 +23,7 @@ class CreateCustomerBloc
     required this.customerAndLoanDataRepository,
   }) : super(LoadingCircleCitiesState()) {
     on<LoadCitiesEvent>(_onLoadCities);
+    on<LoanIdentityChangingEvent>(_onLoanIdentityChangingState);
   }
 
   void _onLoadCities(
@@ -40,5 +41,11 @@ class CreateCustomerBloc
     }
     emit(LoadedCircleCitiesState(
         cities: cities, existingCustomers: [...existingCustomers], loanIdentity: loanIdentity.serialNumber));
+  }
+
+  void _onLoanIdentityChangingState(
+      LoanIdentityChangingEvent event, Emitter<CreateCustomerState> emit) async {
+    
+    emit((state as LoadedCircleCitiesState).copyWith(loanIdentity: event.loanIdentity));
   }
 }

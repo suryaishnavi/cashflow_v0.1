@@ -8,7 +8,7 @@ class OnCreationCustomerData {
   final String address;
   final String circleID;
   final WeekDay frequency;
-  final CityDetails city;
+  final City city;
   final String loanIdentity;
 
   OnCreationCustomerData({

@@ -74,7 +74,7 @@ class ScreensCubit extends Cubit<ScreensState> {
     required String name,
     required String phone,
     required String address,
-    required CityDetails city,
+    required City city,
     required String loanIdentity,
   }) {
     onCreationCustomerData = OnCreationCustomerData(

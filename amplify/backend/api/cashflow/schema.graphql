@@ -48,6 +48,7 @@ type City @model @auth(rules: [{ allow: owner }]) {
   id: ID! @primaryKey(sortKeyFields: ["circleID"])
   name: String!
   circleID: ID! @index(name: "byCircle")
+  customer: [Customer] @hasMany
 }
 
 type Customer @model @auth(rules: [{ allow: owner }]) {
@@ -62,7 +63,7 @@ type Customer @model @auth(rules: [{ allow: owner }]) {
   newLoanAddedDate: AWSDate
   paymentInfo: PaymentDetails
   customerStatus: CustomerStatus
-  city: CityDetails
+  city: City! @belongsTo
   longitude: Float
   latitude: Float
   circleID: ID! @index(name: "byCircle")
@@ -78,11 +79,11 @@ type PaymentDetails {
   paidDate: AWSDate!
 }
 
-type CityDetails {
-  id: String!
-  name: String!
-  circleID: String!
-}
+# type CityDetails {
+#   id: String!
+#   name: String!
+#   circleID: String!
+# }
 
 enum CustomerStatus {
   ACTIVE

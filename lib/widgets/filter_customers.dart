@@ -35,7 +35,7 @@ class FilterCustomers extends StatelessWidget {
                 // Calculate the number of customers for each city
                 int customerCount = city.id.isNotEmpty
                     ? state.customers
-                        .where((customer) => customer.city!.id == city.id)
+                        .where((customer) => customer.city.id == city.id)
                         .length
                     : state.customers.length;
 

@@ -1,12 +1,10 @@
 import 'package:flutter/material.dart';
 // import 'package:flutter/rendering.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:intl/intl.dart' as intl;
 
 import '../../models/ModelProvider.dart';
-import '../customer_bloc/customer_bloc.dart';
 import 'update_loan_dialog_cubit/update_loan_dialog_cubit.dart';
 
 class UpdateLoanView extends StatefulWidget {

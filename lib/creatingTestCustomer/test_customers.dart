@@ -105,95 +105,10 @@ class NameGenerator {
 
 class CityDetailsProvider {
   // List<CityDetails> cities = [];
-  List<CityDetails> cities = [
-    CityDetails(
-        id: "5274054e-ac08-442f-961a-f05be7c9f219",
-        name: "Tirupati",
-        circleID: "aef98c1a-a6f0-4c92-a279-947136df3744"),
-    CityDetails(
-        id: "6b025770-2e3f-406d-9761-c5047c4b5e7b",
-        name: "Tirupati",
-        circleID: "aef98c1a-a6f0-4c92-a279-947136df3744"),
-    CityDetails(
-        id: "c4107331-3fe7-4613-950f-879ec133fd4e",
-        name: "Chittoor",
-        circleID: "aef98c1a-a6f0-4c92-a279-947136df3744"),
-    CityDetails(
-        id: "371e4b6b-ec7d-4c3b-ae68-a78ed79b5be2",
-        name: "Madanapalle",
-        circleID: "aef98c1a-a6f0-4c92-a279-947136df3744"),
-    CityDetails(
-        id: "0619cdae-67bd-42ee-b00c-c8a5aae26886",
-        name: "Puttur",
-        circleID: "aef98c1a-a6f0-4c92-a279-947136df3744"),
-    CityDetails(
-        id: "4f480d94-b286-45f3-8092-14ba0216a0c2",
-        name: "Nagari",
-        circleID: "aef98c1a-a6f0-4c92-a279-947136df3744"),
-    CityDetails(
-        id: "bf8cdd4b-192f-4e42-9d5f-612ceabe861f",
-        name: "Punganur",
-        circleID: "aef98c1a-a6f0-4c92-a279-947136df3744"),
-    CityDetails(
-        id: "892f9064-d400-4d95-a1bd-83ed655b476d",
-        name: "Srikalahasti",
-        circleID: "aef98c1a-a6f0-4c92-a279-947136df3744"),
-    CityDetails(
-        id: "eca76b07-622b-4591-9afe-8610fa99ac6a",
-        name: "Renigunta",
-        circleID: "aef98c1a-a6f0-4c92-a279-947136df3744"),
-    CityDetails(
-        id: "aecbc892-3b76-4488-bf2f-798b0ca4d6c8",
-        name: "Kuppam",
-        circleID: "aef98c1a-a6f0-4c92-a279-947136df3744"),
-    CityDetails(
-        id: "77a1f199-8df2-4932-a940-2c5c12f072a2",
-        name: "Palamaner",
-        circleID: "aef98c1a-a6f0-4c92-a279-947136df3744"),
-    CityDetails(
-        id: "c9e330ee-dd49-4833-90c0-3d68e7ccf39a",
-        name: "Kanipakam",
-        circleID: "aef98c1a-a6f0-4c92-a279-947136df3744"),
-    CityDetails(
-        id: "26b8ca9d-efba-4362-9bc0-b6d109bb3c84",
-        name: "Tirumala",
-        circleID: "aef98c1a-a6f0-4c92-a279-947136df3744"),
-    CityDetails(
-        id: "4928ca4e-0a71-4bc2-a32c-d57b7ec89964",
-        name: "Pileru",
-        circleID: "aef98c1a-a6f0-4c92-a279-947136df3744"),
-    CityDetails(
-        id: "9c8d182e-96c2-4a59-87b6-e9be4a0b2576",
-        name: "Narayanavanam",
-        circleID: "aef98c1a-a6f0-4c92-a279-947136df3744"),
-    CityDetails(
-        id: "3575fb96-d67f-4625-aab2-44b8a2e884c4",
-        name: "Vayalpad",
-        circleID: "aef98c1a-a6f0-4c92-a279-947136df3744"),
-    CityDetails(
-        id: "087fdbba-2b57-4b16-82ab-84a7084e418e",
-        name: "Nagapattinam",
-        circleID: "aef98c1a-a6f0-4c92-a279-947136df3744"),
-    CityDetails(
-        id: "f6bae9a5-7302-4843-93d5-5aa0eb3fc144",
-        name: "K.V. B. Puram",
-        circleID: "aef98c1a-a6f0-4c92-a279-947136df3744"),
-    CityDetails(
-        id: "35493761-680a-4a16-ad60-8bfad02e7599",
-        name: "Shantipuram",
-        circleID: "aef98c1a-a6f0-4c92-a279-947136df3744"),
-    CityDetails(
-        id: "4fbe9825-e3d8-472e-a9c4-b1bbf64618bd",
-        name: "Thamballapalle",
-        circleID: "aef98c1a-a6f0-4c92-a279-947136df3744"),
-    CityDetails(
-        id: "f25737a9-c16e-46c2-be51-4b7bd010b85a",
-        name: "Puthalapattu",
-        circleID: "aef98c1a-a6f0-4c92-a279-947136df3744")
-  ];
+  List<City> cities = [];
 
   static final Random _random = Random();
-  CityDetails getRandomCity() {
+  City getRandomCity() {
     final cityName = cities[_random.nextInt(cities.length)];
     return cityName;
   }

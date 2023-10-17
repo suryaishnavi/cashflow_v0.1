@@ -8,3 +8,8 @@ abstract class CreateCustomerEvent extends Equatable {
 }
 
 class LoadCitiesEvent extends CreateCustomerEvent {}
+
+class LoanIdentityChangingEvent extends CreateCustomerEvent {
+  final String loanIdentity;
+  const LoanIdentityChangingEvent({required this.loanIdentity});
+}

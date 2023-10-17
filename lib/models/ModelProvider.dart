@@ -29,14 +29,12 @@ import 'Loan.dart';
 import 'LoanSerialNumber.dart';
 import 'SubscriptionsDetails.dart';
 import 'AppUserSubscriptionDetails.dart';
-import 'CityDetails.dart';
 import 'PaymentDetails.dart';
 
 export 'AppUser.dart';
 export 'AppUserSubscriptionDetails.dart';
 export 'Circle.dart';
 export 'City.dart';
-export 'CityDetails.dart';
 export 'Customer.dart';
 export 'CustomerStatus.dart';
 export 'Emi.dart';
@@ -51,11 +49,11 @@ export 'WeekDay.dart';
 
 class ModelProvider implements amplify_core.ModelProviderInterface {
   @override
-  String version = "a5daa589d2fc12c4bce424580b1bf44f";
+  String version = "f6a6649c4c3c9bfa961691d9ba4a5971";
   @override
   List<amplify_core.ModelSchema> modelSchemas = [AppUser.schema, Circle.schema, City.schema, Customer.schema, Emi.schema, Loan.schema, LoanSerialNumber.schema, SubscriptionsDetails.schema];
   @override
-  List<amplify_core.ModelSchema> customTypeSchemas = [AppUserSubscriptionDetails.schema, CityDetails.schema, PaymentDetails.schema];
+  List<amplify_core.ModelSchema> customTypeSchemas = [AppUserSubscriptionDetails.schema, PaymentDetails.schema];
   static final ModelProvider _instance = ModelProvider();
 
   static ModelProvider get instance => _instance;

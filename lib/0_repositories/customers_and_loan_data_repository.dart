@@ -32,7 +32,7 @@ class CustomerAndLoanDataRepository {
   //! --- create customer
   Future<Customer> createCustomer({
     required String loanIdentity,
-    required CityDetails city,
+    required City city,
     required String appUser,
     required String uId,
     required String name,

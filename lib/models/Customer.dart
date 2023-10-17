@@ -38,7 +38,7 @@ class Customer extends amplify_core.Model {
   final amplify_core.TemporalDate? _newLoanAddedDate;
   final PaymentDetails? _paymentInfo;
   final CustomerStatus? _customerStatus;
-  final CityDetails? _city;
+  final City? _city;
   final double? _longitude;
   final double? _latitude;
   final String? _circleID;
@@ -172,8 +172,17 @@ class Customer extends amplify_core.Model {
     return _customerStatus;
   }
   
-  CityDetails? get city {
-    return _city;
+  City get city {
+    try {
+      return _city!;
+    } catch(e) {
+      throw amplify_core.AmplifyCodeGenModelException(
+          amplify_core.AmplifyExceptionMessages.codeGenRequiredFieldForceCastExceptionMessage,
+          recoverySuggestion:
+            amplify_core.AmplifyExceptionMessages.codeGenRequiredFieldForceCastRecoverySuggestion,
+          underlyingException: e.toString()
+          );
+    }
   }
   
   double? get longitude {
@@ -209,9 +218,9 @@ class Customer extends amplify_core.Model {
     return _updatedAt;
   }
   
-  const Customer._internal({required this.id, required sub, required uId, required customerName, required phone, required address, required loanIdentity, required dateOfCreation, newLoanAddedDate, paymentInfo, customerStatus, city, longitude, latitude, required circleID, loans, createdAt, updatedAt}): _sub = sub, _uId = uId, _customerName = customerName, _phone = phone, _address = address, _loanIdentity = loanIdentity, _dateOfCreation = dateOfCreation, _newLoanAddedDate = newLoanAddedDate, _paymentInfo = paymentInfo, _customerStatus = customerStatus, _city = city, _longitude = longitude, _latitude = latitude, _circleID = circleID, _loans = loans, _createdAt = createdAt, _updatedAt = updatedAt;
+  const Customer._internal({required this.id, required sub, required uId, required customerName, required phone, required address, required loanIdentity, required dateOfCreation, newLoanAddedDate, paymentInfo, customerStatus, required city, longitude, latitude, required circleID, loans, createdAt, updatedAt}): _sub = sub, _uId = uId, _customerName = customerName, _phone = phone, _address = address, _loanIdentity = loanIdentity, _dateOfCreation = dateOfCreation, _newLoanAddedDate = newLoanAddedDate, _paymentInfo = paymentInfo, _customerStatus = customerStatus, _city = city, _longitude = longitude, _latitude = latitude, _circleID = circleID, _loans = loans, _createdAt = createdAt, _updatedAt = updatedAt;
   
-  factory Customer({String? id, required String sub, required String uId, required String customerName, required String phone, required String address, required List<String> loanIdentity, required amplify_core.TemporalDate dateOfCreation, amplify_core.TemporalDate? newLoanAddedDate, PaymentDetails? paymentInfo, CustomerStatus? customerStatus, CityDetails? city, double? longitude, double? latitude, required String circleID, List<Loan>? loans}) {
+  factory Customer({String? id, required String sub, required String uId, required String customerName, required String phone, required String address, required List<String> loanIdentity, required amplify_core.TemporalDate dateOfCreation, amplify_core.TemporalDate? newLoanAddedDate, PaymentDetails? paymentInfo, CustomerStatus? customerStatus, required City city, double? longitude, double? latitude, required String circleID, List<Loan>? loans}) {
     return Customer._internal(
       id: id == null ? amplify_core.UUID.getUUID() : id,
       sub: sub,
@@ -287,7 +296,7 @@ class Customer extends amplify_core.Model {
     return buffer.toString();
   }
   
-  Customer copyWith({String? uId, String? customerName, String? phone, String? address, List<String>? loanIdentity, amplify_core.TemporalDate? dateOfCreation, amplify_core.TemporalDate? newLoanAddedDate, PaymentDetails? paymentInfo, CustomerStatus? customerStatus, CityDetails? city, double? longitude, double? latitude, String? circleID, List<Loan>? loans}) {
+  Customer copyWith({String? uId, String? customerName, String? phone, String? address, List<String>? loanIdentity, amplify_core.TemporalDate? dateOfCreation, amplify_core.TemporalDate? newLoanAddedDate, PaymentDetails? paymentInfo, CustomerStatus? customerStatus, City? city, double? longitude, double? latitude, String? circleID, List<Loan>? loans}) {
     return Customer._internal(
       id: id,
       sub: sub,
@@ -317,7 +326,7 @@ class Customer extends amplify_core.Model {
     ModelFieldValue<amplify_core.TemporalDate?>? newLoanAddedDate,
     ModelFieldValue<PaymentDetails?>? paymentInfo,
     ModelFieldValue<CustomerStatus?>? customerStatus,
-    ModelFieldValue<CityDetails?>? city,
+    ModelFieldValue<City>? city,
     ModelFieldValue<double?>? longitude,
     ModelFieldValue<double?>? latitude,
     ModelFieldValue<String>? circleID,
@@ -358,7 +367,7 @@ class Customer extends amplify_core.Model {
         : null,
       _customerStatus = amplify_core.enumFromString<CustomerStatus>(json['customerStatus'], CustomerStatus.values),
       _city = json['city']?['serializedData'] != null
-        ? CityDetails.fromJson(new Map<String, dynamic>.from(json['city']['serializedData']))
+        ? City.fromJson(new Map<String, dynamic>.from(json['city']['serializedData']))
         : null,
       _longitude = (json['longitude'] as num?)?.toDouble(),
       _latitude = (json['latitude'] as num?)?.toDouble(),
@@ -409,7 +418,9 @@ class Customer extends amplify_core.Model {
   static final NEWLOANADDEDDATE = amplify_core.QueryField(fieldName: "newLoanAddedDate");
   static final PAYMENTINFO = amplify_core.QueryField(fieldName: "paymentInfo");
   static final CUSTOMERSTATUS = amplify_core.QueryField(fieldName: "customerStatus");
-  static final CITY = amplify_core.QueryField(fieldName: "city");
+  static final CITY = amplify_core.QueryField(
+    fieldName: "city",
+    fieldType: amplify_core.ModelFieldType(amplify_core.ModelFieldTypeEnum.model, ofModelName: 'City'));
   static final LONGITUDE = amplify_core.QueryField(fieldName: "longitude");
   static final LATITUDE = amplify_core.QueryField(fieldName: "latitude");
   static final CIRCLEID = amplify_core.QueryField(fieldName: "circleID");
@@ -502,10 +513,11 @@ class Customer extends amplify_core.Model {
       ofType: amplify_core.ModelFieldType(amplify_core.ModelFieldTypeEnum.enumeration)
     ));
     
-    modelSchemaDefinition.addField(amplify_core.ModelFieldDefinition.embedded(
-      fieldName: 'city',
-      isRequired: false,
-      ofType: amplify_core.ModelFieldType(amplify_core.ModelFieldTypeEnum.embedded, ofCustomTypeName: 'CityDetails')
+    modelSchemaDefinition.addField(amplify_core.ModelFieldDefinition.belongsTo(
+      key: Customer.CITY,
+      isRequired: true,
+      targetNames: ['cityCustomerId', 'cityCustomerCircleID'],
+      ofModelName: 'City'
     ));
     
     modelSchemaDefinition.addField(amplify_core.ModelFieldDefinition.field(
