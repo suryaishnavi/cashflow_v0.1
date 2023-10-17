@@ -122,7 +122,7 @@ class CustomerBloc extends Bloc<CustomerEvent, CustomerState> {
     List<Customer> selectedCityCustomers = [];
     if (event.city.id.isNotEmpty) {
       selectedCityCustomers = [
-        ...customers.where((customer) => customer.city?.id == event.city.id)
+        ...customers.where((customer) => customer.city.id == event.city.id)
       ];
     } else {
       selectedCityCustomers = [...customers];

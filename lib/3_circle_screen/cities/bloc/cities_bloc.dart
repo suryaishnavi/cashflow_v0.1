@@ -47,19 +47,7 @@ class CitiesBloc extends Bloc<CitiesEvent, CitiesState> {
   _onLoadCities(LoadCities event, Emitter<CitiesState> emit) async {
     try {
       final cities = await cityRepository.getCities(circleID: event.circleID);
-      //* temporary code to make city details from cities list
-      // final cityDetails = cities.map((city) {
-      //   return CityDetails(
-      //     id: city.id,
-      //     name: city.name,
-      //     circleID: event.circleID,
-      //   );
-      // }).toList();
-      // print('cityDetails: $cityDetails');
-      // Future.delayed(Duration(seconds: 1));
-      // emit(CitiesLoadedState(cities: cityDetails));
       emit(CitiesLoadedState(cities: cities));
-      // //
     } catch (e) {
       emit(CitiesErrorState(message: e.toString()));
     }

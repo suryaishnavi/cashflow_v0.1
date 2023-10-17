@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 // import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
@@ -37,39 +38,40 @@ class CitiesView extends StatelessWidget {
             return Padding(
               padding: const EdgeInsets.symmetric(horizontal: 24.0),
               child:
-                  // SingleChildScrollView(child:  InkWell(
-                  //       onTap: () {
-                  //         Clipboard.setData(
-                  //           ClipboardData(
-                  //             text: '$cities',
-                  //           ),
-                  //         );
-                  //       },
-                  //       child: Text('Cities: $cities'),
-                  //     ),
-                  //   )
-                  ListView.separated(
-                itemCount: cities.length,
-                itemBuilder: (context, index) {
-                  final city = cities[index];
-                  return ListTile(
-                    visualDensity: const VisualDensity(vertical: -4),
-                    leading: CircleAvatar(
-                      radius: 18,
-                      backgroundColor: Colors
-                          .primaries[index % Colors.primaries.length][100],
-                      child: Text(
-                        '${index + 1}',
+                  SingleChildScrollView(child:  InkWell(
+                        onTap: () {
+                          Clipboard.setData(
+                            ClipboardData(
+                              text: '$cities',
+                            ),
+                          );
+                        },
+                        child: Text('Cities: $cities'),
                       ),
-                    ),
-                    title: Text(city.name.toUpperCase(),
-                        style: const TextStyle(fontSize: 16)),
-                  );
-                },
-                separatorBuilder: (BuildContext context, int index) {
-                  return const Divider();
-                },
-              ),
+                    )
+                  
+              //     ListView.separated(
+              //   itemCount: cities.length,
+              //   itemBuilder: (context, index) {
+              //     final city = cities[index];
+              //     return ListTile(
+              //       visualDensity: const VisualDensity(vertical: -4),
+              //       leading: CircleAvatar(
+              //         radius: 18,
+              //         backgroundColor: Colors
+              //             .primaries[index % Colors.primaries.length][100],
+              //         child: Text(
+              //           '${index + 1}',
+              //         ),
+              //       ),
+              //       title: Text(city.name.toUpperCase(),
+              //           style: const TextStyle(fontSize: 16)),
+              //     );
+              //   },
+              //   separatorBuilder: (BuildContext context, int index) {
+              //     return const Divider();
+              //   },
+              // ),
             );
           }
           return Center(

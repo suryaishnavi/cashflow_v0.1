@@ -31,15 +31,15 @@ class CustomerAndLoanDataRepository {
 
   //! --- create customer
   Future<Customer> createCustomer({
-    required String loanIdentity,
-    required City city,
-    required String appUser,
-    required String uId,
-    required String name,
-    required String mobileNumber,
     required String address,
+    required String appUser,
     required String circleID,
+    required City city,
     required String date,
+    required String loanIdentity,
+    required String mobileNumber,
+    required String name,
+    required String uId,
   }) async {
     final newCustomer = Customer(
       sub: appUser,
@@ -57,7 +57,8 @@ class CustomerAndLoanDataRepository {
       await Amplify.DataStore.save(newCustomer);
       return newCustomer;
     } catch (e) {
-      rethrow;
+      safePrint(e);
+        rethrow;
     }
   }
 

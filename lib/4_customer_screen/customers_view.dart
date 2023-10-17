@@ -424,15 +424,11 @@ class CustomerListTile extends StatelessWidget {
                   customer.phone.substring(3),
                 ),
                 const SizedBox(width: 4.0),
-                customer.city!.name.isEmpty
-                    ? const SizedBox.shrink()
-                    // if text is more than 15 characters then show only 15 characters
-                    : Text(
-                        '${customer.city?.name}'.length > 15
-                            ? ' -  ${'${customer.city?.name}'.substring(0, 15).toUpperCase()}...'
-                            : ' -  ${customer.city?.name}'.toUpperCase(),
-                      )
-                // : const SizedBox.shrink(),
+                Text(
+                  customer.city.name.length > 15
+                      ? ' -  ${customer.city.name.substring(0, 15).toUpperCase()}...'
+                      : ' -  ${customer.city.name}'.toUpperCase(),
+                )
               ],
             ),
             Text(
