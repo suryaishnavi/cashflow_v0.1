@@ -5,6 +5,7 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 import '../../0_repositories/auth_repository.dart';
 import '../../config/routes/route_constants.dart';
+import '../../widgets/custom_eleveted_button.dart';
 import '../../widgets/page_heading.dart';
 import '../auth_helper_cubit/auth_cubit.dart';
 import 'signin_bloc/signin_bloc.dart';
@@ -199,7 +200,7 @@ class _SigninViewState extends State<SigninView> {
       builder: (context, state) {
         return state is SigninStateLoading
             ? const CircularProgressIndicator()
-            : ElevatedButton(
+            : CustomElevatedButton(
                 onPressed: () {
                   FocusScope.of(context).unfocus();
                   if (_formKey.currentState!.validate()) {

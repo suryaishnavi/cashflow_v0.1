@@ -5,6 +5,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 import '../../info_helper/loading_view.dart';
+import '../../widgets/custom_eleveted_button.dart';
+import '../../widgets/custom_outlined_button.dart';
 import 'bloc/cities_bloc.dart';
 
 class CitiesView extends StatelessWidget {
@@ -36,43 +38,43 @@ class CitiesView extends StatelessWidget {
               );
             }
             return Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 24.0),
-              child:
-                  SingleChildScrollView(child:  InkWell(
-                        onTap: () {
-                          Clipboard.setData(
-                            ClipboardData(
-                              text: '$cities',
-                            ),
-                          );
-                        },
-                        child: Text('Cities: $cities'),
-                      ),
-                    )
-                  
-              //     ListView.separated(
-              //   itemCount: cities.length,
-              //   itemBuilder: (context, index) {
-              //     final city = cities[index];
-              //     return ListTile(
-              //       visualDensity: const VisualDensity(vertical: -4),
-              //       leading: CircleAvatar(
-              //         radius: 18,
-              //         backgroundColor: Colors
-              //             .primaries[index % Colors.primaries.length][100],
-              //         child: Text(
-              //           '${index + 1}',
-              //         ),
-              //       ),
-              //       title: Text(city.name.toUpperCase(),
-              //           style: const TextStyle(fontSize: 16)),
-              //     );
-              //   },
-              //   separatorBuilder: (BuildContext context, int index) {
-              //     return const Divider();
-              //   },
-              // ),
-            );
+                padding: const EdgeInsets.symmetric(horizontal: 24.0),
+                child: SingleChildScrollView(
+                  child: InkWell(
+                    onTap: () {
+                      Clipboard.setData(
+                        ClipboardData(
+                          text: '$cities',
+                        ),
+                      );
+                    },
+                    child: Text('Cities: $cities'),
+                  ),
+                )
+
+                //     ListView.separated(
+                //   itemCount: cities.length,
+                //   itemBuilder: (context, index) {
+                //     final city = cities[index];
+                //     return ListTile(
+                //       visualDensity: const VisualDensity(vertical: -4),
+                //       leading: CircleAvatar(
+                //         radius: 18,
+                //         backgroundColor: Colors
+                //             .primaries[index % Colors.primaries.length][100],
+                //         child: Text(
+                //           '${index + 1}',
+                //         ),
+                //       ),
+                //       title: Text(city.name.toUpperCase(),
+                //           style: const TextStyle(fontSize: 16)),
+                //     );
+                //   },
+                //   separatorBuilder: (BuildContext context, int index) {
+                //     return const Divider();
+                //   },
+                // ),
+                );
           }
           return Center(
             child: Text(AppLocalizations.of(context)!.noCities),
@@ -143,7 +145,7 @@ class _AddNewCityState extends State<AddNewCity> {
             },
           ),
           const SizedBox(height: 24),
-          ElevatedButton(
+          CustomElevatedButton(
             onPressed: () {
               if (_formKey.currentState!.validate()) {
                 context.read<CitiesBloc>().add(
@@ -156,7 +158,7 @@ class _AddNewCityState extends State<AddNewCity> {
                 style: const TextStyle(fontSize: 16)),
           ),
           const SizedBox(height: 24),
-          OutlinedButton(
+          CustomOutlinedButton(
               onPressed: () {
                 Navigator.of(context).pop();
               },

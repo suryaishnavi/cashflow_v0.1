@@ -7,6 +7,7 @@ import 'package:intl/intl.dart' as intl;
 
 import '../../../0_repositories/emi_date_calculator.dart';
 import '../../../4_customer_screen/loan_creation_bloc/loan_creation_bloc/loan_creation_bloc.dart';
+import '../../../widgets/custom_eleveted_button.dart';
 import 'bloc/loan_refinance_bloc.dart';
 
 // * Loan Refinance
@@ -413,7 +414,7 @@ class _EditNewLoanDetailsState extends State<EditNewLoanDetails> {
       builder: (context, state) {
         return state is LoanRefinanceLoadingState
             ? const CircularProgressIndicator()
-            : ElevatedButton(
+            : CustomElevatedButton(
                 onPressed: () {
                   if (_formKey.currentState!.validate()) {
                     final givenAmount = int.parse(

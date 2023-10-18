@@ -7,6 +7,7 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import '../../0_repositories/auth_repository.dart';
 import '../../config/routes/route_constants.dart';
 import '../../info_helper/form_submission_status.dart';
+import '../../widgets/custom_eleveted_button.dart';
 import '../../widgets/page_heading.dart';
 import '../auth_helper_cubit/auth_cubit.dart';
 import 'signup_bloc/signup_bloc.dart';
@@ -216,7 +217,7 @@ class _SignupViewState extends State<SignupView> {
       builder: (context, state) {
         return state.formStatus is FormSubmitting
             ? const CircularProgressIndicator()
-            : ElevatedButton(
+            : CustomElevatedButton(
                 onPressed: () {
                   if (_formKey.currentState!.validate()) {
                     context.read<SignupBloc>().add(SignupSubmitted());

@@ -145,7 +145,6 @@ class _CustomerScrollViewState extends State<CustomerScrollView> {
                   return UpdateLoanView(
                     loans: state.loans,
                     customer: customer,
-                    scrollPosition: _scrollController.position.pixels,
                   );
                 }
                 return Column(
@@ -290,10 +289,8 @@ class _CustomerScrollViewState extends State<CustomerScrollView> {
         );
       },
       itemCount: customers.length,
-      separatorBuilder: (BuildContext context, int index) => const Padding(
-        padding: EdgeInsets.symmetric(horizontal: 24.0),
-        child: SizedBox(height: 2),
-      ),
+      separatorBuilder: (BuildContext context, int index) =>
+          const SizedBox(height: 4.0),
     );
   }
 }
@@ -371,7 +368,7 @@ class CustomerListTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Badge(
-      largeSize: 24,
+      largeSize: 18,
       isLabelVisible: isCLUpdTdy() || isNewCustomer().isNewCustomer,
       label: Text(isCLUpdTdy()
           ? amountPaid().text
@@ -379,14 +376,20 @@ class CustomerListTile extends StatelessWidget {
               ? isNewCustomer().text
               : 'Updated'),
       padding: const EdgeInsets.symmetric(horizontal: 12.0),
-      backgroundColor: isCLUpdTdy()
-          ? amountPaid().color.withOpacity(0.9)
+      textColor: isCLUpdTdy()
+          ? amountPaid().color
           : isNewCustomer().isNewCustomer
-              ? isNewCustomer().color.withOpacity(0.9)
+              ? isNewCustomer().color
+              : Colors.black,
+      backgroundColor: isCLUpdTdy()
+          ? amountPaid().color.withOpacity(0.1)
+          : isNewCustomer().isNewCustomer
+              ? isNewCustomer().color.withOpacity(0.1)
               : Colors.transparent,
       offset: const Offset(-100, 50),
       alignment: Alignment.topRight,
       child: ListTile(
+        minVerticalPadding: 16.0,
         onTap: () async {
           await Future.delayed(const Duration(milliseconds: 200), () {
             function();

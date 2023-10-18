@@ -4,6 +4,7 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 import '../6_reports_gen_screen/cubit/report_cubit.dart';
 import '../models/Circle.dart';
+import 'custom_eleveted_button.dart';
 
 class GenerateReportForm extends StatefulWidget {
   final List<Circle> circles;
@@ -114,7 +115,7 @@ class _GenerateReportFormState extends State<GenerateReportForm> {
   }
 
   Widget _submitButton() {
-    return ElevatedButton(
+    return CustomElevatedButton(
       onPressed: () {
         if (_formKey.currentState!.validate()) {
           BlocProvider.of<ReportCubit>(context).storeCredentials(

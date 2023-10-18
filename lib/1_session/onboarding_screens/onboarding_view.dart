@@ -4,6 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 import '../../l10n/l10n.dart';
+import '../../widgets/custom_eleveted_button.dart';
 import '../session_cubit/session_cubit.dart';
 import 'language_bloc/language_bloc.dart';
 
@@ -97,7 +98,7 @@ int _value = 0;
               ),
               const SizedBox(height: 32),
               !loading
-                  ? ElevatedButton(
+                  ? CustomElevatedButton(
                       child: const Text('Continue'),
                       onPressed: () {
                         setState(() {

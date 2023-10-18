@@ -8,6 +8,7 @@ import '../../circles_helper/screen_helper_cubit/screens_cubit.dart';
 import '../../config/routes/route_constants.dart';
 import '../../info_helper/loading_view.dart';
 import '../../models/ModelProvider.dart';
+import '../../widgets/custom_eleveted_button.dart';
 import '../loan_creation_bloc/loan_creation_bloc/loan_creation_bloc.dart';
 import 'create_customer_bloc/create_customer_bloc.dart';
 
@@ -268,7 +269,7 @@ class _CreateCustomerViewState extends State<CreateCustomerView> {
   }
 
   Widget _submitBtn(state) {
-    return ElevatedButton(
+    return CustomElevatedButton(
       onPressed: () {
         if (_formKey.currentState!.validate()) {
           // * call LoanCreationResetEvent to reset the loan creation state

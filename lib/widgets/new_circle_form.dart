@@ -5,6 +5,8 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import '../3_circle_screen/create_new_circle/create_circle_bloc.dart';
 import '../info_helper/form_submission_status.dart';
 import '../models/WeekDay.dart';
+import 'custom_eleveted_button.dart';
+import 'custom_outlined_button.dart';
 
 class NewCircleForm extends StatefulWidget {
   const NewCircleForm({super.key});
@@ -85,7 +87,7 @@ class _NewCircleFormState extends State<NewCircleForm> {
       builder: (context, state) {
         return state.formStatus is FormSubmitting
             ? const CircularProgressIndicator()
-            : ElevatedButton(
+            : CustomElevatedButton(
                 onPressed: () {
                   if (_formKey.currentState!.validate()) {
                     context
@@ -102,7 +104,7 @@ class _NewCircleFormState extends State<NewCircleForm> {
   }
 
   Widget _dismissModalBottomSheet() {
-    return OutlinedButton(
+    return CustomOutlinedButton(
       onPressed: () {
         Navigator.of(context).pop();
       },

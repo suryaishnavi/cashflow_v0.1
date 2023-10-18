@@ -9,6 +9,7 @@ import '../../0_repositories/auth_repository.dart';
 import '../../1_session/session_cubit/session_cubit.dart';
 import '../../3_circle_screen/circles_bloc/circle_bloc.dart';
 import '../../info_helper/form_submission_status.dart';
+import '../../widgets/custom_eleveted_button.dart';
 import '../auth_helper_cubit/auth_cubit.dart';
 import 'confirmation_bloc/confirmation_bloc.dart';
 
@@ -177,7 +178,7 @@ class _ConfirmationViewState extends State<ConfirmationView> {
       builder: (context, state) {
         return state.formStatus is FormSubmitting
             ? const CircularProgressIndicator()
-            : ElevatedButton(
+            : CustomElevatedButton(
                 onPressed: () {
                   if (_formKey.currentState!.validate()) {
                     FocusScope.of(context).unfocus();

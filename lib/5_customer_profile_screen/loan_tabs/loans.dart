@@ -4,6 +4,7 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:intl/intl.dart' as intl;
 
 import '../../../models/ModelProvider.dart';
+import '../../widgets/custom_eleveted_button.dart';
 import '../2_loan_details/loan_data_cubit.dart';
 import '../3_emi_details/emi_cubit.dart';
 import '../emi_table.dart';
@@ -277,7 +278,7 @@ class _LoanItemPopupMenuState extends State<LoanItemPopupMenu> {
                       ),
                     ),
                     const SizedBox(height: 30),
-                    ElevatedButton(
+                    CustomElevatedButton(
                       onPressed: () {
                         context.read<LoanDataCubit>().updateLoanAmount(
                               loan: widget.loan,

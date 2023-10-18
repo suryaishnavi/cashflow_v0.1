@@ -7,6 +7,7 @@ import 'package:lottie/lottie.dart';
 
 import '../../info_helper/loading_view.dart';
 import '../../models/EmiType.dart';
+import '../../widgets/custom_eleveted_button.dart';
 import '../../widgets/elevated_tonal_button.dart';
 import 'loan_creation_bloc/loan_creation_bloc.dart';
 
@@ -344,7 +345,7 @@ class _CreateLoanViewState extends State<CreateLoanView> {
       builder: (context, state) {
         return state is LoanCreationLoadingState
             ? const CircularProgressIndicator()
-            : ElevatedButton(
+            : CustomElevatedButton(
                 onPressed: () {
                   if (_formKey.currentState!.validate()) {
                     _showDialog();
@@ -560,7 +561,7 @@ class _CreateLoanViewState extends State<CreateLoanView> {
               const SizedBox(height: 16.0),
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 24.0),
-                child: ElevatedButton(
+                child: CustomElevatedButton(
                   onPressed: () {
                     if (widget.isAdditionalLoan) {
                       context.read<LoanCreationBloc>().add(
