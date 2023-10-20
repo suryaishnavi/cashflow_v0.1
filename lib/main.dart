@@ -31,7 +31,7 @@ import '3_circle_screen/create_new_circle/create_circle_bloc.dart';
 import '4_customer_screen/create_customer_bloc/create_customer_bloc/create_customer_bloc.dart';
 import '4_customer_screen/customer_bloc/customer_bloc.dart';
 import '4_customer_screen/loan_creation_bloc/loan_creation_bloc/loan_creation_bloc.dart';
-import '4_customer_screen/update_loan_dialog/update_loan_dialog_cubit/update_loan_dialog_cubit.dart';
+import '4_customer_screen/update_loan_dialog/update_loan_dialog_bloc/update_loan_dialog_bloc.dart';
 import '5_customer_profile_screen/1_customer_data/customer_profile_cubit.dart';
 import '5_customer_profile_screen/2_loan_details/loan_data_cubit.dart';
 import '5_customer_profile_screen/3_emi_details/emi_cubit.dart';
@@ -150,13 +150,6 @@ void main() async {
               screensCubit: context.read<ScreensCubit>(),
             ),
           ),
-          BlocProvider<UpdateLoanDialogCubit>(
-            create: (context) => UpdateLoanDialogCubit(
-              loansDataRepo: context.read<LoansDataRepository>(),
-              emisDataRepo: context.read<EmisDataRepository>(),
-              customerDataRepo: context.read<CustomerDataRepository>(),
-            ),
-          ),
           BlocProvider<LoanDataCubit>(
             create: (context) => LoanDataCubit(
               loansDataRepo: context.read<LoansDataRepository>(),
@@ -195,10 +188,17 @@ void main() async {
               screensCubit: context.read<ScreensCubit>(),
             ),
           ),
+          BlocProvider<UpdateLoanDialogBloc>(
+            create: (context) => UpdateLoanDialogBloc(
+              loansDataRepository: context.read<LoansDataRepository>(),
+              emisDataRepository: context.read<EmisDataRepository>(),
+              customerDataRepository: context.read<CustomerDataRepository>(),
+            ),
+          ),
           BlocProvider<LoanRefinanceBloc>(
             create: (context) => LoanRefinanceBloc(
               screensCubit: context.read<ScreensCubit>(),
-              updateLoanDialogCubit: context.read<UpdateLoanDialogCubit>(),
+              updateLoanDialogBloc: context.read<UpdateLoanDialogBloc>(),
               loanCreationBloc: context.read<LoanCreationBloc>(),
               customerAndLoanDataRepository:
                   context.read<CustomerAndLoanDataRepository>(),
@@ -217,7 +217,7 @@ void main() async {
             create: (context) => StatusBloc(
               dataStoreEventHandler: context.read<DataStoreEventHandler>(),
             ),
-          )
+          ),
         ],
         child: const CashflowApp(),
       ),

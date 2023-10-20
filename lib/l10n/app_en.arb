@@ -118,7 +118,7 @@
   "@add": {
     "description": "Add"
   },
-  "emiTable" : "Installments Table",
+  "emiTable": "Installments Table",
   "@emiTable": {
     "description": "Installments Table"
   },
@@ -500,7 +500,7 @@
   "@labelRepaymentAmount": {
     "description": "Enter Repayment Amount"
   },
-  "hintRepaymentAmount": "Enter Repayment Emi Amount",
+  "hintRepaymentAmount": "Enter Installment Amount",
   "@hintRepaymentAmount": {
     "description": "Enter Repayment Emi Amount"
   },

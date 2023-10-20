@@ -3,7 +3,7 @@ import 'package:cashflow/4_customer_screen/loan_creation_bloc/loan_creation_bloc
 import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import '../../../../4_customer_screen/update_loan_dialog/update_loan_dialog_cubit/update_loan_dialog_cubit.dart';
+import '../../../../4_customer_screen/update_loan_dialog/update_loan_dialog_bloc/update_loan_dialog_bloc.dart';
 import '../../../../circles_helper/screen_helper_cubit/screens_cubit.dart';
 import '../../../../models/ModelProvider.dart';
 
@@ -12,7 +12,7 @@ part 'loan_refinance_state.dart';
 
 class LoanRefinanceBloc extends Bloc<LoanRefinanceEvent, LoanRefinanceState> {
   final ScreensCubit screensCubit;
-  final UpdateLoanDialogCubit updateLoanDialogCubit;
+  final UpdateLoanDialogBloc updateLoanDialogBloc;
   final LoanCreationBloc loanCreationBloc;
   final CustomerAndLoanDataRepository customerAndLoanDataRepository;
 
@@ -21,7 +21,7 @@ class LoanRefinanceBloc extends Bloc<LoanRefinanceEvent, LoanRefinanceState> {
   late String loanIdentity;
   LoanRefinanceBloc({
     required this.screensCubit,
-    required this.updateLoanDialogCubit,
+    required this.updateLoanDialogBloc,
     required this.loanCreationBloc,
     required this.customerAndLoanDataRepository,
   }) : super(LoanRefinanceLoadingState()) {
@@ -161,7 +161,7 @@ class LoanRefinanceBloc extends Bloc<LoanRefinanceEvent, LoanRefinanceState> {
       // debug print all the values
       // emit(LoanRefinanceLoadingState());
       // close old lone by passing emi amount to update loan dialog cubit
-      await updateLoanDialogCubit.updateLoan(
+      await updateLoanDialogBloc.updateLoan(
         emiValue: '$balanceAmount',
         loan: oldLoan,
         customer: screensCubit.currentCustomer.customer as Customer,

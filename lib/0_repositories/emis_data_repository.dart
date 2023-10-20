@@ -110,6 +110,14 @@ class EmisDataRepository {
       rethrow;
     }
   }
+
+  Stream<SubscriptionEvent<Emi>> observeEmi() {
+    try {
+      return Amplify.DataStore.observe(Emi.classType);
+    } on Exception {
+      rethrow;
+    }
+  }
 }
 
 // Depreciated code

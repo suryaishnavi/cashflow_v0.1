@@ -12,7 +12,8 @@ import 'create_customer_bloc/create_customer_bloc/create_customer_bloc.dart';
 import 'customer_bloc/customer_bloc.dart';
 import '../widgets/filter_customers.dart';
 import 'loan_creation_bloc/loan_creation_bloc/loan_creation_bloc.dart';
-import 'update_loan_dialog/update_loan_dialog_cubit/update_loan_dialog_cubit.dart';
+// import 'update_loan_dialog/update_loan_dialog_cubit/update_loan_dialog_cubit.dart';
+import 'update_loan_dialog/update_loan_dialog_bloc/update_loan_dialog_bloc.dart';
 import 'update_loan_dialog/update_loan_view.dart';
 
 class CustomersView extends StatelessWidget {
@@ -46,26 +47,26 @@ class CustomersView extends StatelessWidget {
               }
             },
           ),
-          BlocListener<UpdateLoanDialogCubit, UpdateLoanDialogState>(
-            listener: (context, state) {
-              // take customer name from state and shorten it to 20 characters if it is more than 20 characters and add '...' at the end of the name
-              if (state is LoanUpdatedState) {
-                final name = state.customer.customerName.length > 20
-                    ? '${state.customer.customerName[0].toUpperCase() + state.customer.customerName.substring(1, 20).toLowerCase()}...'
-                    : state.customer.customerName[0].toUpperCase() +
-                        state.customer.customerName.substring(1).toLowerCase();
-                _showSnackBar(
-                    context,
-                    '$name ${AppLocalizations.of(context)!.loanUpdateSuccess}',
-                    getColors().success);
-              } else if (state is LoanUpdatedErrorState) {
-                _showSnackBar(
-                    context,
-                    AppLocalizations.of(context)!.loanUpdateFailed,
-                    getColors().error);
-              }
-            },
-          ),
+          // BlocListener<UpdateLoanDialogCubit, UpdateLoanDialogState>(
+          //   listener: (context, state) {
+          //     // take customer name from state and shorten it to 20 characters if it is more than 20 characters and add '...' at the end of the name
+          //     if (state is LoanUpdatedState) {
+          //       final name = state.customer.customerName.length > 20
+          //           ? '${state.customer.customerName[0].toUpperCase() + state.customer.customerName.substring(1, 20).toLowerCase()}...'
+          //           : state.customer.customerName[0].toUpperCase() +
+          //               state.customer.customerName.substring(1).toLowerCase();
+          //       _showSnackBar(
+          //           context,
+          //           '$name ${AppLocalizations.of(context)!.loanUpdateSuccess}',
+          //           getColors().success);
+          //     } else if (state is LoanUpdatedErrorState) {
+          //       _showSnackBar(
+          //           context,
+          //           AppLocalizations.of(context)!.loanUpdateFailed,
+          //           getColors().error);
+          //     }
+          //   },
+          // ),
           BlocListener<LoanCreationBloc, LoanCreationState>(
             listener: (context, state) {
               if (state is LoanCreationSuccessState) {
@@ -117,40 +118,14 @@ class _CustomerScrollViewState extends State<CustomerScrollView> {
     await showDialog(
       context: context,
       builder: (_) {
-        return BlocProvider.value(
-          value: BlocProvider.of<UpdateLoanDialogCubit>(context)
-            ..loadLoans(customer: customer),
-          child: Dialog.fullscreen(
-            child: BlocBuilder<UpdateLoanDialogCubit, UpdateLoanDialogState>(
-              builder: (context, state) {
-                if (state is UpdateLoanDialogInitial) {
-                  return Column(
-                    children: [
-                      AppBar(
-                        title: Text(AppLocalizations.of(context)!.wait),
-                        leading: IconButton(
-                          color: Colors.red,
-                          icon: const Icon(Icons.close),
-                          onPressed: () {
-                            Navigator.pop(context);
-                          },
-                        ),
-                      ),
-                      const Center(
-                        child: CircularProgressIndicator(),
-                      )
-                    ],
-                  );
-                } else if (state is LoansLoadedState) {
-                  return UpdateLoanView(
-                    loans: state.loans,
-                    customer: customer,
-                  );
-                }
+        return Dialog.fullscreen(
+          child: BlocBuilder<UpdateLoanDialogBloc, UpdateLoanDialogState>(
+            builder: (context, state) {
+              if (state is UpdateLoanDialogLoadingState) {
                 return Column(
                   children: [
                     AppBar(
-                      title: Text(AppLocalizations.of(context)!.errorMsg),
+                      title: Text(AppLocalizations.of(context)!.wait),
                       leading: IconButton(
                         color: Colors.red,
                         icon: const Icon(Icons.close),
@@ -159,17 +134,39 @@ class _CustomerScrollViewState extends State<CustomerScrollView> {
                         },
                       ),
                     ),
-                    Column(
-                      mainAxisSize: MainAxisSize.min,
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: <Widget>[
-                        Text(AppLocalizations.of(context)!.errorMsg),
-                      ],
-                    ),
+                    const Center(
+                      child: CircularProgressIndicator(),
+                    )
                   ],
                 );
-              },
-            ),
+              } else if (state is CreatedChatViewState) {
+                return UpdateLoanView(
+                  state: state,
+                  customer: customer,
+                );
+              }
+              return Column(
+                children: [
+                  AppBar(
+                    title: Text(AppLocalizations.of(context)!.errorMsg),
+                    leading: IconButton(
+                      color: Colors.red,
+                      icon: const Icon(Icons.close),
+                      onPressed: () {
+                        Navigator.pop(context);
+                      },
+                    ),
+                  ),
+                  Column(
+                    mainAxisSize: MainAxisSize.min,
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: <Widget>[
+                      Text(AppLocalizations.of(context)!.errorMsg),
+                    ],
+                  ),
+                ],
+              );
+            },
           ),
         );
       },
@@ -343,7 +340,7 @@ class CustomerListTile extends StatelessWidget {
   }
 
 // get amount paid today
-  ({MaterialColor color, String text}) amountPaid() {
+  ({Color color, String text}) amountPaid() {
     if (customer.paymentInfo?.paidAmount != null) {
       // get emiamount
       final int emiAmount = customer.paymentInfo!.emiAmount;
@@ -391,11 +388,13 @@ class CustomerListTile extends StatelessWidget {
       child: ListTile(
         minVerticalPadding: 16.0,
         onTap: () async {
+          context.read<UpdateLoanDialogBloc>().add(
+                GetLoanDataEvent(customer: customer),
+              );
           await Future.delayed(const Duration(milliseconds: 200), () {
             function();
           });
         },
-        splashColor: amountPaid().color.shade200, //! splash color
         tileColor: isCLUpdTdy()
             ? amountPaid().color.withOpacity(0.1)
             : isNewCustomer().isNewCustomer
@@ -421,29 +420,51 @@ class CustomerListTile extends StatelessWidget {
         subtitle: Wrap(
           direction: Axis.vertical,
           children: [
+            const SizedBox(height: 4.0),
             Row(
               children: [
-                Text(
-                  customer.phone.substring(3),
+                RichText(
+                  text: TextSpan(
+                    text: customer.phone.substring(3),
+                    style: Theme.of(context)
+                        .textTheme
+                        .labelLarge!
+                        .copyWith(color: Colors.black54),
+                    children: [
+                      TextSpan(
+                        text: customer.city.name.length > 15
+                            ? ' - ${customer.city.name.substring(0, 15).toUpperCase()}...'
+                            : ' - ${customer.city.name}'.toUpperCase(),
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+            ),
+            Row(
+              children: [
+                Icon(
+                  Icons.style,
+                  size: 18.0,
+                  color: isCLUpdTdy()
+                      ? amountPaid().color
+                      : isNewCustomer().isNewCustomer
+                          ? isNewCustomer().color
+                          : Colors.yellow[900],
                 ),
                 const SizedBox(width: 4.0),
                 Text(
-                  customer.city.name.length > 15
-                      ? ' -  ${customer.city.name.substring(0, 15).toUpperCase()}...'
-                      : ' -  ${customer.city.name}'.toUpperCase(),
-                )
+                  '${customer.loanIdentity}',
+                  style: TextStyle(
+                    fontWeight: FontWeight.w500,
+                    color: isCLUpdTdy()
+                        ? amountPaid().color
+                        : isNewCustomer().isNewCustomer
+                            ? isNewCustomer().color
+                            : Colors.yellow[900],
+                  ),
+                ),
               ],
-            ),
-            Text(
-              'ID: ${customer.loanIdentity}'.toUpperCase(),
-              style: TextStyle(
-                fontWeight: FontWeight.w600,
-                color: isCLUpdTdy()
-                    ? amountPaid().color
-                    : isNewCustomer().isNewCustomer
-                        ? isNewCustomer().color
-                        : Colors.black,
-              ),
             )
           ],
         ),

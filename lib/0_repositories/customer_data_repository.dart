@@ -39,7 +39,7 @@ class CustomerDataRepository {
     return isSuccessful;
   }
 
-  updateCustomerLoanUpdatedDate({
+  Future<void> updateCustomerLoanUpdatedDate({
     required Customer customer,
     required int emiAmount,
     required int paidAmount,
@@ -52,7 +52,7 @@ class CustomerDataRepository {
     }
 
     List<String> updateLoanIdentity() {
-    List<String> oldLoanIdentity = customer.loanIdentity;
+      List<String> oldLoanIdentity = customer.loanIdentity;
 
       // remove the loanIdentity from oldLoanIdentity
       List<String> updatedLoanIdentity =
@@ -84,7 +84,7 @@ class CustomerDataRepository {
     }
   }
 
-  deleteCustomer({required Customer customer}) async {
+  Future<void> deleteCustomer({required Customer customer}) async {
     try {
       await Amplify.DataStore.delete(customer);
     } on Exception {

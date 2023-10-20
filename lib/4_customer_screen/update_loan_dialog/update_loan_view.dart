@@ -1,79 +1,100 @@
-import 'dart:math';
 import 'dart:ui' as ui;
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:intl/intl.dart' as intl;
 
+import '../../info_helper/chat_model.dart';
+import '../../info_helper/custom_transaction_modal.dart';
 import '../../models/ModelProvider.dart';
+import 'update_loan_dialog_bloc/update_loan_dialog_bloc.dart';
 
 class UpdateLoanView extends StatelessWidget {
-  final List<Loan> loans;
+  final CreatedChatViewState state;
   final Customer customer;
   const UpdateLoanView({
     super.key,
-    required this.loans,
+    required this.state,
     required this.customer,
   });
-
-  get child => null;
 
   @override
   Widget build(BuildContext context) {
     l10n() => AppLocalizations.of(context)!;
+    final List<ChatModel> chatModels = state.chatModels;
     return DefaultTabController(
-        length: loans.length,
-        child: Scaffold(
-          appBar: AppBar(
-            title: RichText(
-              text: TextSpan(
-                text: customer.customerName.length > 15
-                    ? '${customer.customerName[0].toUpperCase() + customer.customerName.substring(1, 15).toLowerCase()}... ${l10n().loanRepayments}'
-                    : '${customer.customerName[0].toUpperCase() + customer.customerName.substring(1).toLowerCase()}... ${l10n().loanRepayments}',
-                style: Theme.of(context).textTheme.titleMedium!.copyWith(
-                      fontWeight: FontWeight.bold,
-                    ),
-              ),
+      length: chatModels.length,
+      child: Scaffold(
+        appBar: AppBar(
+          title: RichText(
+            text: TextSpan(
+              text: customer.customerName.length > 15
+                  ? '${customer.customerName[0].toUpperCase() + customer.customerName.substring(1, 15).toLowerCase()}... ${l10n().loanRepayments}'
+                  : '${customer.customerName[0].toUpperCase() + customer.customerName.substring(1).toLowerCase()}... ${l10n().loanRepayments}',
+              style: Theme.of(context).textTheme.titleMedium!.copyWith(
+                    fontWeight: FontWeight.bold,
+                  ),
             ),
-            centerTitle: true,
-            bottom: PreferredSize(
-              preferredSize: const Size(0, 30),
-              child: TabBar(
-                indicatorSize: TabBarIndicatorSize.label,
-                tabAlignment: TabAlignment.start,
-                isScrollable: true,
-                tabs: loans
-                    .map((loan) => Tab(text: 'Loan ID: ${loan.loanIdentity}'))
+          ),
+          centerTitle: true,
+          bottom: PreferredSize(
+            preferredSize: const Size(0, 30),
+            child: TabBar(
+              indicatorSize: TabBarIndicatorSize.label,
+              tabAlignment: TabAlignment.start,
+              isScrollable: true,
+              tabs: chatModels
+                  .map((chatModel) =>
+                      Tab(text: 'Loan ID: ${chatModel.loan.loanIdentity}'))
+                  .toList(),
+            ),
+          ),
+        ),
+        body: Column(
+          children: [
+            Expanded(
+              child: TabBarView(
+                children: chatModels
+                    .map((chatModel) => ChatView(
+                          loan: chatModel.loan,
+                          transactions: chatModel.transaction,
+                        ))
                     .toList(),
               ),
             ),
-          ),
-          body: Column(
-            children: [
-              Expanded(
-                child: TabBarView(
-                  children: loans.map((loan) => ChatView(loan: loan)).toList(),
-                ),
-              ),
-            ],
-          ),
-        ));
+          ],
+        ),
+      ),
+    );
   }
 }
 
 class ChatView extends StatelessWidget {
   final Loan loan;
-  const ChatView({super.key, required this.loan});
+  final List<CustomTransactionModel> transactions;
+  const ChatView({
+    super.key,
+    required this.loan,
+    required this.transactions,
+  });
 
   @override
   Widget build(BuildContext context) {
     return Stack(
       children: [
-        ExampleGradientBubbles(
+        GradientBubbles(
+          transactions: transactions,
           loan: loan,
         ),
-        // UpdateLoanForm(loan: loan),
+        UpdateLoanForm(loan: loan),
+        Align(
+          alignment: Alignment.bottomCenter,
+          child: EmipaymentFormField(
+            loan: loan,
+          ),
+        ),
       ],
     );
   }
@@ -131,193 +152,290 @@ class UpdateLoanForm extends StatelessWidget {
     }
 
     return Container(
-      // margin: const EdgeInsets.all(16.0),
-      padding: const EdgeInsets.all(16.0),
+      margin: const EdgeInsets.all(16.0),
       decoration: BoxDecoration(
+          borderRadius: const BorderRadius.all(Radius.circular(16.0)),
           color: getColor(dueDate: loan.nextDueDate.getDateTime()),
-          // borderRadius: BorderRadius.circular(16.0),
+          gradient: const LinearGradient(
+            begin: Alignment.topCenter,
+            end: Alignment.bottomCenter,
+            colors: [
+              Colors.white60,
+              Colors.white70,
+            ],
+            stops: [0.0, 0.7],
+          ),
           boxShadow: [
             BoxShadow(
-              color: Colors.green.withOpacity(0.5),
-              spreadRadius: 2,
-              blurRadius: 5,
+              color: Colors.black.withOpacity(0.1),
+              spreadRadius: 1,
+              blurRadius: 3,
               offset: const Offset(0, 3), // changes position of shadow
             ),
           ]),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              RichText(
-                textAlign: TextAlign.center,
-                text: TextSpan(
-                    text: 'Balance: ',
+      child: ClipRRect(
+        borderRadius: const BorderRadius.all(Radius.circular(16.0)),
+        child: BackdropFilter(
+          filter: ui.ImageFilter.blur(sigmaX: 10.0, sigmaY: 10.0),
+          child: Padding(
+            padding: const EdgeInsets.all(16.0),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    RichText(
+                      textAlign: TextAlign.center,
+                      text: TextSpan(
+                          text: 'Balance: ',
+                          style: DefaultTextStyle.of(context).style,
+                          children: <TextSpan>[
+                            TextSpan(
+                              text:
+                                  '\u{20B9}${intl.NumberFormat('#,##,###').format(loan.collectibleAmount)} - \u{20B9}${intl.NumberFormat('#,##,###').format(loan.paidAmount)} = ',
+                              style: const TextStyle(
+                                color: Colors.black,
+                                fontWeight: FontWeight.w500,
+                              ),
+                            ),
+                            TextSpan(
+                              text:
+                                  '\u{20B9}${intl.NumberFormat('#,##,###').format(loan.collectibleAmount - loan.paidAmount)}',
+                              style: const TextStyle(
+                                color: Colors.red,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                          ]),
+                    ),
+                  ],
+                ),
+                const Divider(color: Colors.white70),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    RichText(
+                      textAlign: TextAlign.center,
+                      text: TextSpan(
+                        text: AppLocalizations.of(context)!.loanDate,
+                        style: DefaultTextStyle.of(context).style,
+                        children: <TextSpan>[
+                          TextSpan(
+                            text:
+                                '\n${intl.DateFormat('dd-MM-yyyy').format(loan.dateOfCreation.getDateTime())}',
+                            style: const TextStyle(fontWeight: FontWeight.bold),
+                          ),
+                        ],
+                      ),
+                    ),
+                    RichText(
+                      textAlign: TextAlign.center,
+                      text: TextSpan(
+                        text: AppLocalizations.of(context)!.loanEnd,
+                        style: DefaultTextStyle.of(context).style,
+                        children: <TextSpan>[
+                          TextSpan(
+                            text:
+                                '\n${intl.DateFormat('dd-MM-yyyy').format(loan.endDate.getDateTime())}',
+                            style: const TextStyle(fontWeight: FontWeight.bold),
+                          ),
+                          // !-----------------Remaining Days-----------------
+                          getRemainingDays(dueDate: loan.endDate.getDateTime()),
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
+                const Divider(color: Colors.white70),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    RichText(
+                      textAlign: TextAlign.center,
+                      text: TextSpan(
+                        text: AppLocalizations.of(context)!.paidInstallments,
+                        style: DefaultTextStyle.of(context).style,
+                        children: <TextSpan>[
+                          TextSpan(
+                              text: '\n${loan.paidEmis}/${loan.totalEmis}',
+                              style:
+                                  const TextStyle(fontWeight: FontWeight.bold)),
+                        ],
+                      ),
+                    ),
+                    RichText(
+                      textAlign: TextAlign.center,
+                      text: TextSpan(
+                        text: AppLocalizations.of(context)!.installmentAmount,
+                        style: DefaultTextStyle.of(context).style,
+                        children: <TextSpan>[
+                          TextSpan(
+                              text:
+                                  '\n\u{20B9}${intl.NumberFormat('#,##,###').format(loan.emiAmount)}',
+                              style:
+                                  const TextStyle(fontWeight: FontWeight.bold)),
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
+                const Divider(color: Colors.white70),
+                RichText(
+                  textAlign: TextAlign.center,
+                  text: TextSpan(
+                    text: AppLocalizations.of(context)!.dueDate,
                     style: DefaultTextStyle.of(context).style,
                     children: <TextSpan>[
                       TextSpan(
                         text:
-                            '\u{20B9}${intl.NumberFormat('#,##,###').format(loan.collectibleAmount)} - \u{20B9}${intl.NumberFormat('#,##,###').format(loan.paidAmount)} = ',
-                        style: const TextStyle(
-                          color: Colors.black,
-                          fontWeight: FontWeight.w500,
-                        ),
+                            ': ${intl.DateFormat('dd-MM-yyyy').format(loan.nextDueDate.getDateTime())}',
+                        style: const TextStyle(fontWeight: FontWeight.bold),
                       ),
-                      TextSpan(
-                        text:
-                            '\u{20B9}${intl.NumberFormat('#,##,###').format(loan.collectibleAmount - loan.paidAmount)}',
-                        style: const TextStyle(
-                          color: Colors.red,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                    ]),
-              ),
-            ],
-          ),
-          const Divider(color: Colors.white),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              RichText(
-                textAlign: TextAlign.center,
-                text: TextSpan(
-                  text: AppLocalizations.of(context)!.loanDate,
-                  style: DefaultTextStyle.of(context).style,
-                  children: <TextSpan>[
-                    TextSpan(
-                      text:
-                          '\n${intl.DateFormat('dd-MM-yyyy').format(loan.dateOfCreation.getDateTime())}',
-                      style: const TextStyle(fontWeight: FontWeight.bold),
-                    ),
-                  ],
+                      // !-----------------Remaining Days-----------------
+                      getRemainingDays(dueDate: loan.nextDueDate.getDateTime()),
+                    ],
+                  ),
                 ),
-              ),
-              RichText(
-                textAlign: TextAlign.center,
-                text: TextSpan(
-                  text: AppLocalizations.of(context)!.loanEnd,
-                  style: DefaultTextStyle.of(context).style,
-                  children: <TextSpan>[
-                    TextSpan(
-                      text:
-                          '\n${intl.DateFormat('dd-MM-yyyy').format(loan.endDate.getDateTime())}',
-                      style: const TextStyle(fontWeight: FontWeight.bold),
-                    ),
-                    // !-----------------Remaining Days-----------------
-                    getRemainingDays(dueDate: loan.endDate.getDateTime()),
-                  ],
-                ),
-              ),
-            ],
-          ),
-          const Divider(color: Colors.white),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              RichText(
-                textAlign: TextAlign.center,
-                text: TextSpan(
-                  text: AppLocalizations.of(context)!.paidInstallments,
-                  style: DefaultTextStyle.of(context).style,
-                  children: <TextSpan>[
-                    TextSpan(
-                        text: '\n${loan.paidEmis}/${loan.totalEmis}',
-                        style: const TextStyle(fontWeight: FontWeight.bold)),
-                  ],
-                ),
-              ),
-              RichText(
-                textAlign: TextAlign.center,
-                text: TextSpan(
-                  text: AppLocalizations.of(context)!.installmentAmount,
-                  style: DefaultTextStyle.of(context).style,
-                  children: <TextSpan>[
-                    TextSpan(
-                        text:
-                            '\n\u{20B9}${intl.NumberFormat('#,##,###').format(loan.emiAmount)}',
-                        style: const TextStyle(fontWeight: FontWeight.bold)),
-                  ],
-                ),
-              ),
-            ],
-          ),
-          const Divider(color: Colors.white),
-          RichText(
-            textAlign: TextAlign.center,
-            text: TextSpan(
-              text: AppLocalizations.of(context)!.dueDate,
-              style: DefaultTextStyle.of(context).style,
-              children: <TextSpan>[
-                TextSpan(
-                  text:
-                      ': ${intl.DateFormat('dd-MM-yyyy').format(loan.nextDueDate.getDateTime())}',
-                  style: const TextStyle(fontWeight: FontWeight.bold),
-                ),
-                // !-----------------Remaining Days-----------------
-                getRemainingDays(dueDate: loan.nextDueDate.getDateTime()),
               ],
             ),
           ),
-        ],
+        ),
       ),
     );
   }
 }
 
 @immutable
-class ExampleGradientBubbles extends StatefulWidget {
+class GradientBubbles extends StatefulWidget {
+  final List<CustomTransactionModel> transactions;
   final Loan loan;
-  const ExampleGradientBubbles({super.key, required this.loan});
+  const GradientBubbles({
+    super.key,
+    required this.transactions,
+    required this.loan,
+  });
 
   @override
-  State<ExampleGradientBubbles> createState() => _ExampleGradientBubblesState();
+  State<GradientBubbles> createState() => _GradientBubblesState();
 }
 
-class _ExampleGradientBubblesState extends State<ExampleGradientBubbles> {
-  late final List<Message> data;
+class _GradientBubblesState extends State<GradientBubbles> {
+  final ScrollController _scrollController = ScrollController();
 
   @override
   void initState() {
     super.initState();
-    data = MessageGenerator.generate(60, 1337);
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      animateToMaximumExtent();
+    });
+  }
+
+  void animateToMaximumExtent() {
+    final maxScrollExtent = _scrollController.position.maxScrollExtent;
+    _scrollController.jumpTo(maxScrollExtent);
   }
 
   @override
   Widget build(BuildContext context) {
+    const Key centerKey = ValueKey<String>('bottom-sliver-list');
     return CustomScrollView(
-      reverse: true,
+      controller: _scrollController,
+      center: centerKey,
+      // reverse: true,
       slivers: <Widget>[
         // silver app bar
-        const SliverAppBar(
-          backgroundColor: Color(0xFF6C7689),
-          surfaceTintColor: Color(0xFF6C7689),
-          // expandedHeight:50.0,
-          collapsedHeight: 60.0,
-          automaticallyImplyLeading: false,
-          pinned: true,
-
-          flexibleSpace: FlexibleSpaceBar(
-            background: EmipaymentFormField(),
-          ),
-        ),
-
         // list of messages
         SliverList.builder(
-          itemCount: data.length,
+          key: centerKey,
+          itemCount: widget.transactions.length,
           itemBuilder: (context, index) {
-            final message = data[index];
+            final transaction = widget.transactions[index];
             return MessageBubble(
-              message: message,
-              child: Text(message.text),
+              transaction: transaction,
+              child: Container(
+                padding: const EdgeInsets.fromLTRB(16.0, 16.0, 16.0, 8.0),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Row(
+                      children: [
+                        Icon(
+                          Icons.check_circle_outline,
+                          color: Colors.greenAccent[400],
+                        ),
+                        const SizedBox(width: 8.0),
+                        Text(
+                          '\u{20B9}${intl.NumberFormat('#,##,###').format(transaction.amount)}',
+                          style: const TextStyle(
+                            fontSize: 20.0,
+                            color: Colors.white,
+                            fontWeight: FontWeight.w600,
+                          ),
+                        ),
+                      ],
+                    ),
+                    Divider(color: Colors.white.withAlpha(100)),
+                    Row(
+                      children: [
+                        const SizedBox(width: 8.0),
+                        Text(
+                          transaction.isLoan ? 'Given' : 'Received',
+                          style: TextStyle(
+                            fontSize: 16.0,
+                            color: Colors.white.withOpacity(0.9),
+                          ),
+                        ),
+                        const SizedBox(width: 8.0),
+                        // icon
+                        Icon(
+                          transaction.isLoan
+                              ? Icons.arrow_upward
+                              : Icons.arrow_downward,
+                          color: Colors.white.withAlpha(200),
+                          size: 16.0,
+                        ),
+                      ],
+                    ),
+                    Align(
+                      alignment: Alignment.bottomRight,
+                      child: Text(
+                        intl.DateFormat('dd-MM-yy').format(transaction.date),
+                        style: TextStyle(
+                          fontSize: 12.0,
+                          color: Colors.white.withOpacity(0.8),
+                        ),
+                      ),
+                    )
+                  ],
+                ),
+              ),
             );
           },
         ),
+        const SliverPadding(padding: EdgeInsets.only(bottom: 64.0)),
       ],
     );
+  }
+
+  void _scrollToBottom() {
+    _scrollController.animateTo(
+      _scrollController.position.maxScrollExtent,
+      duration: const Duration(milliseconds: 300),
+      curve: Curves.easeOut,
+    );
+  }
+
+  @override
+  void didUpdateWidget(GradientBubbles oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (widget.transactions.length > oldWidget.transactions.length) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        _scrollToBottom();
+      });
+    }
   }
 }
 
@@ -325,30 +443,30 @@ class _ExampleGradientBubblesState extends State<ExampleGradientBubbles> {
 class MessageBubble extends StatelessWidget {
   const MessageBubble({
     super.key,
-    required this.message,
+    required this.transaction,
     required this.child,
   });
 
-  final Message message;
+  final CustomTransactionModel transaction;
   final Widget child;
 
   @override
   Widget build(BuildContext context) {
     final messageAlignment =
-        message.isMine ? Alignment.topLeft : Alignment.topRight;
+        transaction.isLoan ? Alignment.topLeft : Alignment.topRight;
 
     return FractionallySizedBox(
       alignment: messageAlignment,
-      widthFactor: 0.8,
+      widthFactor: 0.6,
       child: Align(
         alignment: messageAlignment,
         child: Padding(
-          padding: const EdgeInsets.symmetric(vertical: 6.0, horizontal: 20.0),
+          padding: const EdgeInsets.fromLTRB(20.0, 16.0, 20.0, 16.0),
           child: ClipRRect(
             borderRadius: const BorderRadius.all(Radius.circular(16.0)),
             child: BubbleBackground(
               colors: [
-                if (message.isMine) ...const [
+                if (transaction.isLoan) ...const [
                   Color(0xFF6C7689),
                   Color(0xFF3A364B),
                 ] else ...const [
@@ -356,16 +474,17 @@ class MessageBubble extends StatelessWidget {
                   Color(0xFF491CCB),
                 ],
               ],
-              child: DefaultTextStyle.merge(
-                style: const TextStyle(
-                  fontSize: 18.0,
-                  color: Colors.white,
-                ),
-                child: Padding(
-                  padding: const EdgeInsets.all(12.0),
-                  child: child,
-                ),
-              ),
+              child: child,
+              // DefaultTextStyle.merge(
+              //   style: const TextStyle(
+              //     fontSize: 18.0,
+              //     color: Colors.white,
+              //   ),
+              //   child: Padding(
+              //     padding: const EdgeInsets.all(12.0),
+              //     child: child,
+              //   ),
+              // ),
             ),
           ),
         ),
@@ -440,65 +559,10 @@ class BubblePainter extends CustomPainter {
   }
 }
 
-enum MessageOwner { myself, other }
-
-@immutable
-class Message {
-  const Message({
-    required this.owner,
-    required this.text,
-  });
-
-  final MessageOwner owner;
-  final String text;
-
-  bool get isMine => owner == MessageOwner.myself;
-}
-
-class MessageGenerator {
-  static List<Message> generate(int count, [int? seed]) {
-    final random = Random(seed);
-    return List.unmodifiable(List<Message>.generate(count, (index) {
-      return Message(
-        owner: random.nextBool() ? MessageOwner.myself : MessageOwner.other,
-        text: _exampleData[random.nextInt(_exampleData.length)],
-      );
-    }));
-  }
-
-  static final _exampleData = [
-    'Lorem ipsum dolor sit amet, consectetur adipiscing elit.',
-    'In tempus mauris at velit egestas, sed blandit felis ultrices.',
-    'Ut molestie mauris et ligula finibus iaculis.',
-    'Sed a tempor ligula.',
-    'Test',
-    'Phasellus ullamcorper, mi ut imperdiet consequat, nibh augue condimentum nunc, vitae molestie massa augue nec erat.',
-    'Donec scelerisque, erat vel placerat facilisis, eros turpis egestas nulla, a sodales elit nibh et enim.',
-    'Mauris quis dignissim neque. In a odio leo. Aliquam egestas egestas tempor. Etiam at tortor metus.',
-    'Quisque lacinia imperdiet faucibus.',
-    'Proin egestas arcu non nisl laoreet, vitae iaculis enim volutpat. In vehicula convallis magna.',
-    'Phasellus at diam a sapien laoreet gravida.',
-    'Fusce maximus fermentum sem a scelerisque.',
-    'Nam convallis sapien augue, malesuada aliquam dui bibendum nec.',
-    'Quisque dictum tincidunt ex non lobortis.',
-    'In hac habitasse platea dictumst.',
-    'Ut pharetra ligula libero, sit amet imperdiet lorem luctus sit amet.',
-    'Sed ex lorem, lacinia et varius vitae, sagittis eget libero.',
-    'Vestibulum scelerisque velit sed augue ultricies, ut vestibulum lorem luctus.',
-    'Pellentesque et risus pretium, egestas ipsum at, facilisis lectus.',
-    'Praesent id eleifend lacus.',
-    'Fusce convallis eu tortor sit amet mattis.',
-    'Vivamus lacinia magna ut urna feugiat tincidunt.',
-    'Sed in diam ut dolor imperdiet vehicula non ac turpis.',
-    'Praesent at est hendrerit, laoreet tortor sed, varius mi.',
-    'Nunc in odio leo.',
-    'Praesent placerat semper libero, ut aliquet dolor.',
-    'Vestibulum elementum leo metus, vitae auctor lorem tincidunt ut.',
-  ];
-}
-
+// !-----------------EMI Payment Form-----------------
 class EmipaymentFormField extends StatefulWidget {
-  const EmipaymentFormField({super.key});
+  final Loan loan;
+  const EmipaymentFormField({super.key, required this.loan});
 
   @override
   State<EmipaymentFormField> createState() => _EmipaymentFormFieldState();
@@ -513,8 +577,11 @@ class _EmipaymentFormFieldState extends State<EmipaymentFormField> {
   Widget build(BuildContext context) {
     return Form(
       key: _formKey,
-      child: Padding(
+      child: Container(
         padding: const EdgeInsets.symmetric(horizontal: 16.0),
+        decoration: const BoxDecoration(
+          color: Color(0xFF6C7689),
+        ),
         child: Row(
           children: [
             Expanded(
@@ -559,8 +626,8 @@ class _EmipaymentFormFieldState extends State<EmipaymentFormField> {
                   fillColor: const Color(0xFF6C7689),
                   hintStyle: Theme.of(context)
                       .textTheme
-                      .bodyMedium!
-                      .copyWith(color: Colors.white.withOpacity(0.8)),
+                      .bodyLarge!
+                      .copyWith(color: Colors.white.withOpacity(0.9)),
                   hintText: AppLocalizations.of(context)!.hintRepaymentAmount,
                 ),
                 keyboardType: TextInputType.number,
@@ -570,29 +637,29 @@ class _EmipaymentFormFieldState extends State<EmipaymentFormField> {
                   }
                   return null;
                 },
-                // onSaved: (newValue) {},
               ),
             ),
             const SizedBox(width: 16.0),
-            // !-----------------Pay Button-----------------
+            // !-----------------Confirm Button-----------------
             ElevatedButton(
               onPressed: () {
                 if (_formKey.currentState!.validate()) {
-                  // _formKey.currentState!.save();
-                  final numericValue = int.parse(
-                      controller.text.replaceAll(',', '').replaceAll('₹', ''));
-                  // context.read<UpdateLoanDialogCubit>().updateLoan(
-                  //       customer: widget.customer,
-                  //       loan: widget.loans[index],
-                  //       emiValue: numericValue.toString(),
-                  //     );
+                  final parsedEmiValue =
+                      controller.text.replaceAll(',', '').replaceAll('₹', '');
+                  context.read<UpdateLoanDialogBloc>().add(NewEmiEvent(
+                        loan: widget.loan,
+                        emiValue: parsedEmiValue,
+                      ));
                 }
+                controller.clear();
+                FocusScope.of(context).unfocus();
               },
               style: ButtonStyle(
-                backgroundColor: MaterialStateProperty.all(Colors.greenAccent.shade700),
+                backgroundColor:
+                    MaterialStateProperty.all(Colors.greenAccent.shade700),
                 foregroundColor: MaterialStateProperty.all(Colors.white),
               ),
-              child: const Text('PAY'),
+              child: const Text('Confirm'),
             ),
           ],
         ),
