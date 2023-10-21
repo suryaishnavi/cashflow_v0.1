@@ -28,3 +28,12 @@ final class NewEmiEvent extends UpdateLoanDialogEvent {
   @override
   List<Object> get props => [loan, emiValue];
 }
+
+final class MarkCustomerAsInactiveEvent extends UpdateLoanDialogEvent {
+  final Customer customer;
+
+  const MarkCustomerAsInactiveEvent({required this.customer});
+
+  @override
+  List<Object> get props => [customer];
+}

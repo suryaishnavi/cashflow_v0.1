@@ -16,13 +16,11 @@ class CustomerLoadedState extends CustomerState {
   final List<Customer> filteredCustomers;
   final List<City> cities;
   final City selectedCity;
-  final double scrollPosition;
 
   const CustomerLoadedState({
     required this.filteredCustomers,
     required this.selectedCity,
     required this.cities,
-    required this.scrollPosition,
     required this.customers,
   });
 
@@ -32,7 +30,6 @@ class CustomerLoadedState extends CustomerState {
         cities,
         selectedCity,
         filteredCustomers,
-        scrollPosition,
       ];
 }
 

@@ -100,19 +100,7 @@ class CustomerScrollView extends StatefulWidget {
 }
 
 class _CustomerScrollViewState extends State<CustomerScrollView> {
-  final ScrollController _scrollController = ScrollController();
-
-  // Function to restore scroll position
-  void _restoreScrollPosition({required double lastScrollPosition}) {
-    _scrollController.jumpTo(lastScrollPosition);
-  }
-
-  @override
-  void dispose() {
-    _scrollController.dispose();
-    super.dispose();
-  }
-
+  // ! ---show customer loans dialog---
   Future<void> _showCustomerLoansDialog(BuildContext context,
       {required Customer customer}) async {
     await showDialog(
@@ -121,51 +109,56 @@ class _CustomerScrollViewState extends State<CustomerScrollView> {
         return Dialog.fullscreen(
           child: BlocBuilder<UpdateLoanDialogBloc, UpdateLoanDialogState>(
             builder: (context, state) {
-              if (state is UpdateLoanDialogLoadingState) {
+              switch (state) {
+                case CreatedChatViewState():
+                  return UpdateLoanView(
+                    state: state,
+                    customer: customer,
+                  );
+                case LoansEmptyStateEvent():
+                  return MarkCustomerInactive(customer: customer);
+                case UpdateLoanDialogInitialState():
+                case UpdateLoanDialogLoadingState():
                 return Column(
-                  children: [
-                    AppBar(
-                      title: Text(AppLocalizations.of(context)!.wait),
-                      leading: IconButton(
-                        color: Colors.red,
-                        icon: const Icon(Icons.close),
-                        onPressed: () {
-                          Navigator.pop(context);
-                        },
+                    children: [
+                      AppBar(
+                        title: Text(AppLocalizations.of(context)!.wait),
+                        leading: IconButton(
+                          color: Colors.red,
+                          icon: const Icon(Icons.close),
+                          onPressed: () {
+                            Navigator.pop(context);
+                          },
+                        ),
                       ),
-                    ),
-                    const Center(
-                      child: CircularProgressIndicator(),
-                    )
-                  ],
-                );
-              } else if (state is CreatedChatViewState) {
-                return UpdateLoanView(
-                  state: state,
-                  customer: customer,
-                );
-              }
-              return Column(
-                children: [
-                  AppBar(
-                    title: Text(AppLocalizations.of(context)!.errorMsg),
-                    leading: IconButton(
-                      color: Colors.red,
-                      icon: const Icon(Icons.close),
-                      onPressed: () {
-                        Navigator.pop(context);
-                      },
-                    ),
-                  ),
-                  Column(
-                    mainAxisSize: MainAxisSize.min,
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: <Widget>[
-                      Text(AppLocalizations.of(context)!.errorMsg),
+                      const Center(
+                        child: CircularProgressIndicator(),
+                      )
                     ],
-                  ),
-                ],
-              );
+                  );
+                case UpdateLoanDialogFailureState():
+                return Column(
+                    children: [
+                      AppBar(
+                        title: Text(AppLocalizations.of(context)!.errorMsg),
+                        leading: IconButton(
+                          color: Colors.red,
+                          icon: const Icon(Icons.close),
+                          onPressed: () {
+                            Navigator.pop(context);
+                          },
+                        ),
+                      ),
+                      Column(
+                        mainAxisSize: MainAxisSize.min,
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: <Widget>[
+                          Text(AppLocalizations.of(context)!.errorMsg),
+                        ],
+                      ),
+                    ],
+                  );
+              }
             },
           ),
         );
@@ -183,6 +176,8 @@ class _CustomerScrollViewState extends State<CustomerScrollView> {
         );
   }
 
+  final PageStorageKey _pageStorageKey = const PageStorageKey('my_silver_list');
+
   @override
   Widget build(BuildContext context) {
     return BlocBuilder<CustomerBloc, CustomerState>(
@@ -191,15 +186,9 @@ class _CustomerScrollViewState extends State<CustomerScrollView> {
           return const LoadingView();
         } else if (state is CustomerLoadedState) {
           final List<Customer> customers = state.filteredCustomers;
-          //* if scroll position is not 0 then restore the scroll position
-          if (state.scrollPosition != 0) {
-            Future.delayed(const Duration(milliseconds: 100), () {
-              _restoreScrollPosition(lastScrollPosition: state.scrollPosition);
-            });
-          }
           //! ---custom scroll view
           return CustomScrollView(
-            controller: _scrollController,
+            key: _pageStorageKey,
             physics: const BouncingScrollPhysics(
               parent: AlwaysScrollableScrollPhysics(),
             ),
@@ -273,6 +262,7 @@ class _CustomerScrollViewState extends State<CustomerScrollView> {
       );
     }
     return SliverList.separated(
+      key: _pageStorageKey,
       itemBuilder: (BuildContext context, int index) {
         Customer customer = customers[index];
         return CustomerListTile(
@@ -444,8 +434,8 @@ class CustomerListTile extends StatelessWidget {
             Row(
               children: [
                 Icon(
-                  Icons.style,
-                  size: 18.0,
+                  Icons.bookmark,
+                  size: 16.0,
                   color: isCLUpdTdy()
                       ? amountPaid().color
                       : isNewCustomer().isNewCustomer
@@ -735,6 +725,42 @@ class CustomerSearchDelegate extends SearchDelegate {
           );
         }
       },
+    );
+  }
+}
+
+class MarkCustomerInactive extends StatelessWidget {
+  final Customer customer;
+  const MarkCustomerInactive({super.key, required this.customer});
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      children: [
+        AppBar(
+          title: Text(AppLocalizations.of(context)!.noActiveLoans),
+        ),
+        const SizedBox(height: 32.0),
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 16.0),
+          child: Text(
+            AppLocalizations.of(context)!.inActiveCustomer,
+            style: Theme.of(context).textTheme.bodyLarge,
+          ),
+        ),
+        const SizedBox(height: 32.0),
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 16.0),
+          child: ElevatedButton(
+              onPressed: () {
+                context
+                    .read<UpdateLoanDialogBloc>()
+                    .add(MarkCustomerAsInactiveEvent(customer: customer));
+                Navigator.pop(context);
+              },
+              child: Text(AppLocalizations.of(context)!.markInactive)),
+        )
+      ],
     );
   }
 }

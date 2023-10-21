@@ -18,7 +18,6 @@ part 'customer_state.dart';
 
 class CustomerBloc extends Bloc<CustomerEvent, CustomerState> {
   bool isCustomersFiltered = false;
-  double _scrollPosition = 0;
   final ScreensCubit screensCubit;
   final CurrentCircle currentCircle = CurrentCircle();
   final CustomerAndLoanDataRepository customersRepo =
@@ -35,7 +34,6 @@ class CustomerBloc extends Bloc<CustomerEvent, CustomerState> {
     on<ShowCustomerProfileEvent>(_onShowCustomerProfileEvent);
     on<SelectedCityCustomersEvent>(_onSelectedCityCustomers);
     on<DeleteCustomerEvent>(_onDeleteCustomerEvent);
-    on<ScrollPositionEvent>(_onScrollPositionEvent);
 
     // * initialise the customerStreamSubscription
     _currentCircleIdSubscription =
@@ -43,7 +41,6 @@ class CustomerBloc extends Bloc<CustomerEvent, CustomerState> {
       currentCircle.circle = circleDetails.circle;
       add(const LoadCustomersEvent());
       isCustomersFiltered = false;
-      _scrollPosition = 0;
     });
     observeCustomers();
   }
@@ -67,7 +64,6 @@ class CustomerBloc extends Bloc<CustomerEvent, CustomerState> {
         cities: cities,
         selectedCity: cities[0],
         filteredCustomers: customers,
-        scrollPosition: _scrollPosition,
       ));
     } on Exception catch (e) {
       emit(CustomerErrorState(error: e));
@@ -84,7 +80,18 @@ class CustomerBloc extends Bloc<CustomerEvent, CustomerState> {
     // } else {
     //   return 0;
     // }
-    return int.parse(a.loanIdentity[0]).compareTo(int.parse(b.loanIdentity[0]));
+
+    // sort if loan identity is not empty
+    if (a.loanIdentity.isNotEmpty && b.loanIdentity.isNotEmpty) {
+      return int.parse(a.loanIdentity[0])
+          .compareTo(int.parse(b.loanIdentity[0]));
+    } else if (a.loanIdentity.isNotEmpty && b.loanIdentity.isEmpty) {
+      return -1;
+    } else if (a.loanIdentity.isEmpty && b.loanIdentity.isNotEmpty) {
+      return 1;
+    } else {
+      return 0;
+    }
   }
 
   Future<List<City>> getCities() async {
@@ -105,7 +112,6 @@ class CustomerBloc extends Bloc<CustomerEvent, CustomerState> {
       SelectedCityCustomersEvent event, Emitter<CustomerState> emit) async {
     isCustomersFiltered = true;
     // reset the scroll position
-    _scrollPosition = 0;
     // emit(CustomerLoadingState());
     final List<City> cities = await getCities();
 
@@ -132,13 +138,7 @@ class CustomerBloc extends Bloc<CustomerEvent, CustomerState> {
       cities: cities,
       selectedCity: event.city,
       filteredCustomers: selectedCityCustomers,
-      scrollPosition: _scrollPosition,
     ));
-  }
-
-  void _onScrollPositionEvent(
-      ScrollPositionEvent event, Emitter<CustomerState> emit) {
-    _scrollPosition = event.scrollPosition;
   }
 
   void _onDeleteCustomerEvent(
@@ -187,7 +187,6 @@ class CustomerBloc extends Bloc<CustomerEvent, CustomerState> {
         ?.cancel(); // cancel the subscription when the cubit is closed
     _customerStreamSubscription?.cancel();
     // reset the scroll position
-    _scrollPosition = 0;
     return super.close();
   }
 }

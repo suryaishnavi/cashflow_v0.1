@@ -65,12 +65,26 @@ class CustomerDataRepository {
         ? customer.loanIdentity
         : updateLoanIdentity();
 
+    //  if one or more loans paid then update the loan paid amount
+    ({int paidAmount, int emiAmount}) getPaymentInfo() {
+      if (customer.paymentInfo != null) {
+        final int totalPaidAmount =
+            customer.paymentInfo!.paidAmount + paidAmount;
+        final int totalEmiAmount = customer.paymentInfo!.emiAmount + emiAmount;
+        return (emiAmount: totalEmiAmount, paidAmount: totalPaidAmount);
+      } else {
+        final int totalPaidAmount = paidAmount;
+        final int totalEmiAmount = emiAmount;
+        return (emiAmount: totalEmiAmount, paidAmount: totalPaidAmount);
+      }
+    }
+
     final updatedCustomer = customer.copyWith(
       loanIdentity: newLoanId,
       paymentInfo: PaymentDetails(
         customerID: customer.id,
-        emiAmount: emiAmount,
-        paidAmount: paidAmount,
+        emiAmount: getPaymentInfo().emiAmount,
+        paidAmount: getPaymentInfo().paidAmount,
         loanIdentity: loanIdentity,
         paidDate: paidDate != null
             ? newpaidDate(date: paidDate)

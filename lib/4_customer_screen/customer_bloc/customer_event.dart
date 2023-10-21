@@ -34,15 +34,6 @@ class SelectedCityCustomersEvent extends CustomerEvent {
   List<Object> get props => [city];
 }
 
-class ScrollPositionEvent extends CustomerEvent {
-  final double scrollPosition;
-
-  const ScrollPositionEvent({required this.scrollPosition});
-
-  @override
-  List<Object> get props => [scrollPosition];
-}
-
 class DeleteCustomerEvent extends CustomerEvent {
   final Customer customer;
 

@@ -15,11 +15,14 @@ final class CreatedChatViewState extends UpdateLoanDialogState {
   final Customer customer;
   final List<ChatModel> chatModels;
 
-  const CreatedChatViewState({required this.chatModels, required this.customer});
+  const CreatedChatViewState(
+      {required this.chatModels, required this.customer});
 
   @override
   List<Object> get props => [chatModels];
 }
+
+final class LoansEmptyStateEvent extends UpdateLoanDialogState {}
 
 final class UpdateLoanDialogFailureState extends UpdateLoanDialogState {
   final String errorMessage;

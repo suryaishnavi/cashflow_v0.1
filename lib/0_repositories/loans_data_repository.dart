@@ -5,8 +5,20 @@ import '../models/ModelProvider.dart';
 class LoansDataRepository {
   String today = '${DateTime.now()}'.split(' ')[0];
 
-  Future<List<Loan>> getAllLoans({required customerID}) async {
+  Future<List<Loan>> getAllLoans(
+      {required String customerID, LoanStatus? loanStatus}) async {
     List<Loan> customerLoans = [];
+    if(loanStatus != null) {
+      try {
+        customerLoans = await Amplify.DataStore.query(
+          Loan.classType,
+          where: Loan.CUSTOMERID.eq(customerID).and(Loan.STATUS.eq(loanStatus)),
+        );
+        return customerLoans;
+      } on Exception {
+        rethrow;
+      }
+    }
     try {
       customerLoans = await Amplify.DataStore.query(
         Loan.classType,

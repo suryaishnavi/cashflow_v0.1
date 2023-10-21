@@ -29,16 +29,22 @@ class UpdateLoanDialogBloc
   }) : super(UpdateLoanDialogInitialState()) {
     on<GetLoanDataEvent>(_onGetLoanDataEvent);
     on<NewEmiEvent>(_onNewEmiEvent);
+    on<MarkCustomerAsInactiveEvent>(_onMarkCustomerAsInactiveEvent);
     observeEmi();
   }
+
   Future<void> _onGetLoanDataEvent(GetLoanDataEvent event, Emitter emit) async {
-    // emit(UpdateLoanDialogLoadingState());
     List<ChatModel> chatModels = [];
     List<Loan> loans = [];
-    // Get all loans
-
-    loans =
-        await loansDataRepository.getAllLoans(customerID: event.customer.id);
+    // Get all Active loans of the customer
+    loans = await loansDataRepository.getAllLoans(
+      customerID: event.customer.id,
+      loanStatus: LoanStatus.ACTIVE,
+    );
+    if (loans.isEmpty) {
+      emit(LoansEmptyStateEvent());
+      return;
+    }
     // for every loan, get all emis and make transaction model and chat model
     for (Loan loan in loans) {
       List<CustomTransactionModel> transactions = [];
@@ -90,17 +96,19 @@ class UpdateLoanDialogBloc
     required Loan loan,
     required Customer customer,
   }) async {
+    final updatedLoan = await loansDataRepository.getLoanById(loanId: loan.id);
     if (emiValue.isNotEmpty) {
       final int emiAmount = double.parse(emiValue).roundToDouble().toInt();
-      final int totalPaidAmount = loan.paidAmount + emiAmount;
-      final LoanStatus loanStatus = (totalPaidAmount < loan.collectibleAmount)
-          ? LoanStatus.ACTIVE
-          : LoanStatus.CLOSED;
+      final int totalPaidAmount = updatedLoan.paidAmount + emiAmount;
+      final LoanStatus loanStatus =
+          (totalPaidAmount < updatedLoan.collectibleAmount)
+              ? LoanStatus.ACTIVE
+              : LoanStatus.CLOSED;
 
       await newEmiAndUpdateLoan(
         paidAmount: emiAmount,
         emiAmount: loan.emiAmount,
-        loan: loan,
+        updatedLoan: updatedLoan,
         loanStatus: loanStatus,
         customer: customer,
       );
@@ -110,57 +118,68 @@ class UpdateLoanDialogBloc
   // ! creating new emi and update loan
   Future<void> newEmiAndUpdateLoan({
     required int emiAmount,
-    required Loan loan,
+    required Loan updatedLoan,
     required LoanStatus loanStatus,
     required Customer customer,
     required int paidAmount,
   }) async {
+    // * get updated loan and customer
+    final updatedCustomer =
+        await customerDataRepository.getCustomerById(customerID: customer.id);
+
     final DateTime today =
         DateTime.parse(DateTime.now().toString().split(' ')[0]);
-    final DateTime endDate = loan.endDate.getDateTime();
+    final DateTime endDate = updatedLoan.endDate.getDateTime();
     // is endDate before today
 
-    int currentEmi = loan.paidEmis + 1;
+    int currentEmi = updatedLoan.paidEmis + 1;
     // Check if there are extra EMIs due and it's before the end date
     bool isExtraEmi =
-        (loan.totalEmis < currentEmi) && (today.isBefore(endDate));
+        (updatedLoan.totalEmis < currentEmi) && (today.isBefore(endDate));
     // * create new emi
     await emisDataRepository.createNewEMi(
-      emiNumber: loan.paidEmis + 1,
-      appUserId: loan.sub,
-      customerName: customer.customerName,
-      loanIdentity: loan.loanIdentity,
+      emiNumber: updatedLoan.paidEmis + 1,
+      appUserId: updatedLoan.sub,
+      customerName: updatedCustomer.customerName,
+      loanIdentity: updatedLoan.loanIdentity,
       emiAmount: emiAmount,
-      loanId: loan.id,
+      loanId: updatedLoan.id,
       paidAmount: paidAmount,
       dueDate: emiCalc.calculateLoanEndDate(
-          loanTakenDate: loan.dateOfCreation.getDateTime(),
-          totalEmis: loan.paidEmis + 1,
-          emiFrequency: loan.emiType),
+          loanTakenDate: updatedLoan.dateOfCreation.getDateTime(),
+          totalEmis: updatedLoan.paidEmis + 1,
+          emiFrequency: updatedLoan.emiType),
       isExtraEmi: isExtraEmi,
     );
     // * update loan
     await loansDataRepository.updateLoans(
-      loan: loan,
-      paidAmount: loan.paidAmount + paidAmount,
-      currentEmi: loan.paidEmis + 1,
+      loan: updatedLoan,
+      paidAmount: updatedLoan.paidAmount + paidAmount,
+      currentEmi: updatedLoan.paidEmis + 1,
       loanStatus: loanStatus,
       nextDueDate: emiCalc.calculateLoanEndDate(
-          loanTakenDate: loan.dateOfCreation.getDateTime(),
-          totalEmis: loan.paidEmis + 2,
-          emiFrequency: loan.emiType),
-      endDate: loan.endDate,
+          loanTakenDate: updatedLoan.dateOfCreation.getDateTime(),
+          totalEmis: updatedLoan.paidEmis + 2,
+          emiFrequency: updatedLoan.emiType),
+      endDate: updatedLoan.endDate,
     );
     // * update customer
     await customerDataRepository.updateCustomerLoanUpdatedDate(
-      loanIdentity: loan.loanIdentity,
-      customer: customer,
+      loanIdentity: updatedLoan.loanIdentity,
+      customer: updatedCustomer,
       paidAmount: paidAmount,
       emiAmount: emiAmount,
       loanStatus: loanStatus,
     );
   }
 
+  // * mark customer as inactive
+  Future<void> _onMarkCustomerAsInactiveEvent(
+      MarkCustomerAsInactiveEvent event, Emitter emit) async {
+    await customerDataRepository.markAsInactive(customer: event.customer);
+  }
+
+// * Observing emi stream
   observeEmi() {
     emiStreamSubscription = emisDataRepository.observeEmi().listen((event) {
       add(GetLoanDataEvent(customer: (state as CreatedChatViewState).customer));
