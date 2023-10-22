@@ -148,13 +148,14 @@ class CircleView extends StatelessWidget {
           style: const TextStyle(
             fontSize: 18,
             fontWeight: FontWeight.w400,
+            color: Colors.black54,
           ),
         ),
         const SizedBox(height: 16),
         ElevatedTonalButton(
-          backgroundColor: MaterialStateProperty.all(Colors.blue[50]),
-          foregroundColor: MaterialStateProperty.all(Colors.blue[900]),
-          shadowColor: MaterialStateProperty.all(Colors.blue[400]),
+          backgroundColor: MaterialStateProperty.all(Colors.lightBlue[50]),
+          foregroundColor: MaterialStateProperty.all(Colors.lightBlueAccent[700]),
+          shadowColor: MaterialStateProperty.all(Colors.lightBlueAccent[400]),
           onPressed: () {
             _modalBottomSheet(context: context);
           },
@@ -207,11 +208,11 @@ class CircleGridTileBar extends StatelessWidget {
   const CircleGridTileBar({super.key, required this.circle});
   (Color color, Color textColor) getcolors({required Circle circle}) {
     if (circle.day == WeekDay.DAILY) {
-      return (Colors.green, Colors.green.shade900);
+      return (Colors.green, Colors.green.shade700);
     } else if (circle.day == WeekDay.MONTHLY) {
-      return (Colors.orange, Colors.orange.shade900);
+      return (Colors.orange, Colors.orange.shade700);
     } else {
-      return (Colors.blue, Colors.lightBlue.shade900);
+      return (Colors.lightBlueAccent, Colors.lightBlue.shade700);
     }
   }
 

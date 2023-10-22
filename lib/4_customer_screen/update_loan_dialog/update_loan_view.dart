@@ -1,7 +1,7 @@
 import 'dart:ui' as ui;
+import 'dart:ui';
 
 import 'package:flutter/material.dart';
-import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
@@ -11,7 +11,6 @@ import '../../info_helper/chat_model.dart';
 import '../../info_helper/custom_transaction_modal.dart';
 import '../../models/ModelProvider.dart';
 import 'confirm_button_status_cubit/confirm_button_status_cubit.dart';
-import 'show_and_hide_loan_details/show_and_hide_loan_details_bloc.dart';
 import 'update_loan_dialog_bloc/update_loan_dialog_bloc.dart';
 
 class UpdateLoanView extends StatelessWidget {
@@ -82,16 +81,18 @@ class ChatView extends StatelessWidget {
     required this.loan,
     required this.transactions,
   });
-
   @override
   Widget build(BuildContext context) {
     return Stack(
       children: [
         GradientBubbles(
           transactions: transactions,
+        ),
+        DraggableButton(
           loan: loan,
         ),
-        CurrentLoanDetails(loan: loan),
+        // CurrentLoanTrack(loan: loan),
+        // CurrentLoanDetails(loan: loan),
         Align(
           alignment: Alignment.bottomCenter,
           child: EmipaymentFormField(
@@ -99,6 +100,224 @@ class ChatView extends StatelessWidget {
           ),
         ),
       ],
+    );
+  }
+}
+
+class CurrentLoanTrack extends StatelessWidget {
+  final Loan loan;
+  const CurrentLoanTrack({super.key, required this.loan});
+  DateTime today() => DateTime.parse('${DateTime.now()}'.split(' ')[0]);
+
+  Color? getColor({required DateTime dueDate}) {
+    if (dueDate.difference(today()).inDays <= 0) {
+      return Colors.red[50];
+    } else {
+      return Colors.green[50];
+    }
+  }
+
+  TextStyle getStyle({required DateTime dueDate}) {
+    if (dueDate.difference(today()).inDays <= 0) {
+      return const TextStyle(
+        color: Colors.red,
+        fontWeight: FontWeight.bold,
+      );
+    } else {
+      return const TextStyle(
+        color: Colors.green,
+        fontWeight: FontWeight.bold,
+      );
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    l10n() => AppLocalizations.of(context)!;
+
+    TextSpan getRemainingDays({required DateTime dueDate}) {
+      final DateTime date = DateTime.parse(dueDate.toString().split(' ')[0]);
+      Duration difference = date.difference(today());
+
+      String description = switch (difference) {
+        Duration(inDays: -1) => l10n().difference('yesterday'),
+        Duration(inDays: 0) => l10n().difference('today'),
+        Duration(inDays: 1) => l10n().difference('tomorrow'),
+        Duration(inDays: int d, isNegative: false) =>
+          '$d ${l10n().difference('positive')}',
+        Duration(inDays: int d, isNegative: true) =>
+          '${d.abs()} ${l10n().difference('negative')}',
+      };
+
+      return TextSpan(
+        text: '\n($description)',
+        style: getStyle(dueDate: dueDate),
+      );
+    }
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      mainAxisAlignment: MainAxisAlignment.end,
+      children: [
+        TransprentCard(
+          child: RichText(
+            textAlign: TextAlign.center,
+            text: TextSpan(
+                text: 'Balance: ',
+                style: DefaultTextStyle.of(context).style,
+                children: <TextSpan>[
+                  TextSpan(
+                    text:
+                        '\n\u{20B9}${intl.NumberFormat('#,##,###').format(loan.collectibleAmount)} - \u{20B9}${intl.NumberFormat('#,##,###').format(loan.paidAmount)} = ',
+                    style: const TextStyle(
+                      color: Colors.black,
+                      fontWeight: FontWeight.w500,
+                    ),
+                  ),
+                  TextSpan(
+                    text:
+                        '\n\u{20B9}${intl.NumberFormat('#,##,###').format(loan.collectibleAmount - loan.paidAmount)}',
+                    style: TextStyle(
+                      color: Colors.red[700],
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                ]),
+          ),
+        ),
+        const SizedBox(height: 4.0),
+        TransprentCard(
+          child: Column(
+            children: [
+              RichText(
+                textAlign: TextAlign.center,
+                text: TextSpan(
+                  text: AppLocalizations.of(context)!.loanDate,
+                  style: DefaultTextStyle.of(context).style,
+                  children: <TextSpan>[
+                    TextSpan(
+                      text:
+                          '\n${intl.DateFormat('dd-MM-yyyy').format(loan.dateOfCreation.getDateTime())}',
+                      style: const TextStyle(fontWeight: FontWeight.bold),
+                    ),
+                  ],
+                ),
+              ),
+              const SizedBox(height: 8.0),
+              RichText(
+                textAlign: TextAlign.center,
+                text: TextSpan(
+                  text: AppLocalizations.of(context)!.loanEnd,
+                  style: DefaultTextStyle.of(context).style,
+                  children: <TextSpan>[
+                    TextSpan(
+                      text:
+                          '\n${intl.DateFormat('dd-MM-yyyy').format(loan.endDate.getDateTime())}',
+                      style: const TextStyle(fontWeight: FontWeight.bold),
+                    ),
+                    // !-----------------Remaining Days-----------------
+                    getRemainingDays(dueDate: loan.endDate.getDateTime()),
+                  ],
+                ),
+              ),
+            ],
+          ),
+        ),
+        const SizedBox(height: 4.0),
+        TransprentCard(
+          child: Column(
+            children: [
+              RichText(
+                textAlign: TextAlign.center,
+                text: TextSpan(
+                  text: AppLocalizations.of(context)!.paidInstallments,
+                  style: DefaultTextStyle.of(context).style,
+                  children: <TextSpan>[
+                    TextSpan(
+                        text: '\n${loan.paidEmis}/${loan.totalEmis}',
+                        style: const TextStyle(fontWeight: FontWeight.bold)),
+                  ],
+                ),
+              ),
+              const SizedBox(height: 8.0),
+              RichText(
+                textAlign: TextAlign.center,
+                text: TextSpan(
+                  text: AppLocalizations.of(context)!.installmentAmount,
+                  style: DefaultTextStyle.of(context).style,
+                  children: <TextSpan>[
+                    TextSpan(
+                        text:
+                            '\n\u{20B9}${intl.NumberFormat('#,##,###').format(loan.emiAmount)}',
+                        style: const TextStyle(fontWeight: FontWeight.bold)),
+                  ],
+                ),
+              ),
+            ],
+          ),
+        ),
+        const SizedBox(height: 4.0),
+        TransprentCard(
+          child: RichText(
+            textAlign: TextAlign.center,
+            text: TextSpan(
+              text: AppLocalizations.of(context)!.dueDate,
+              style: DefaultTextStyle.of(context).style,
+              children: <TextSpan>[
+                TextSpan(
+                  text:
+                      ': ${intl.DateFormat('dd-MM-yyyy').format(loan.nextDueDate.getDateTime())}',
+                  style: const TextStyle(fontWeight: FontWeight.bold),
+                ),
+                // !-----------------Remaining Days-----------------
+                getRemainingDays(dueDate: loan.nextDueDate.getDateTime()),
+              ],
+            ),
+          ),
+        ),
+        const SizedBox(height: 64.0),
+      ],
+    );
+  }
+}
+
+class TransprentCard extends StatelessWidget {
+  final Widget child;
+  const TransprentCard({super.key, required this.child});
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      margin: const EdgeInsets.all(16.0),
+      decoration: BoxDecoration(
+          borderRadius: const BorderRadius.all(Radius.circular(16.0)),
+          gradient: const LinearGradient(
+            begin: Alignment.topCenter,
+            end: Alignment.bottomCenter,
+            colors: [
+              Colors.white60,
+              Colors.white70,
+            ],
+            stops: [0.0, 0.7],
+          ),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withOpacity(0.1),
+              spreadRadius: 1,
+              blurRadius: 3,
+              offset: const Offset(0, 3), // changes position of shadow
+            ),
+          ]),
+      child: ClipRRect(
+        borderRadius: const BorderRadius.all(Radius.circular(16.0)),
+        child: BackdropFilter(
+          filter: ui.ImageFilter.blur(sigmaX: 10.0, sigmaY: 10.0),
+          child: Padding(
+            padding: const EdgeInsets.all(16.0),
+            child: child,
+          ),
+        ),
+      ),
     );
   }
 }
@@ -154,178 +373,159 @@ class CurrentLoanDetails extends StatelessWidget {
       );
     }
 
-    return BlocBuilder<ShowAndHideLoanDetailsBloc, ShowAndHideLoanDetailsState>(
-      builder: (context, state) {
-        switch (state) {
-          case ShowAndHideLoanDetailsInitial():
-            return Container();
-          case HideLoanDetailsState():
-            return Container();
-          case ShowLoanDetailsState():
-            return Container(
-              margin: const EdgeInsets.all(16.0),
-              decoration: BoxDecoration(
-                  borderRadius: const BorderRadius.all(Radius.circular(16.0)),
-                  color: getColor(dueDate: loan.nextDueDate.getDateTime()),
-                  gradient: const LinearGradient(
-                    begin: Alignment.topCenter,
-                    end: Alignment.bottomCenter,
-                    colors: [
-                      Colors.white60,
-                      Colors.white70,
-                    ],
-                    stops: [0.0, 0.7],
-                  ),
-                  boxShadow: [
-                    BoxShadow(
-                      color: Colors.black.withOpacity(0.1),
-                      spreadRadius: 1,
-                      blurRadius: 3,
-                      offset: const Offset(0, 3), // changes position of shadow
+    return Container(
+      margin: const EdgeInsets.all(16.0),
+      decoration: BoxDecoration(
+          borderRadius: const BorderRadius.all(Radius.circular(16.0)),
+          color: getColor(dueDate: loan.nextDueDate.getDateTime()),
+          gradient: const LinearGradient(
+            begin: Alignment.topCenter,
+            end: Alignment.bottomCenter,
+            colors: [
+              Colors.white60,
+              Colors.white70,
+            ],
+            stops: [0.0, 0.7],
+          ),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withOpacity(0.1),
+              spreadRadius: 1,
+              blurRadius: 3,
+              offset: const Offset(0, 3), // changes position of shadow
+            ),
+          ]),
+      child: ClipRRect(
+        borderRadius: const BorderRadius.all(Radius.circular(16.0)),
+        child: BackdropFilter(
+          filter: ui.ImageFilter.blur(sigmaX: 10.0, sigmaY: 10.0),
+          child: Padding(
+            padding: const EdgeInsets.all(16.0),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    RichText(
+                      textAlign: TextAlign.center,
+                      text: TextSpan(
+                          text: 'Balance: ',
+                          style: DefaultTextStyle.of(context).style,
+                          children: <TextSpan>[
+                            TextSpan(
+                              text:
+                                  '\u{20B9}${intl.NumberFormat('#,##,###').format(loan.collectibleAmount)} - \u{20B9}${intl.NumberFormat('#,##,###').format(loan.paidAmount)} = ',
+                              style: const TextStyle(
+                                color: Colors.black,
+                                fontWeight: FontWeight.w500,
+                              ),
+                            ),
+                            TextSpan(
+                              text:
+                                  '\u{20B9}${intl.NumberFormat('#,##,###').format(loan.collectibleAmount - loan.paidAmount)}',
+                              style: TextStyle(
+                                color: Colors.red[700],
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                          ]),
                     ),
-                  ]),
-              child: ClipRRect(
-                borderRadius: const BorderRadius.all(Radius.circular(16.0)),
-                child: BackdropFilter(
-                  filter: ui.ImageFilter.blur(sigmaX: 10.0, sigmaY: 10.0),
-                  child: Padding(
-                    padding: const EdgeInsets.all(16.0),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.stretch,
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            RichText(
-                              textAlign: TextAlign.center,
-                              text: TextSpan(
-                                  text: 'Balance: ',
-                                  style: DefaultTextStyle.of(context).style,
-                                  children: <TextSpan>[
-                                    TextSpan(
-                                      text:
-                                          '\u{20B9}${intl.NumberFormat('#,##,###').format(loan.collectibleAmount)} - \u{20B9}${intl.NumberFormat('#,##,###').format(loan.paidAmount)} = ',
-                                      style: const TextStyle(
-                                        color: Colors.black,
-                                        fontWeight: FontWeight.w500,
-                                      ),
-                                    ),
-                                    TextSpan(
-                                      text:
-                                          '\u{20B9}${intl.NumberFormat('#,##,###').format(loan.collectibleAmount - loan.paidAmount)}',
-                                      style: const TextStyle(
-                                        color: Colors.red,
-                                        fontWeight: FontWeight.bold,
-                                      ),
-                                    ),
-                                  ]),
-                            ),
-                          ],
-                        ),
-                        const Divider(color: Colors.white70),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            RichText(
-                              textAlign: TextAlign.center,
-                              text: TextSpan(
-                                text: AppLocalizations.of(context)!.loanDate,
-                                style: DefaultTextStyle.of(context).style,
-                                children: <TextSpan>[
-                                  TextSpan(
-                                    text:
-                                        '\n${intl.DateFormat('dd-MM-yyyy').format(loan.dateOfCreation.getDateTime())}',
-                                    style: const TextStyle(
-                                        fontWeight: FontWeight.bold),
-                                  ),
-                                ],
-                              ),
-                            ),
-                            RichText(
-                              textAlign: TextAlign.center,
-                              text: TextSpan(
-                                text: AppLocalizations.of(context)!.loanEnd,
-                                style: DefaultTextStyle.of(context).style,
-                                children: <TextSpan>[
-                                  TextSpan(
-                                    text:
-                                        '\n${intl.DateFormat('dd-MM-yyyy').format(loan.endDate.getDateTime())}',
-                                    style: const TextStyle(
-                                        fontWeight: FontWeight.bold),
-                                  ),
-                                  // !-----------------Remaining Days-----------------
-                                  getRemainingDays(
-                                      dueDate: loan.endDate.getDateTime()),
-                                ],
-                              ),
-                            ),
-                          ],
-                        ),
-                        const Divider(color: Colors.white70),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            RichText(
-                              textAlign: TextAlign.center,
-                              text: TextSpan(
-                                text: AppLocalizations.of(context)!
-                                    .paidInstallments,
-                                style: DefaultTextStyle.of(context).style,
-                                children: <TextSpan>[
-                                  TextSpan(
-                                      text:
-                                          '\n${loan.paidEmis}/${loan.totalEmis}',
-                                      style: const TextStyle(
-                                          fontWeight: FontWeight.bold)),
-                                ],
-                              ),
-                            ),
-                            RichText(
-                              textAlign: TextAlign.center,
-                              text: TextSpan(
-                                text: AppLocalizations.of(context)!
-                                    .installmentAmount,
-                                style: DefaultTextStyle.of(context).style,
-                                children: <TextSpan>[
-                                  TextSpan(
-                                      text:
-                                          '\n\u{20B9}${intl.NumberFormat('#,##,###').format(loan.emiAmount)}',
-                                      style: const TextStyle(
-                                          fontWeight: FontWeight.bold)),
-                                ],
-                              ),
-                            ),
-                          ],
-                        ),
-                        const Divider(color: Colors.white70),
-                        RichText(
-                          textAlign: TextAlign.center,
-                          text: TextSpan(
-                            text: AppLocalizations.of(context)!.dueDate,
-                            style: DefaultTextStyle.of(context).style,
-                            children: <TextSpan>[
-                              TextSpan(
-                                text:
-                                    ': ${intl.DateFormat('dd-MM-yyyy').format(loan.nextDueDate.getDateTime())}',
-                                style: const TextStyle(
-                                    fontWeight: FontWeight.bold),
-                              ),
-                              // !-----------------Remaining Days-----------------
-                              getRemainingDays(
-                                  dueDate: loan.nextDueDate.getDateTime()),
-                            ],
+                  ],
+                ),
+                const Divider(color: Colors.white70),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    RichText(
+                      textAlign: TextAlign.center,
+                      text: TextSpan(
+                        text: AppLocalizations.of(context)!.loanDate,
+                        style: DefaultTextStyle.of(context).style,
+                        children: <TextSpan>[
+                          TextSpan(
+                            text:
+                                '\n${intl.DateFormat('dd-MM-yyyy').format(loan.dateOfCreation.getDateTime())}',
+                            style: const TextStyle(fontWeight: FontWeight.bold),
                           ),
-                        ),
-                      ],
+                        ],
+                      ),
                     ),
+                    RichText(
+                      textAlign: TextAlign.center,
+                      text: TextSpan(
+                        text: AppLocalizations.of(context)!.loanEnd,
+                        style: DefaultTextStyle.of(context).style,
+                        children: <TextSpan>[
+                          TextSpan(
+                            text:
+                                '\n${intl.DateFormat('dd-MM-yyyy').format(loan.endDate.getDateTime())}',
+                            style: const TextStyle(fontWeight: FontWeight.bold),
+                          ),
+                          // !-----------------Remaining Days-----------------
+                          getRemainingDays(dueDate: loan.endDate.getDateTime()),
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
+                const Divider(color: Colors.white70),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    RichText(
+                      textAlign: TextAlign.center,
+                      text: TextSpan(
+                        text: AppLocalizations.of(context)!.paidInstallments,
+                        style: DefaultTextStyle.of(context).style,
+                        children: <TextSpan>[
+                          TextSpan(
+                              text: '\n${loan.paidEmis}/${loan.totalEmis}',
+                              style:
+                                  const TextStyle(fontWeight: FontWeight.bold)),
+                        ],
+                      ),
+                    ),
+                    RichText(
+                      textAlign: TextAlign.center,
+                      text: TextSpan(
+                        text: AppLocalizations.of(context)!.installmentAmount,
+                        style: DefaultTextStyle.of(context).style,
+                        children: <TextSpan>[
+                          TextSpan(
+                              text:
+                                  '\n\u{20B9}${intl.NumberFormat('#,##,###').format(loan.emiAmount)}',
+                              style:
+                                  const TextStyle(fontWeight: FontWeight.bold)),
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
+                const Divider(color: Colors.white70),
+                RichText(
+                  textAlign: TextAlign.center,
+                  text: TextSpan(
+                    text: AppLocalizations.of(context)!.dueDate,
+                    style: DefaultTextStyle.of(context).style,
+                    children: <TextSpan>[
+                      TextSpan(
+                        text:
+                            ': ${intl.DateFormat('dd-MM-yyyy').format(loan.nextDueDate.getDateTime())}',
+                        style: const TextStyle(fontWeight: FontWeight.bold),
+                      ),
+                      // !-----------------Remaining Days-----------------
+                      getRemainingDays(dueDate: loan.nextDueDate.getDateTime()),
+                    ],
                   ),
                 ),
-              ),
-            );
-        }
-      },
+              ],
+            ),
+          ),
+        ),
+      ),
     );
   }
 }
@@ -333,12 +533,7 @@ class CurrentLoanDetails extends StatelessWidget {
 @immutable
 class GradientBubbles extends StatefulWidget {
   final List<CustomTransactionModel> transactions;
-  final Loan loan;
-  const GradientBubbles({
-    super.key,
-    required this.transactions,
-    required this.loan,
-  });
+  const GradientBubbles({super.key, required this.transactions});
 
   @override
   State<GradientBubbles> createState() => _GradientBubblesState();
@@ -347,49 +542,16 @@ class GradientBubbles extends StatefulWidget {
 class _GradientBubblesState extends State<GradientBubbles> {
   final ScrollController _scrollController = ScrollController();
 
-  // bool _isVisible = true;
-
-  void _listen() {
-    final ScrollDirection direction =
-        _scrollController.position.userScrollDirection;
-    if (direction == ScrollDirection.forward) {
-      _show();
-    } else if (direction == ScrollDirection.reverse) {
-      _hide();
-    }
-  }
-
-  void _show() {
-    // if (!_isVisible) {
-    // setState(() => _isVisible = true);
-    context
-        .read<ShowAndHideLoanDetailsBloc>()
-        .add(const HideLoanDetailsEvent());
-    // }
-  }
-
-  void _hide() {
-    // if (_isVisible) {
-    // setState(() => _isVisible = false);
-    context
-        .read<ShowAndHideLoanDetailsBloc>()
-        .add(const ShowLoanDetailsEvent());
-
-    // }
-  }
-
   @override
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
       animateToMaximumExtent();
     });
-    _scrollController.addListener(_listen);
   }
 
   @override
   void dispose() {
-    _scrollController.removeListener(_listen);
     _scrollController.dispose();
     super.dispose();
   }
@@ -699,7 +861,6 @@ class _EmipaymentFormFieldState extends State<EmipaymentFormField> {
                   return null;
                 },
                 onChanged: (value) {
-                  print('value: $value');
                   if (value.isEmpty) {
                     context
                         .read<ConfirmButtonStatusCubit>()
@@ -713,32 +874,142 @@ class _EmipaymentFormFieldState extends State<EmipaymentFormField> {
             const SizedBox(width: 16.0),
             // !-----------------Confirm Button-----------------
             ElevatedButton(
-              onPressed: null,
-              // context.watch<ConfirmButtonStatusCubit>().state.status
-              //     ? () {
-              //         if (_formKey.currentState!.validate()) {
-              //           final parsedEmiValue = controller.text
-              //               .replaceAll(',', '')
-              //               .replaceAll('₹', '');
-              //           context.read<UpdateLoanDialogBloc>().add(NewEmiEvent(
-              //                 loan: widget.loan,
-              //                 emiValue: parsedEmiValue,
-              //               ));
-              //         }
-              //         controller.clear();
-              //         FocusScope.of(context).unfocus();
-              //       }
-              //     : null,
-              style: ButtonStyle(
-                backgroundColor:
-                    MaterialStateProperty.all(Colors.greenAccent.shade700),
-                foregroundColor: MaterialStateProperty.all(Colors.white),
+              onPressed: context.watch<ConfirmButtonStatusCubit>().state.status
+                  ? () {
+                      FocusScope.of(context).unfocus();
+                      if (_formKey.currentState!.validate()) {
+                        final parsedEmiValue = controller.text
+                            .replaceAll(',', '')
+                            .replaceAll('₹', '');
+                        context.read<UpdateLoanDialogBloc>().add(NewEmiEvent(
+                              loan: widget.loan,
+                              emiValue: parsedEmiValue,
+                            ));
+                      }
+                      controller.clear();
+                      context
+                          .read<ConfirmButtonStatusCubit>()
+                          .changeStatus(false);
+                    }
+                  : null,
+              // disabled button style
+              style: ElevatedButton.styleFrom(
+                backgroundColor: Colors.greenAccent.shade700,
+                foregroundColor: Colors.white,
               ),
               child: const Text('Confirm'),
             ),
           ],
         ),
       ),
+    );
+  }
+}
+
+class DraggableButton extends StatefulWidget {
+  final Loan loan;
+  const DraggableButton({super.key, required this.loan});
+
+  @override
+  State<DraggableButton> createState() => _DraggableButtonState();
+}
+
+class _DraggableButtonState extends State<DraggableButton> {
+  Offset position = const Offset(70, 120);
+
+  @override
+  Widget build(BuildContext context) {
+    return Positioned(
+      left: position.dx,
+      top: position.dy,
+      child: Draggable(
+        feedback: ClipOval(
+          child: BackdropFilter(
+            filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
+            child: Container(
+              width: 56,
+              height: 56,
+              decoration: BoxDecoration(
+                color: Colors.black.withOpacity(0.5),
+                shape: BoxShape.circle,
+              ),
+              child: const Icon(
+                Icons.currency_rupee,
+                color: Colors.white,
+              ),
+            ),
+          ),
+        ),
+        onDragEnd: (details) {
+          setState(() {
+            position = details.offset;
+          });
+        },
+        child: RoundedTransprentButton(loan: widget.loan),
+      ),
+    );
+  }
+}
+
+class RoundedTransprentButton extends StatelessWidget {
+  final Loan loan;
+  const RoundedTransprentButton({super.key, required this.loan});
+
+  @override
+  Widget build(BuildContext context) {
+    return Material(
+      elevation: 5, // set the elevation here
+      shape: const CircleBorder(),
+      clipBehavior: Clip.hardEdge,
+      color: Colors.transparent,
+      child: InkWell(
+        onTap: () {
+          showDetails(context);
+          // Navigator.of(context).pop();
+        },
+        child: Container(
+          width: 56,
+          height: 56,
+          decoration: BoxDecoration(
+            shape: BoxShape.circle,
+            gradient: LinearGradient(
+              begin: Alignment.topLeft,
+              end: Alignment.bottomRight,
+              colors: [
+                Colors.greenAccent.shade200,
+                Colors.blue.shade400,
+                Colors.blueAccent.shade700,
+              ],
+            ),
+          ),
+          child: const Icon(
+            Icons.currency_rupee_sharp,
+            color: Colors.white,
+          ),
+        ),
+      ),
+    );
+  }
+
+  void showDetails(BuildContext context) {
+    showModalBottomSheet(
+      context: context,
+      elevation: 0.0,
+      barrierColor: Colors.transparent,
+      backgroundColor: Colors.transparent,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(
+          top: Radius.circular(16.0),
+        ),
+      ),
+      isScrollControlled: true,
+      useRootNavigator: true,
+      builder: (BuildContext context) {
+        return Padding(
+          padding: const EdgeInsets.only(bottom: 60.0),
+          child: CurrentLoanDetails(loan: loan),
+        );
+      },
     );
   }
 }

@@ -32,7 +32,6 @@ import '4_customer_screen/create_customer_bloc/create_customer_bloc/create_custo
 import '4_customer_screen/customer_bloc/customer_bloc.dart';
 import '4_customer_screen/loan_creation_bloc/loan_creation_bloc/loan_creation_bloc.dart';
 import '4_customer_screen/update_loan_dialog/confirm_button_status_cubit/confirm_button_status_cubit.dart';
-import '4_customer_screen/update_loan_dialog/show_and_hide_loan_details/show_and_hide_loan_details_bloc.dart';
 import '4_customer_screen/update_loan_dialog/update_loan_dialog_bloc/update_loan_dialog_bloc.dart';
 import '5_customer_profile_screen/1_customer_data/customer_profile_cubit.dart';
 import '5_customer_profile_screen/2_loan_details/loan_data_cubit.dart';
@@ -222,9 +221,6 @@ void main() async {
             create: (context) => StatusBloc(
               dataStoreEventHandler: context.read<DataStoreEventHandler>(),
             ),
-          ),
-          BlocProvider<ShowAndHideLoanDetailsBloc>(
-            create: (context) => ShowAndHideLoanDetailsBloc(),
           ),
         ],
         child: const CashflowApp(),

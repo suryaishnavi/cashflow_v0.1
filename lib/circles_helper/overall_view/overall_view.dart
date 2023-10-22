@@ -28,7 +28,19 @@ class OverallView extends StatelessWidget {
         builder: (context, state) {
           return Scaffold(
             appBar: AppBar(
-              backgroundColor: Colors.blue[900],
+              // flexibleSpace: Container(
+              //   decoration: BoxDecoration(
+              //     gradient: LinearGradient(
+              //       colors: [
+              //         Colors.blueAccent.shade400,
+              //         Colors.blueAccent.shade700,
+              //       ],
+              //       begin: Alignment.topLeft,
+              //       end: Alignment.bottomRight,
+              //     ),
+              //   ),
+              // ),
+              backgroundColor: Colors.lightBlueAccent.shade700,
               title: const Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [UserName(), AppNotification()],

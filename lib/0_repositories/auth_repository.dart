@@ -209,20 +209,20 @@ class AuthRepository {
     try {
       await Amplify.DataStore.clear();
       safePrint('DataStore is cleared.');
-      await stopStore();
+      // await stopStore();
     } on DataStoreException catch (e) {
       safePrint('Failed to clear DataStore: $e');
     }
   }
 
-  Future<void> stopStore() async {
-    try {
-      await Amplify.DataStore.stop();
-      safePrint('DataStore is stopped.');
-    } on DataStoreException catch (e) {
-      safePrint('Failed to stop DataStore: $e');
-    }
-  }
+  // Future<void> stopStore() async {
+  //   try {
+  //     await Amplify.DataStore.stop();
+  //     safePrint('DataStore is stopped.');
+  //   } on DataStoreException catch (e) {
+  //     safePrint('Failed to stop DataStore: $e');
+  //   }
+  // }
 }
 
 // ! This is the code for the new login flow

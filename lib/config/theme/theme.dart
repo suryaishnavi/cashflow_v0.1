@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 final theme = ThemeData(
   useMaterial3: true,
   colorScheme: ColorScheme.fromSeed(
-    seedColor: Colors.blue.shade900,
+    seedColor: Colors.lightBlueAccent.shade700,
   ),
   inputDecorationTheme: const InputDecorationTheme(
     border: OutlineInputBorder(),
@@ -11,7 +11,7 @@ final theme = ThemeData(
 
   // floating button.extended theme
   floatingActionButtonTheme: FloatingActionButtonThemeData(
-    backgroundColor: Colors.blue[800],
+    backgroundColor: Colors.lightBlueAccent[700],
     foregroundColor: Colors.white,
     extendedTextStyle: const TextStyle(
       color: Colors.white,

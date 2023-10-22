@@ -281,7 +281,7 @@
   "@tryAgain": {
     "description": "Please try again"
   },
-  "createCircleBtn": "CreateCircle",
+  "createCircleBtn": "Create Circle",
   "@createCircleBtn": {
     "description": "Create Circle"
   },

@@ -12,22 +12,22 @@ class TonalFilledButton extends StatelessWidget {
   final String text;
   final Icon icon;
 
-
   @override
   Widget build(BuildContext context) {
     return FilledButton.tonal(
       style: ButtonStyle(
-        backgroundColor: MaterialStateProperty.all(Colors.blue[50]),
-        foregroundColor: MaterialStateProperty.all(Colors.blue[900]),
+        backgroundColor: MaterialStateProperty.all(Colors.lightBlue[50]),
+        foregroundColor: MaterialStateProperty.all(Colors.lightBlueAccent[700]),
+        textStyle: MaterialStateProperty.all(
+          const TextStyle(fontWeight: FontWeight.w500),
+        ),
       ),
       onPressed: onPressed,
       child: Row(
         children: [
           icon,
           const SizedBox(width: 4),
-          Text(text,
-              style:
-                  const TextStyle(fontSize: 15, fontWeight: FontWeight.w400)),
+          Text(text),
         ],
       ),
     );

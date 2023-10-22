@@ -30,17 +30,16 @@ class ElevatedTonalButton extends StatelessWidget {
             foregroundColor ?? MaterialStateProperty.all(Colors.blue[900]),
         elevation: elevation ?? MaterialStateProperty.all(1.5),
         shadowColor: shadowColor ?? MaterialStateProperty.all(Colors.white),
+        textStyle: MaterialStateProperty.all(
+          const TextStyle(
+            fontSize: 16,
+            fontWeight: FontWeight.w500,
+          ),
+        ),
       ),
       onPressed: onPressed,
       icon: icon,
-      label: Text(
-        text,
-        style: const TextStyle(
-          fontSize: 16,
-          fontWeight: FontWeight.w400,
-        ),
-      ),
+      label: Text(text),
     );
   }
 }
-
