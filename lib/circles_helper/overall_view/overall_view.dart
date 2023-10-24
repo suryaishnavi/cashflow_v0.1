@@ -421,9 +421,9 @@ class OutboxStatusHubEvents extends StatelessWidget {
             case OverallViewInitial():
               return const OverallViewInitialState();
             case OutboxMutationEnqueuedState():
-              return const OutboxMutationEnqueuedPage();
+              return OutboxMutationEnqueuedPage(state: state);
             case OutboxMutationProcessedState():
-              return const OutboxMutationProcessedPage();
+              return OutboxMutationProcessedPage(state: state);
             case OutboxMutationFailedState():
               return OutboxMutationFailedPage(payload: state.payload);
             default: // OverallViewInitial
@@ -437,62 +437,62 @@ class OutboxStatusHubEvents extends StatelessWidget {
 
 ///! OutboxMutationEnqueuedPage
 class OutboxMutationEnqueuedPage extends StatelessWidget {
-  const OutboxMutationEnqueuedPage({super.key});
+  final OutboxMutationEnqueuedState state;
+  const OutboxMutationEnqueuedPage({super.key, required this.state});
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<OverallViewBloc, OverallViewState>(
-      builder: (context, state) {
-        if (state is OutboxMutationEnqueuedState) {
-          return SingleChildScrollView(
-            child: Column(
-              children: [
-                Row(
-                  children: [
-                    IconButton(
-                        onPressed: () {},
-                        icon: const Icon(Icons.refresh, color: Colors.orange)),
-                    const SizedBox(width: 10),
-                    const Text(
-                      'Waiting for syncing data to the cloud',
-                      style: TextStyle(
-                        fontSize: 16,
-                        fontWeight: FontWeight.w500,
-                      ),
-                    ),
-                  ],
+    return SingleChildScrollView(
+      child: Column(
+        children: [
+          Row(
+            children: [
+              IconButton(
+                onPressed: () {},
+                icon: const Icon(Icons.refresh, color: Colors.orange),
+              ),
+              const SizedBox(width: 10),
+              const Text(
+                'Data is waiting to sync at Outbox Mutation enqueued',
+                style: TextStyle(
+                  fontSize: 16,
+                  fontWeight: FontWeight.w500,
                 ),
-                Text('payload: ${state.payload.element.model}'),
-              ],
-            ),
-          );
-        }
-        return const Text('OutboxMutationEnqueuedPage');
-      },
+              ),
+            ],
+          ),
+          Text('payload: ${state.models}'),
+        ],
+      ),
     );
   }
 }
 
 ///! OutboxMutationProcessedPage
 class OutboxMutationProcessedPage extends StatelessWidget {
-  const OutboxMutationProcessedPage({super.key});
+  final OutboxMutationProcessedState state;
+  const OutboxMutationProcessedPage({super.key, required this.state});
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.symmetric(vertical: 24),
-      child: const Row(
-        children: [
-          Icon(Icons.check_circle, color: Colors.green),
-          SizedBox(width: 10),
-          Text(
-            'All changes are synced to the cloud',
-            style: TextStyle(
-              fontSize: 16,
-              fontWeight: FontWeight.w500,
-            ),
-          ),
-        ],
+    return SingleChildScrollView(
+      child: Container(
+        padding: const EdgeInsets.symmetric(vertical: 24),
+        child: state.models.isEmpty
+            ? const Row(
+                children: [
+                  Icon(Icons.check_circle, color: Colors.green),
+                  SizedBox(width: 10),
+                  Text(
+                    'All changes are synced to the cloud',
+                    style: TextStyle(
+                      fontSize: 16,
+                      fontWeight: FontWeight.w500,
+                    ),
+                  ),
+                ],
+              )
+            : Text('${state.models}'),
       ),
     );
   }

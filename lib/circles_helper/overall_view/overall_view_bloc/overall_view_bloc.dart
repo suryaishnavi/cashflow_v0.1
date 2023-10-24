@@ -27,7 +27,7 @@ class OverallViewBloc extends Bloc<OverallViewEvent, OverallViewState> {
   ) {
     /// add the model to the list of models that are being synced
     models.add(event.event.element.model);
-    emit(OutboxMutationEnqueuedState(payload: event.event));
+    emit(OutboxMutationEnqueuedState(payload: event.event, models: models));
   }
 
   _onOutboxMutationProcessedEvent(
@@ -36,7 +36,7 @@ class OverallViewBloc extends Bloc<OverallViewEvent, OverallViewState> {
   ) {
     /// remove the model from the list of models that are being synced
     models.remove(event.event.element.model);
-    emit(OutboxMutationProcessedState(payload: event.event));
+    emit(OutboxMutationProcessedState(payload: event.event, models: models));
   }
 
   _onOutboxMutationFailedEvent(

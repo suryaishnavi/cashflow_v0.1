@@ -21,8 +21,10 @@ final class OverallViewInitial extends OverallViewState {}
 // }
 final class OutboxMutationEnqueuedState extends OverallViewState {
   final OutboxMutationEvent payload;
+  final List models;
 
-  const OutboxMutationEnqueuedState({required this.payload});
+  const OutboxMutationEnqueuedState(
+      {required this.payload, required this.models});
 
   @override
   List<Object> get props => [payload];
@@ -31,8 +33,10 @@ final class OutboxMutationEnqueuedState extends OverallViewState {
 /// syncQueries state
 final class OutboxMutationProcessedState extends OverallViewState {
   final OutboxMutationEvent payload;
+  final List models;
 
-  const OutboxMutationProcessedState({required this.payload});
+  const OutboxMutationProcessedState(
+      {required this.payload, required this.models});
 
   @override
   List<Object> get props => [payload];

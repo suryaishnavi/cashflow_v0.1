@@ -154,7 +154,8 @@ class CircleView extends StatelessWidget {
         const SizedBox(height: 16),
         ElevatedTonalButton(
           backgroundColor: MaterialStateProperty.all(Colors.lightBlue[50]),
-          foregroundColor: MaterialStateProperty.all(Colors.lightBlueAccent[700]),
+          foregroundColor:
+              MaterialStateProperty.all(Colors.lightBlueAccent[700]),
           shadowColor: MaterialStateProperty.all(Colors.lightBlueAccent[400]),
           onPressed: () {
             _modalBottomSheet(context: context);
@@ -268,15 +269,22 @@ class CircleGridTileBar extends StatelessWidget {
               Flexible(
                 // new
                 flex: 1,
-                child: Text(
-                  circle.circleName.length > 15
-                      ? '${circle.circleName[0].toUpperCase() + circle.circleName.substring(1, 15).toLowerCase()}...'
-                      : circle.circleName[0].toUpperCase() +
-                          circle.circleName.substring(1).toLowerCase(),
-                  style: TextStyle(
-                    fontSize: 16,
-                    fontWeight: FontWeight.w500,
-                    color: getcolors(circle: circle).$2,
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                  child: RichText(
+                    maxLines: 1,
+                    textAlign: TextAlign.center,
+                    overflow: TextOverflow.ellipsis,
+                    text: TextSpan(
+                      children: [
+                        TextSpan(
+                          text: circle.circleName[0].toUpperCase() + circle.circleName.substring(1).toLowerCase(),
+                          style: Theme.of(context).textTheme.titleMedium!.copyWith(
+                            color: getcolors(circle: circle).$2,
+                          ),
+                        ),
+                      ],
+                    ),
                   ),
                 ),
               ),
@@ -285,11 +293,9 @@ class CircleGridTileBar extends StatelessWidget {
                 child: Text(
                   AppLocalizations.of(context)!
                       .getWeekDay('${circle.day}'.split('.').last),
-                  style: TextStyle(
-                    fontSize: 14,
-                    fontWeight: FontWeight.w400,
-                    color: getcolors(circle: circle).$2,
-                  ),
+                  style: Theme.of(context).textTheme.bodyMedium!.copyWith(
+                        color: getcolors(circle: circle).$2,
+                      ),
                 ),
               ),
             ],

@@ -4,12 +4,16 @@ import 'package:amplify_flutter/amplify_flutter.dart';
 
 class DataStoreEventHandler {
   StreamSubscription<DataStoreHubEvent>? _subscription;
+  /// Singleton eager initialization
   static final DataStoreEventHandler _instance =
       DataStoreEventHandler._internal();
-
+  /// Genrative constructor called internally from the instance
+  DataStoreEventHandler._internal() {
+    /// simple test to check if the constructor is called
+    safePrint('Creating DataStoreEventHandler instance');
+  }
+  /// factory constructor, should return same instance
   factory DataStoreEventHandler() => _instance;
-
-  DataStoreEventHandler._internal();
 
   //? network status
   bool networkStatus = true; // networkStatusEvent.active

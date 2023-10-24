@@ -5,9 +5,11 @@ import 'package:amplify_flutter/amplify_flutter.dart';
 class AuthEventHandler {
   static final AuthEventHandler _instance = AuthEventHandler._internal();
 
-  factory AuthEventHandler() => _instance;
+  AuthEventHandler._internal() {
+    safePrint('Creating AuthEventHandler instance');
+  }
 
-  AuthEventHandler._internal();
+  factory AuthEventHandler() => _instance;
 
   StreamSubscription<AuthHubEvent>? subscription;
   final authEvent = StreamController<AuthHubEvent>.broadcast();
