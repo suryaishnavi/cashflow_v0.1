@@ -149,6 +149,7 @@ void main() async {
               customerAndLoanDataRepository:
                   context.read<CustomerAndLoanDataRepository>(),
               screensCubit: context.read<ScreensCubit>(),
+              customerDataRepository: context.read<CustomerDataRepository>(),
             ),
           ),
           BlocProvider<LoanDataCubit>(

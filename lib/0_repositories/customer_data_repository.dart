@@ -54,16 +54,13 @@ class CustomerDataRepository {
       List<String> listOfLoanId = customer.loanIdentity;
 
       // remove the loanIdentity from oldLoanIdentity
-      if(loanStatus != LoanStatus.ACTIVE){
-        listOfLoanId.remove(loanIdentity);
+      if (loanStatus != LoanStatus.ACTIVE) {
+        listOfLoanId = listOfLoanId.where((id) => id != loanIdentity).toList();
       }
-      // List<String> updatedLoanIdentity =
-      //     oldLoanIdentity.where((id) => id != loanIdentity).toList();
 
       // return updatedLoanIdentity;
       return listOfLoanId;
     }
-
 
     //  if one or more loans paid then update the loan paid amount
     ({int paidAmount, int emiAmount}) getPaymentInfo() {
@@ -73,9 +70,13 @@ class CustomerDataRepository {
       if (customer.paymentInfo != null) {
         if (customer.paymentInfo?.paidDate.getDateTime() ==
             DateTime.parse(today)) {
-          totalPaidAmount += customer.paymentInfo!.paidAmount;
           totalEmiAmount += customer.paymentInfo!.emiAmount;
+          totalPaidAmount += customer.paymentInfo!.paidAmount;
         }
+      }
+
+      if (loanStatus != LoanStatus.ACTIVE) {
+        totalEmiAmount = totalPaidAmount;
       }
 
       return (emiAmount: totalEmiAmount, paidAmount: totalPaidAmount);

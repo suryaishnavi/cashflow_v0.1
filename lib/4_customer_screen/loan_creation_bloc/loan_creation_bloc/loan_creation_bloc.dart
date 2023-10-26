@@ -1,6 +1,7 @@
 import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+import '../../../0_repositories/customer_data_repository.dart';
 import '../../../0_repositories/customers_and_loan_data_repository.dart';
 import '../../../circles_helper/screen_helper_cubit/screens_cubit.dart';
 import '../../../models/ModelProvider.dart';
@@ -10,10 +11,12 @@ part 'loan_creation_state.dart';
 
 class LoanCreationBloc extends Bloc<LoanCreationEvent, LoanCreationState> {
   final CustomerAndLoanDataRepository customerAndLoanDataRepository;
+  final CustomerDataRepository customerDataRepository;
   final ScreensCubit screensCubit;
   LoanCreationBloc({
     required this.screensCubit,
     required this.customerAndLoanDataRepository,
+    required this.customerDataRepository,
   }) : super(LoanCreationLoadingState()) {
     on<LoanCreationInitialEvent>(_onLoanCreationInitialEvent);
     on<LoanSubmissionEvent>(_onLoanSubmissionEvent);
@@ -124,20 +127,24 @@ class LoanCreationBloc extends Bloc<LoanCreationEvent, LoanCreationState> {
   ) async {
     final frequency = screensCubit.currentCircle.circle!.day;
     final currentCustomer = screensCubit.currentCustomer.customer;
+    // update customer
+    final updatedCustomer = await customerDataRepository.getCustomerById(
+        customerID: currentCustomer!.id);
     emit(LoanCreationLoadingState());
     LoanSerialNumber loanSerialNumber;
     final isNewloan = event.isNewLoan;
     try {
       loanSerialNumber = await customerAndLoanDataRepository
-          .getCircleCurrentSerialNo(circleId: currentCustomer!.circleID);
+          .getCircleCurrentSerialNo(circleId: currentCustomer.circleID);
     } catch (e) {
       emit(const LoanCreationErrorState(message: 'Loan creation failed'));
       return;
     }
 
+
     // *on submission first try to update Customer
     final customer = await customerAndLoanDataRepository.updateCustomer(
-      customer: currentCustomer,
+      customer: updatedCustomer,
       newLoanAddedDate: event.date,
       loanIdentity: event.loanIdentity,
     );
