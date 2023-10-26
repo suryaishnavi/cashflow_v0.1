@@ -28,8 +28,9 @@ class SyncDataCubit extends Cubit<SyncDataState> {
         emit(const SyncDataSuccess(
             'Syncing data completed successfully, you can now use the app'));
       } else if (event.type == DataStoreHubEventType.ready) {
-        currentModel = 0;
         totalModels = 0;
+        currentModel = 0;
+        emit(SyncDataInitial());
       }
     });
     syncQueries = DataStoreEventHandler().syncQueriesEvent.listen((event) {

@@ -47,41 +47,42 @@ class CustomerDataRepository {
     required LoanStatus loanStatus,
     DateTime? paidDate,
   }) async {
-    TemporalDate newpaidDate({required DateTime date}) {
-      return TemporalDate.fromString('$paidDate'.split(' ')[0]);
-    }
+    TemporalDate newpaidDate({required DateTime date}) =>
+        TemporalDate.fromString('$date'.split(' ')[0]);
 
-    List<String> updateLoanIdentity() {
-      List<String> oldLoanIdentity = customer.loanIdentity;
+    List<String> getLoanIdentity() {
+      List<String> listOfLoanId = customer.loanIdentity;
 
       // remove the loanIdentity from oldLoanIdentity
-      List<String> updatedLoanIdentity =
-          oldLoanIdentity.where((id) => id != loanIdentity).toList();
+      if(loanStatus != LoanStatus.ACTIVE){
+        listOfLoanId.remove(loanIdentity);
+      }
+      // List<String> updatedLoanIdentity =
+      //     oldLoanIdentity.where((id) => id != loanIdentity).toList();
 
-      return updatedLoanIdentity;
+      // return updatedLoanIdentity;
+      return listOfLoanId;
     }
 
-    final List<String> newLoanId = loanStatus == LoanStatus.ACTIVE
-        ? customer.loanIdentity
-        : updateLoanIdentity();
 
     //  if one or more loans paid then update the loan paid amount
     ({int paidAmount, int emiAmount}) getPaymentInfo() {
       int totalPaidAmount = paidAmount;
       int totalEmiAmount = emiAmount;
-      
+
       if (customer.paymentInfo != null) {
-        if (customer.paymentInfo?.paidDate.getDateTime() == DateTime.parse(today)) {
+        if (customer.paymentInfo?.paidDate.getDateTime() ==
+            DateTime.parse(today)) {
           totalPaidAmount += customer.paymentInfo!.paidAmount;
           totalEmiAmount += customer.paymentInfo!.emiAmount;
         }
       }
-      
+
       return (emiAmount: totalEmiAmount, paidAmount: totalPaidAmount);
     }
 
     final updatedCustomer = customer.copyWith(
-      loanIdentity: newLoanId,
+      loanIdentity: getLoanIdentity(),
       paymentInfo: PaymentDetails(
         customerID: customer.id,
         emiAmount: getPaymentInfo().emiAmount,

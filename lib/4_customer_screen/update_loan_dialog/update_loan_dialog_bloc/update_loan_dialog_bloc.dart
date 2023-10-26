@@ -98,7 +98,7 @@ class UpdateLoanDialogBloc
   }) async {
     final updatedLoan = await loansDataRepository.getLoanById(loanId: loan.id);
     if (emiValue.isNotEmpty) {
-      final int emiAmount = double.parse(emiValue).roundToDouble().toInt();
+      final int emiAmount = double.parse(emiValue).ceil();
       final int totalPaidAmount = updatedLoan.paidAmount + emiAmount;
       final LoanStatus loanStatus =
           (totalPaidAmount < updatedLoan.collectibleAmount)
@@ -158,9 +158,10 @@ class UpdateLoanDialogBloc
       currentEmi: updatedLoan.paidEmis + 1,
       loanStatus: loanStatus,
       nextDueDate: emiCalc.calculateLoanEndDate(
-          loanTakenDate: updatedLoan.dateOfCreation.getDateTime(),
-          totalEmis: updatedLoan.paidEmis + 2,
-          emiFrequency: updatedLoan.emiType),
+        loanTakenDate: updatedLoan.dateOfCreation.getDateTime(),
+        totalEmis: updatedLoan.paidEmis + 2,
+        emiFrequency: updatedLoan.emiType,
+      ),
       endDate: updatedLoan.endDate,
     );
     // * update customer
