@@ -26,7 +26,6 @@ class CreateCustomerView extends StatefulWidget {
 class _CreateCustomerViewState extends State<CreateCustomerView> {
   final _formKey = GlobalKey<FormState>();
   final key = GlobalKey();
-  City? city;
 
   TextEditingController uidController = TextEditingController();
   TextEditingController nameController = TextEditingController();
@@ -236,20 +235,8 @@ class _CreateCustomerViewState extends State<CreateCustomerView> {
     );
   }
 
-  // void _onCitySelected({required City newCity}) {
-  //   setState(() {
-  //     city = CityDetails(
-  //       name: newCity.name,
-  //       circleID: newCity.circleID,
-  //       id: newCity.id,
-  //     );
-  //   });
-  // }
-
   Widget _citysListDropDown(state) {
-    final cities = <City>[
-      ...state.cities.map((e) => e.copyWith(name: e.name.toUpperCase()))
-    ];
+    final List<City> cities = <City>[...state.cities];
     return DropdownButtonFormField(
       menuMaxHeight: 400,
       decoration: InputDecoration(
@@ -259,11 +246,13 @@ class _CreateCustomerViewState extends State<CreateCustomerView> {
       ),
       value: cities[0],
       items: cities
-          .map((city) => DropdownMenuItem(value: city, child: Text(city.name)))
+          .map((city) => DropdownMenuItem(
+              value: city, child: Text(city.name.toUpperCase())))
           .toList(),
       onChanged: (value) {
-        city = value;
-        // _onCitySelected(newCity: value as City);
+        context
+            .read<CreateCustomerBloc>()
+            .add(CityChangingEvent(city: value as City));
       },
     );
   }
@@ -283,7 +272,7 @@ class _CreateCustomerViewState extends State<CreateCustomerView> {
               phone: mobileNumberController.text.trim(),
               address: addressController.text.trim(),
               loanIdentity: loanIdentityController.text.trim(),
-              city: city ?? state.cities[0],
+              city: state.selectedCity,
             );
           } catch (e) {
             ScaffoldMessenger.of(context).showSnackBar(

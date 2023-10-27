@@ -24,28 +24,44 @@ class CreateCustomerBloc
   }) : super(LoadingCircleCitiesState()) {
     on<LoadCitiesEvent>(_onLoadCities);
     on<LoanIdentityChangingEvent>(_onLoanIdentityChangingState);
+    on<CityChangingEvent>(_onCityChangingState);
   }
 
   void _onLoadCities(
       LoadCitiesEvent event, Emitter<CreateCustomerState> emit) async {
     List<Customer> existingCustomers = [];
-    String circleID = screensCubit.currentCircle.circle!.id;
+    String circleId = screensCubit.currentCircle.circle!.id;
     final LoanSerialNumber loanIdentity = await customerAndLoanDataRepository
-        .getCircleCurrentSerialNo(circleId: circleID);
-    // int loanIdentity = screensCubit.currentCircle.circle!.serialNumber;
+        .getCircleCurrentSerialNo(circleId: circleId);
     emit(LoadingCircleCitiesState());
-    List<City> cities = await cityRepository.getCities(
-        circleID: screensCubit.currentCircle.circle!.id);
+    List<City> cities = await cityRepository.getCities(circleID: circleId);
     if (customerBloc.state is CustomerLoadedState) {
       existingCustomers = (customerBloc.state as CustomerLoadedState).customers;
     }
+    // final City city = City(
+    //     id: cities.first.id,
+    //     name: cities.first.name,
+    //     circleID: cities.first.circleID);
     emit(LoadedCircleCitiesState(
-        cities: cities, existingCustomers: [...existingCustomers], loanIdentity: loanIdentity.serialNumber));
+      cities: cities,
+      existingCustomers: [...existingCustomers],
+      loanIdentity: loanIdentity.serialNumber,
+      selectedCity: cities.first,
+    ));
   }
 
-  void _onLoanIdentityChangingState(
-      LoanIdentityChangingEvent event, Emitter<CreateCustomerState> emit) async {
-    
-    emit((state as LoadedCircleCitiesState).copyWith(loanIdentity: event.loanIdentity));
+  void _onLoanIdentityChangingState(LoanIdentityChangingEvent event,
+      Emitter<CreateCustomerState> emit) async {
+    emit((state as LoadedCircleCitiesState)
+        .copyWith(loanIdentity: event.loanIdentity));
+  }
+
+  void _onCityChangingState(
+      CityChangingEvent event, Emitter<CreateCustomerState> emit) async {
+    // final City city = City(
+    // id: event.city.id,
+    // name: event.city.name,
+    // circleID: event.city.circleID);
+    emit((state as LoadedCircleCitiesState).copyWith(selectedCity: event.city));
   }
 }

@@ -438,3 +438,11 @@ class MarkCustomerInactive extends StatelessWidget {
   }
 }
 */
+
+/**
+ * EqueuedModels: Customer {id=fb78cb9d-b187-4501-8728-8857a586dd6d, sub=d1afb895-274a-4ed5-95ef-c5c3ab9f9be4, uId=169753186636, customerName=Kiran Agarwal, phone=+919533841295, address=Test address 10, loanIdentity=[1025], dateOfCreation=2023-10-17, newLoanAddedDate=null, paymentInfo=PaymentDetails {id=30f17db4-f458-4f89-971d-0fd9998523be, customerID=fb78cb9d-b187-4501-8728-8857a586dd6d, emiAmount=1000, paidAmount=1000, loanIdentity=1025, paidDate=2023-10-26}, customerStatus=ACTIVE, city=City {id=cb567c56-8721-43c9-9409-acd184bd397f, name=null, circleID=037b860f-c574-4d9c-aa90-2eb6756a4153, createdAt=null, updatedAt=null}, longitude=null, latitude=null, circleID=037b860f-c574-4d9c-aa90-2eb6756a4153, createdAt=null, updatedAt=null}
+ * 
+ * 
+ * ProcessedModels: Customer {id=fb78cb9d-b187-4501-8728-8857a586dd6d, sub=d1afb895-274a-4ed5-95ef-c5c3ab9f9be4, uId=169753186636, customerName=Kiran Agarwal, phone=+919533841295, address=Test address 10, loanIdentity=[1025], dateOfCreation=2023-10-17, newLoanAddedDate=null, paymentInfo=PaymentDetails {id=30f17db4-f458-4f89-971d-0fd9998523be, customerID=fb78cb9d-b187-4501-8728-8857a586dd6d, emiAmount=1000, paidAmount=1000, loanIdentity=1025, paidDate=2023-10-26}, customerStatus=ACTIVE, city=City {id=cb567c56-8721-43c9-9409-acd184bd397f, name=Talakona, circleID=037b860f-c574-4d9c-aa90-2eb6756a4153, createdAt=2023-10-17T08:11:15.328000000Z, updatedAt=2023-10-17T08:11:15.328000000Z}, longitude=null, latitude=null, circleID=037b860f-c574-4d9c-aa90-2eb6756a4153, createdAt=2023-10-17T08:37:53.921000000Z, updatedAt=2023-10-26T16:17:04.330000000Z}
+ * 
+ */

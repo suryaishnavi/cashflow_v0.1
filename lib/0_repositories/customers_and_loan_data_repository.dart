@@ -34,7 +34,7 @@ class CustomerAndLoanDataRepository {
     required String address,
     required String appUser,
     required String circleID,
-    required City city,
+    required City selectedCity,
     required String date,
     required String loanIdentity,
     required String mobileNumber,
@@ -48,7 +48,7 @@ class CustomerAndLoanDataRepository {
       phone: '+91$mobileNumber',
       address: address,
       dateOfCreation: TemporalDate.fromString(date),
-      city: city,
+      city: selectedCity,
       loanIdentity: [loanIdentity],
       customerStatus: CustomerStatus.ACTIVE,
       circleID: circleID,
@@ -58,7 +58,7 @@ class CustomerAndLoanDataRepository {
       return newCustomer;
     } catch (e) {
       safePrint(e);
-        rethrow;
+      rethrow;
     }
   }
 

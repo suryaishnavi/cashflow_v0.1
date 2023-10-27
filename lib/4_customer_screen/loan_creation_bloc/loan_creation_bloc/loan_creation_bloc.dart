@@ -64,7 +64,7 @@ class LoanCreationBloc extends Bloc<LoanCreationEvent, LoanCreationState> {
       name: customerDetails.name,
       mobileNumber: customerDetails.phone,
       address: customerDetails.address,
-      city: customerDetails.city,
+      selectedCity: customerDetails.city,
       date: event.date,
       circleID: customerDetails.circleID,
       loanIdentity: customerDetails.loanIdentity,

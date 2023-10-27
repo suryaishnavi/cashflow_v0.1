@@ -255,7 +255,7 @@ class TestCustomers {
       uId: generateUniqueRandomNumber(),
       mobileNumber: generateRandomPhoneNumber(),
       name: NameGenerator.getRandomName(),
-      city: CityDetailsProvider().getRandomCity(),
+      selectedCity: CityDetailsProvider().getRandomCity(),
       loanIdentity: fourDigitSequencialNumber(),
     );
 

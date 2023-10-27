@@ -88,10 +88,10 @@ class ChatView extends StatelessWidget {
         GradientBubbles(
           transactions: transactions,
         ),
-        DraggableButton(
-          loan: loan,
-        ),
-        // CurrentLoanTrack(loan: loan),
+        // DraggableButton(
+        //   loan: loan,
+        // ),
+        CurrentLoanTrack(loan: loan),
         // CurrentLoanDetails(loan: loan),
         Align(
           alignment: Alignment.bottomCenter,
@@ -159,33 +159,32 @@ class CurrentLoanTrack extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       mainAxisAlignment: MainAxisAlignment.end,
       children: [
-        TransprentCard(
-          child: RichText(
-            textAlign: TextAlign.center,
-            text: TextSpan(
-                text: 'Balance: ',
-                style: DefaultTextStyle.of(context).style,
-                children: <TextSpan>[
-                  TextSpan(
-                    text:
-                        '\n\u{20B9}${intl.NumberFormat('#,##,###').format(loan.collectibleAmount)} - \u{20B9}${intl.NumberFormat('#,##,###').format(loan.paidAmount)} = ',
-                    style: const TextStyle(
-                      color: Colors.black,
-                      fontWeight: FontWeight.w500,
-                    ),
-                  ),
-                  TextSpan(
-                    text:
-                        '\n\u{20B9}${intl.NumberFormat('#,##,###').format(loan.collectibleAmount - loan.paidAmount)}',
-                    style: TextStyle(
-                      color: Colors.red[700],
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                ]),
-          ),
-        ),
-        const SizedBox(height: 4.0),
+        // TransprentCard(
+        //   child: RichText(
+        //     textAlign: TextAlign.center,
+        //     text: TextSpan(
+        //         text: 'Balance: ',
+        //         style: DefaultTextStyle.of(context).style,
+        //         children: <TextSpan>[
+        //           TextSpan(
+        //             text:
+        //                 '\n\u{20B9}${intl.NumberFormat('#,##,###').format(loan.collectibleAmount)} - \u{20B9}${intl.NumberFormat('#,##,###').format(loan.paidAmount)} = ',
+        //             style: const TextStyle(
+        //               color: Colors.black,
+        //               fontWeight: FontWeight.w500,
+        //             ),
+        //           ),
+        //           TextSpan(
+        //             text:
+        //                 '\n\u{20B9}${intl.NumberFormat('#,##,###').format(loan.collectibleAmount - loan.paidAmount)}',
+        //             style: TextStyle(
+        //               color: Colors.red[700],
+        //               fontWeight: FontWeight.bold,
+        //             ),
+        //           ),
+        //         ]),
+        //   ),
+        // ),
         TransprentCard(
           child: Column(
             children: [
@@ -203,7 +202,7 @@ class CurrentLoanTrack extends StatelessWidget {
                   ],
                 ),
               ),
-              const SizedBox(height: 8.0),
+              const SizedBox(height: 16.0),
               RichText(
                 textAlign: TextAlign.center,
                 text: TextSpan(
@@ -223,40 +222,38 @@ class CurrentLoanTrack extends StatelessWidget {
             ],
           ),
         ),
-        const SizedBox(height: 4.0),
-        TransprentCard(
-          child: Column(
-            children: [
-              RichText(
-                textAlign: TextAlign.center,
-                text: TextSpan(
-                  text: AppLocalizations.of(context)!.paidInstallments,
-                  style: DefaultTextStyle.of(context).style,
-                  children: <TextSpan>[
-                    TextSpan(
-                        text: '\n${loan.paidEmis}/${loan.totalEmis}',
-                        style: const TextStyle(fontWeight: FontWeight.bold)),
-                  ],
-                ),
-              ),
-              const SizedBox(height: 8.0),
-              RichText(
-                textAlign: TextAlign.center,
-                text: TextSpan(
-                  text: AppLocalizations.of(context)!.installmentAmount,
-                  style: DefaultTextStyle.of(context).style,
-                  children: <TextSpan>[
-                    TextSpan(
-                        text:
-                            '\n\u{20B9}${intl.NumberFormat('#,##,###').format(loan.emiAmount)}',
-                        style: const TextStyle(fontWeight: FontWeight.bold)),
-                  ],
-                ),
-              ),
-            ],
-          ),
-        ),
-        const SizedBox(height: 4.0),
+        // TransprentCard(
+        //   child: Column(
+        //     children: [
+        //       RichText(
+        //         textAlign: TextAlign.center,
+        //         text: TextSpan(
+        //           text: AppLocalizations.of(context)!.paidInstallments,
+        //           style: DefaultTextStyle.of(context).style,
+        //           children: <TextSpan>[
+        //             TextSpan(
+        //                 text: '\n${loan.paidEmis}/${loan.totalEmis}',
+        //                 style: const TextStyle(fontWeight: FontWeight.bold)),
+        //           ],
+        //         ),
+        //       ),
+        //       const SizedBox(height: 8.0),
+        //       RichText(
+        //         textAlign: TextAlign.center,
+        //         text: TextSpan(
+        //           text: AppLocalizations.of(context)!.installmentAmount,
+        //           style: DefaultTextStyle.of(context).style,
+        //           children: <TextSpan>[
+        //             TextSpan(
+        //                 text:
+        //                     '\n\u{20B9}${intl.NumberFormat('#,##,###').format(loan.emiAmount)}',
+        //                 style: const TextStyle(fontWeight: FontWeight.bold)),
+        //           ],
+        //         ),
+        //       ),
+        //     ],
+        //   ),
+        // ),
         TransprentCard(
           child: RichText(
             textAlign: TextAlign.center,
@@ -266,7 +263,7 @@ class CurrentLoanTrack extends StatelessWidget {
               children: <TextSpan>[
                 TextSpan(
                   text:
-                      ': ${intl.DateFormat('dd-MM-yyyy').format(loan.nextDueDate.getDateTime())}',
+                      '\n${intl.DateFormat('dd-MM-yyyy').format(loan.nextDueDate.getDateTime())}',
                   style: const TextStyle(fontWeight: FontWeight.bold),
                 ),
                 // !-----------------Remaining Days-----------------
@@ -275,8 +272,44 @@ class CurrentLoanTrack extends StatelessWidget {
             ),
           ),
         ),
+        TransprentCard(
+          child: GestureDetector(
+            onTap: () {
+              showDetails(context);
+            },
+            child: Text(
+              'more...',
+              style: TextStyle(
+                color: Theme.of(context).primaryColor,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+          ),
+        ),
         const SizedBox(height: 64.0),
       ],
+    );
+  }
+
+  void showDetails(BuildContext context) {
+    showModalBottomSheet(
+      context: context,
+      elevation: 0.0,
+      barrierColor: Colors.transparent,
+      backgroundColor: Colors.transparent,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(
+          top: Radius.circular(16.0),
+        ),
+      ),
+      isScrollControlled: true,
+      useRootNavigator: true,
+      builder: (BuildContext context) {
+        return Padding(
+          padding: const EdgeInsets.only(bottom: 60.0),
+          child: CurrentLoanDetails(loan: loan),
+        );
+      },
     );
   }
 }
@@ -288,7 +321,7 @@ class TransprentCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      margin: const EdgeInsets.all(16.0),
+      margin: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
       decoration: BoxDecoration(
           borderRadius: const BorderRadius.all(Radius.circular(16.0)),
           gradient: const LinearGradient(
@@ -906,110 +939,110 @@ class _EmipaymentFormFieldState extends State<EmipaymentFormField> {
   }
 }
 
-class DraggableButton extends StatefulWidget {
-  final Loan loan;
-  const DraggableButton({super.key, required this.loan});
+// class DraggableButton extends StatefulWidget {
+//   final Loan loan;
+//   const DraggableButton({super.key, required this.loan});
 
-  @override
-  State<DraggableButton> createState() => _DraggableButtonState();
-}
+//   @override
+//   State<DraggableButton> createState() => _DraggableButtonState();
+// }
 
-class _DraggableButtonState extends State<DraggableButton> {
-  Offset position = const Offset(70, 120);
+// class _DraggableButtonState extends State<DraggableButton> {
+//   Offset position = const Offset(70, 120);
 
-  @override
-  Widget build(BuildContext context) {
-    return Positioned(
-      left: position.dx,
-      top: position.dy,
-      child: Draggable(
-        feedback: ClipOval(
-          child: BackdropFilter(
-            filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
-            child: Container(
-              width: 56,
-              height: 56,
-              decoration: BoxDecoration(
-                color: Colors.black.withOpacity(0.5),
-                shape: BoxShape.circle,
-              ),
-              child: const Icon(
-                Icons.currency_rupee,
-                color: Colors.white,
-              ),
-            ),
-          ),
-        ),
-        onDragEnd: (details) {
-          setState(() {
-            position = details.offset;
-          });
-        },
-        child: RoundedTransprentButton(loan: widget.loan),
-      ),
-    );
-  }
-}
+//   @override
+//   Widget build(BuildContext context) {
+//     return Positioned(
+//       left: position.dx,
+//       top: position.dy,
+//       child: Draggable(
+//         feedback: ClipOval(
+//           child: BackdropFilter(
+//             filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
+//             child: Container(
+//               width: 56,
+//               height: 56,
+//               decoration: BoxDecoration(
+//                 color: Colors.black.withOpacity(0.5),
+//                 shape: BoxShape.circle,
+//               ),
+//               child: const Icon(
+//                 Icons.currency_rupee,
+//                 color: Colors.white,
+//               ),
+//             ),
+//           ),
+//         ),
+//         onDragEnd: (details) {
+//           setState(() {
+//             position = details.offset;
+//           });
+//         },
+//         child: RoundedTransprentButton(loan: widget.loan),
+//       ),
+//     );
+//   }
+// }
 
-class RoundedTransprentButton extends StatelessWidget {
-  final Loan loan;
-  const RoundedTransprentButton({super.key, required this.loan});
+// class RoundedTransprentButton extends StatelessWidget {
+//   final Loan loan;
+//   const RoundedTransprentButton({super.key, required this.loan});
 
-  @override
-  Widget build(BuildContext context) {
-    return Material(
-      elevation: 5, // set the elevation here
-      shape: const CircleBorder(),
-      clipBehavior: Clip.hardEdge,
-      color: Colors.transparent,
-      child: InkWell(
-        onTap: () {
-          showDetails(context);
-          // Navigator.of(context).pop();
-        },
-        child: Container(
-          width: 56,
-          height: 56,
-          decoration: BoxDecoration(
-            shape: BoxShape.circle,
-            gradient: LinearGradient(
-              begin: Alignment.topLeft,
-              end: Alignment.bottomRight,
-              colors: [
-                Colors.greenAccent.shade200,
-                Colors.blue.shade400,
-                Colors.blueAccent.shade700,
-              ],
-            ),
-          ),
-          child: const Icon(
-            Icons.currency_rupee_sharp,
-            color: Colors.white,
-          ),
-        ),
-      ),
-    );
-  }
+//   @override
+//   Widget build(BuildContext context) {
+//     return Material(
+//       elevation: 5, // set the elevation here
+//       shape: const CircleBorder(),
+//       clipBehavior: Clip.hardEdge,
+//       color: Colors.transparent,
+//       child: InkWell(
+//         onTap: () {
+//           showDetails(context);
+//           // Navigator.of(context).pop();
+//         },
+//         child: Container(
+//           width: 56,
+//           height: 56,
+//           decoration: BoxDecoration(
+//             shape: BoxShape.circle,
+//             gradient: LinearGradient(
+//               begin: Alignment.topLeft,
+//               end: Alignment.bottomRight,
+//               colors: [
+//                 Colors.greenAccent.shade200,
+//                 Colors.blue.shade400,
+//                 Colors.blueAccent.shade700,
+//               ],
+//             ),
+//           ),
+//           child: const Icon(
+//             Icons.currency_rupee_sharp,
+//             color: Colors.white,
+//           ),
+//         ),
+//       ),
+//     );
+//   }
 
-  void showDetails(BuildContext context) {
-    showModalBottomSheet(
-      context: context,
-      elevation: 0.0,
-      barrierColor: Colors.transparent,
-      backgroundColor: Colors.transparent,
-      shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(
-          top: Radius.circular(16.0),
-        ),
-      ),
-      isScrollControlled: true,
-      useRootNavigator: true,
-      builder: (BuildContext context) {
-        return Padding(
-          padding: const EdgeInsets.only(bottom: 60.0),
-          child: CurrentLoanDetails(loan: loan),
-        );
-      },
-    );
-  }
-}
+//   void showDetails(BuildContext context) {
+//     showModalBottomSheet(
+//       context: context,
+//       elevation: 0.0,
+//       barrierColor: Colors.transparent,
+//       backgroundColor: Colors.transparent,
+//       shape: const RoundedRectangleBorder(
+//         borderRadius: BorderRadius.vertical(
+//           top: Radius.circular(16.0),
+//         ),
+//       ),
+//       isScrollControlled: true,
+//       useRootNavigator: true,
+//       builder: (BuildContext context) {
+//         return Padding(
+//           padding: const EdgeInsets.only(bottom: 60.0),
+//           child: CurrentLoanDetails(loan: loan),
+//         );
+//       },
+//     );
+//   }
+// }
