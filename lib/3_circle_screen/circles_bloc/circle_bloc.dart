@@ -10,7 +10,7 @@ import '../../0_repositories/customer_data_repository.dart';
 import '../../0_repositories/customers_and_loan_data_repository.dart';
 import '../../0_repositories/emis_data_repository.dart';
 import '../../0_repositories/loans_data_repository.dart';
-import '../../circles_helper/screen_helper_cubit/screens_cubit.dart';
+import '../../common/screen_helper_cubit/common_cubit.dart';
 import '../../models/ModelProvider.dart';
 
 part 'circle_event.dart';

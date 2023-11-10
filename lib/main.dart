@@ -40,11 +40,11 @@ import '5_customer_profile_screen/loan_tabs/loan_refinance_bloc/bloc/loan_refina
 import '6_reports_gen_screen/cubit/report_cubit.dart';
 import 'amplifyconfiguration.dart';
 import 'cashflow_app.dart';
-import 'circles_helper/overall_view/amplify_exceptions/amplify_exceptions_bloc.dart';
-import 'circles_helper/overall_view/cashflow_lifecycle_bloc/cashflow_lifecycle_bloc.dart';
-import 'circles_helper/overall_view/data_and_network_status_bloc/status_bloc.dart';
-import 'circles_helper/overall_view/overall_view_bloc/overall_view_bloc.dart';
-import 'circles_helper/screen_helper_cubit/screens_cubit.dart';
+import 'common/overall_view/amplify_exceptions/amplify_exceptions_bloc.dart';
+import 'common/overall_view/cashflow_lifecycle_bloc/cashflow_lifecycle_bloc.dart';
+import 'common/overall_view/data_and_network_status_bloc/status_bloc.dart';
+import 'common/overall_view/overall_view_bloc/overall_view_bloc.dart';
+import 'common/screen_helper_cubit/common_cubit.dart';
 import 'models/ModelProvider.dart';
 
 void main() async {

@@ -5,8 +5,11 @@ class CustomTransactionModel {
   final DateTime date;
   final TransactionType type;
 
-  CustomTransactionModel(
-      {required this.amount, required this.date, required this.type});
+  CustomTransactionModel({
+    required this.amount,
+    required this.date,
+    required this.type,
+  });
   bool get isLoan => type == TransactionType.loan;
 
   @override

@@ -4,7 +4,7 @@ import 'package:go_router/go_router.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 import '../../models/ModelProvider.dart';
-import '../circles_helper/screen_helper_cubit/screens_cubit.dart';
+import '../common/screen_helper_cubit/common_cubit.dart';
 import '../config/routes/route_constants.dart';
 import '../widgets/elevated_tonal_button.dart';
 import '../widgets/new_circle_form.dart';

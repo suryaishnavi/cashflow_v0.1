@@ -4,7 +4,7 @@ import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../../4_customer_screen/update_loan_dialog/update_loan_dialog_bloc/update_loan_dialog_bloc.dart';
-import '../../../../circles_helper/screen_helper_cubit/screens_cubit.dart';
+import '../../../../common/screen_helper_cubit/common_cubit.dart';
 import '../../../../models/ModelProvider.dart';
 
 part 'loan_refinance_event.dart';

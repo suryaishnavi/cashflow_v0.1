@@ -15,7 +15,7 @@ import '../../4_customer_screen/customers_view.dart';
 import '../../4_customer_screen/loan_creation_bloc/create_loan_view.dart';
 import '../../5_customer_profile_screen/create_loan_tab_view.dart';
 import '../../5_customer_profile_screen/customer_profile_view.dart';
-import '../../circles_helper/overall_view/overall_view.dart';
+import '../../common/overall_view/overall_view.dart';
 import '../../info_helper/loading_view.dart';
 import 'route_constants.dart';
 
