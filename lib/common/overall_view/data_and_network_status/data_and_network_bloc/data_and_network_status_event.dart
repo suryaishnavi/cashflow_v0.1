@@ -1,13 +1,13 @@
-part of 'status_bloc.dart';
+part of 'data_and_network_status_bloc.dart';
 
-sealed class StatusEvent extends Equatable {
-  const StatusEvent();
+sealed class DataAndNetworkStatusEvent extends Equatable {
+  const DataAndNetworkStatusEvent();
 
   @override
   List<Object> get props => [];
 }
 
-class NetworkStatusChangeEvent extends StatusEvent {
+class NetworkStatusChangeEvent extends DataAndNetworkStatusEvent {
   const NetworkStatusChangeEvent(this.networkStatus);
 
   final bool networkStatus;
@@ -16,7 +16,7 @@ class NetworkStatusChangeEvent extends StatusEvent {
   List<Object> get props => [networkStatus];
 }
 
-class BackupStatusChangeEvent extends StatusEvent {
+class BackupStatusChangeEvent extends DataAndNetworkStatusEvent {
   const BackupStatusChangeEvent(this.isAllDataBackup);
 
   final bool isAllDataBackup;

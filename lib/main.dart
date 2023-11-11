@@ -7,7 +7,6 @@ import 'package:amplify_datastore/amplify_datastore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-
 import '0_repositories/amplify_hub_events/auth_event_handler.dart';
 import '0_repositories/amplify_hub_events/data_store_event_handler.dart';
 import '0_repositories/app_user_data_repository.dart';
@@ -41,10 +40,8 @@ import '5_customer_profile_screen/loan_tabs/loan_refinance_bloc/bloc/loan_refina
 import '6_reports_gen_screen/cubit/report_cubit.dart';
 import 'amplifyconfiguration.dart';
 import 'cashflow_app.dart';
-import 'common/overall_view/amplify_exceptions/amplify_exceptions_bloc.dart';
 import 'common/overall_view/cashflow_lifecycle_bloc/cashflow_lifecycle_bloc.dart';
-import 'common/overall_view/data_and_network_status_bloc/status_bloc.dart';
-import 'common/overall_view/overall_view_bloc/overall_view_bloc.dart';
+// import 'common/overall_view/overall_view_bloc/overall_view_bloc.dart';
 import 'common/screen_helper_cubit/common_cubit.dart';
 import 'models/ModelProvider.dart';
 
@@ -97,9 +94,6 @@ void main() async {
           ),
           BlocProvider<SyncDataCubit>(
             create: (context) => SyncDataCubit(),
-          ),
-          BlocProvider<OverallViewBloc>(
-            create: (context) => OverallViewBloc(),
           ),
           BlocProvider<SessionCubit>(
             create: (context) => SessionCubit(
@@ -207,22 +201,11 @@ void main() async {
                   context.read<CustomerAndLoanDataRepository>(),
             ),
           ),
-          BlocProvider<OverallViewBloc>(
-            create: (context) => OverallViewBloc(),
-          ),
           BlocProvider<CashflowLifecycleBloc>(
             create: (context) => CashflowLifecycleBloc(),
           ),
-          BlocProvider<AmplifyExceptionsBloc>(
-            create: (context) => AmplifyExceptionsBloc(),
-          ),
           BlocProvider<ConfirmButtonStatusCubit>(
             create: (context) => ConfirmButtonStatusCubit(),
-          ),
-          BlocProvider<StatusBloc>(
-            create: (context) => StatusBloc(
-              dataStoreEventHandler: context.read<DataStoreEventHandler>(),
-            ),
           ),
         ],
         child: const CashflowApp(),
@@ -238,7 +221,8 @@ Future<void> _configureAmplify() async {
     modelProvider: ModelProvider.instance,
     authModeStrategy: AuthModeStrategy.multiAuth,
     errorHandler: ((error) async {
-      DataStoreEventHandler().dataStorePlugInError(e: error);
+      safePrint('Amplify DataStore error: $error');
+      // TODO: Handle error
     }),
   );
   await Amplify.addPlugins([api, cognito, dataStore]);

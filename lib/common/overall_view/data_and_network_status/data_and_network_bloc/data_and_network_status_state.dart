@@ -1,4 +1,4 @@
-part of 'status_bloc.dart';
+part of 'data_and_network_status_bloc.dart';
 
 class DataAndNetworkStatusState extends Equatable {
   const DataAndNetworkStatusState({

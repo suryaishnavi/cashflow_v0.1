@@ -126,9 +126,6 @@ class DataStoreEventHandler {
     );
   }
 
-  dataStorePlugInError({required AmplifyException e}) {
-    _dataStoreEvent.addError(e);
-  }
 
   Stream<NetworkStatusEvent> get networkEvent => _networkEvent.stream;
   Stream<DataStoreHubEvent> get dataStoreEvent => _dataStoreEvent.stream;

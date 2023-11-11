@@ -1,14 +1,16 @@
 import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import '../../../0_repositories/amplify_hub_events/data_store_event_handler.dart';
+import '../../../../0_repositories/amplify_hub_events/data_store_event_handler.dart';
 
-part 'status_event.dart';
-part 'status_state.dart';
 
-class StatusBloc extends Bloc<StatusEvent, DataAndNetworkStatusState> {
+part 'data_and_network_status_event.dart';
+part 'data_and_network_status_state.dart';
+
+class DataAndNetworkStatusBloc
+    extends Bloc<DataAndNetworkStatusEvent, DataAndNetworkStatusState> {
   final DataStoreEventHandler dataStoreEventHandler;
-  StatusBloc({required this.dataStoreEventHandler})
+  DataAndNetworkStatusBloc({required this.dataStoreEventHandler})
       : super(DataAndNetworkStatusState(
           networkStatus: dataStoreEventHandler.networkStatus,
           isAllDataBackup: dataStoreEventHandler.outboxStatus,
