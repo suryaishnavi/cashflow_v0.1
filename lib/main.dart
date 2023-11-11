@@ -1,11 +1,12 @@
 import 'dart:async';
 
-import 'package:amplify_api/amplify_api.dart'; //! Api
-import 'package:amplify_auth_cognito/amplify_auth_cognito.dart';
-import 'package:amplify_datastore/amplify_datastore.dart';
 import 'package:amplify_flutter/amplify_flutter.dart';
+import 'package:amplify_auth_cognito/amplify_auth_cognito.dart';
+import 'package:amplify_api/amplify_api.dart'; //! Api
+import 'package:amplify_datastore/amplify_datastore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+
 
 import '0_repositories/amplify_hub_events/auth_event_handler.dart';
 import '0_repositories/amplify_hub_events/data_store_event_handler.dart';
@@ -238,7 +239,6 @@ Future<void> _configureAmplify() async {
     authModeStrategy: AuthModeStrategy.multiAuth,
     errorHandler: ((error) async {
       DataStoreEventHandler().dataStorePlugInError(e: error);
-      // await _reinitializeAmplify();
     }),
   );
   await Amplify.addPlugins([api, cognito, dataStore]);
@@ -251,26 +251,3 @@ Future<void> _configureAmplify() async {
     debugPrint('Error configuring Amplify: $e');
   }
 }
-
-// Future<void> _reinitializeAmplify() async {
-//   // ignore: invalid_use_of_visible_for_testing_member
-//   await Amplify.reset();
-//   await Future.delayed(const Duration(milliseconds: 500));
-//   final api = AmplifyAPI();
-//   final cognito = AmplifyAuthCognito();
-//   final dataStore = AmplifyDataStore(
-//     modelProvider: ModelProvider.instance,
-//     errorHandler: ((error) async {
-//       await _reinitializeAmplify();
-//     }),
-//   );
-//   await Amplify.addPlugins([api, cognito, dataStore]);
-//   try {
-//     await Amplify.configure(amplifyconfig);
-//   } on AmplifyAlreadyConfiguredException {
-//     safePrint(
-//         "Amplify was already configured. Looks like app restarted on android");
-//   } on Exception catch (e) {
-//     debugPrint('Error configuring Amplify: $e');
-//   }
-// }
