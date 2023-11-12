@@ -13,7 +13,6 @@ import '../../6_reports_gen_screen/report_view.dart';
 import '../../7_profile_screen/profile_view.dart';
 // import '../../creatingTestCustomer/test_customers.dart';
 import 'cashflow_lifecycle_bloc/cashflow_lifecycle_bloc.dart';
-import 'data_and_network_status/data_and_network_bloc/data_and_network_status_bloc.dart';
 import 'data_sync_status_page.dart';
 import 'overall_view_bloc/overall_view_bloc.dart';
 
@@ -143,8 +142,7 @@ class AppNotification extends StatefulWidget {
 }
 
 class _AppNotificationState extends State<AppNotification> {
-  late StreamSubscription<NetworkStatusEvent> _networkStatusEvent;
-  late StreamSubscription<OutboxStatusEvent> _outboxStatusEvent;
+
   late StreamSubscription<SyncQueriesStartedEvent> _syncQueriesStartedEvent;
   late StreamSubscription<OutboxMutationEvent> _outboxMutationEnqueuedEvent;
   late StreamSubscription<OutboxMutationEvent> _outboxMutationProcessedEvent;
@@ -156,20 +154,6 @@ class _AppNotificationState extends State<AppNotification> {
   void initState() {
     super.initState();
 
-    //* networkStatusEvent
-    _networkStatusEvent = DataStoreEventHandler().networkEvent.listen((event) {
-      context
-          .read<DataAndNetworkStatusBloc>()
-          .add(NetworkStatusChangeEvent(event.active));
-    });
-
-    //* outboxStatusEvent
-    _outboxStatusEvent =
-        DataStoreEventHandler().outboxStatusEvent.listen((event) {
-      context
-          .read<DataAndNetworkStatusBloc>()
-          .add(BackupStatusChangeEvent(event.isEmpty));
-    });
 
     /// syncQueriesStartedEvent
     _syncQueriesStartedEvent =
@@ -222,8 +206,6 @@ class _AppNotificationState extends State<AppNotification> {
 
   @override
   void dispose() {
-    _networkStatusEvent.cancel();
-    _outboxStatusEvent.cancel();
     _syncQueriesStartedEvent.cancel();
     _outboxMutationEnqueuedEvent.cancel();
     _outboxMutationProcessedEvent.cancel();

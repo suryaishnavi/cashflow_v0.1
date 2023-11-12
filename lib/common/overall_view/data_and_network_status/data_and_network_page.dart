@@ -1,3 +1,6 @@
+import 'dart:async';
+
+import 'package:amplify_core/amplify_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -20,8 +23,41 @@ class DataAndNetworkPage extends StatelessWidget {
 }
 
 ///! OutboxStatusView & NetworkStatusView
-class DataAndNetworkStatus extends StatelessWidget {
+class DataAndNetworkStatus extends StatefulWidget {
   const DataAndNetworkStatus({super.key});
+
+  @override
+  State<DataAndNetworkStatus> createState() => _DataAndNetworkStatusState();
+}
+
+class _DataAndNetworkStatusState extends State<DataAndNetworkStatus> {
+  late StreamSubscription<NetworkStatusEvent> _networkStatusEvent;
+  late StreamSubscription<OutboxStatusEvent> _outboxStatusEvent;
+  @override
+  void initState() {
+    super.initState();
+    //* networkStatusEvent
+    _networkStatusEvent = DataStoreEventHandler().networkEvent.listen((event) {
+      context
+          .read<DataAndNetworkStatusBloc>()
+          .add(NetworkStatusChangeEvent(event.active));
+    });
+
+    //* outboxStatusEvent
+    _outboxStatusEvent =
+        DataStoreEventHandler().outboxStatusEvent.listen((event) {
+      context
+          .read<DataAndNetworkStatusBloc>()
+          .add(BackupStatusChangeEvent(event.isEmpty));
+    });
+  }
+
+  @override
+  void dispose() {
+    _networkStatusEvent.cancel();
+    _outboxStatusEvent.cancel();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {

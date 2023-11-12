@@ -19,11 +19,7 @@ class _GenerateReportFormState extends State<GenerateReportForm> {
   Circle? _selectedCircle; // ? this is the selected circle
   // i want only today's date without time
 
-  DateTime date = DateTime(
-    DateTime.now().year,
-    DateTime.now().month,
-    DateTime.now().day,
-  );
+  DateTime date = DateTime.now();
 
   @override
   Widget build(BuildContext context) {
@@ -118,7 +114,7 @@ class _GenerateReportFormState extends State<GenerateReportForm> {
     return CustomElevatedButton(
       onPressed: () {
         if (_formKey.currentState!.validate()) {
-          BlocProvider.of<ReportCubit>(context).storeCredentials(
+          BlocProvider.of<ReportCubit>(context).generateReport(
             circle: _selectedCircle!,
             date: date,
           );

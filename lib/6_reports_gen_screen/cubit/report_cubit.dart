@@ -10,6 +10,8 @@ import '../../0_repositories/circle_data_repository.dart';
 import '../../0_repositories/for_reports_generation/get_customer_data.dart';
 import '../../1_session/session_cubit/session_cubit.dart';
 import '../api/pdf_api.dart';
+import '../models/new_customer_print_model.dart';
+import '../models/new_emi_print_model.dart';
 
 part 'report_state.dart';
 
@@ -38,12 +40,13 @@ class ReportCubit extends Cubit<ReportState> {
     }
   }
 
-  void storeCredentials({
+  void generateReport({
     required Circle circle,
     required DateTime date,
   }) {
     try {
-      TemporalDate temporalDate = TemporalDate.fromString(date.toString().split(' ')[0]);
+      TemporalDate temporalDate =
+          TemporalDate.fromString(date.toString().split(' ')[0]);
       emit(LoadingState());
       fetchData(circle: circle, temporalDate: temporalDate);
     } catch (e) {
@@ -57,7 +60,6 @@ class ReportCubit extends Cubit<ReportState> {
     required Circle circle,
     required TemporalDate temporalDate,
   }) async {
-    
     try {
       final List<Customer> customers =
           await getCustomerData.getCustomers(circleId: circle.id);
@@ -72,28 +74,43 @@ class ReportCubit extends Cubit<ReportState> {
       }
 
       for (final loan in loans) {
-        final loanEmis = await getCustomerData.getEmi(loanId: loan.id);
+        final loanEmis = await getCustomerData.getEmi(
+          loanId: loan.id,
+          date: temporalDate,
+        );
         emis.addAll(loanEmis);
       }
 
-      final List<Loan> filteredLoans =
-          loans.where((l) => l.dateOfCreation == temporalDate).toList();
+      final List<Loan> filteredLoans = loans
+          .where((l) => l.dateOfCreation == temporalDate)
+          .toList()
+        ..sort((a, b) => a.loanIdentity.compareTo(b.loanIdentity));
 
-      final List<Emi> filteredEmis =
-          emis.where((e) => e.paidDate == temporalDate).toList();
+      final List<Emi> filteredEmis = emis
+          .where((e) => e.paidDate == temporalDate)
+          .toList()
+        ..sort((a, b) => a.loanIdentity.compareTo(b.loanIdentity));
 
       if (filteredLoans.isEmpty && filteredEmis.isEmpty) {
         emit(const EmptyState(
-            message: 'It seems like there is no data for this date'));
-      } else {
-        final pw.Document document = await generateInvoiceDocument(
+            message:
+                'No new loans or installments occurred on the selected date'));
+        return;
+      }
+      final pw.Document document = await generateInvoiceDocument(
+        newCustomers: generatePrintModels(
           customers: customers,
           loans: filteredLoans,
           emis: filteredEmis,
-          circle: circle,
-        );
-        emit(DocsReadyState(document));
-      }
+        ).newCustomers,
+        newEmis: generatePrintModels(
+          customers: customers,
+          loans: filteredLoans,
+          emis: filteredEmis,
+        ).newEmis,
+        circle: circle,
+      );
+      emit(DocsReadyState(document));
     } catch (e) {
       // Handle and log the error appropriately
       // print('An error occurred while fetching data: $e');
@@ -101,30 +118,101 @@ class ReportCubit extends Cubit<ReportState> {
     }
   }
 
-  Future<pw.Document> generateInvoiceDocument({
+  ({
+    List<NewCustomerPrintModel> newCustomers,
+    List<NewEmiPrintModel> newEmis,
+  }) generatePrintModels({
     required List<Customer> customers,
     required List<Loan> loans,
     required List<Emi> emis,
+  }) {
+    final List<NewCustomerPrintModel> newCustomerPrintModels = [];
+    final List<NewEmiPrintModel> newEmiPrintModels = [];
+
+    // for each loan in loans, find the customer and add it to newCustomerPrintModels
+    for (final loan in loans) {
+      final customer = customers.firstWhere((c) => c.id == loan.customerID);
+      newCustomerPrintModels.add(
+        NewCustomerPrintModel(
+          name: customer.customerName,
+          city: customer.city.name,
+          phone: customer.phone,
+          bookId: loan.loanIdentity,
+          tenure: loan.totalEmis,
+          givenAmount: loan.givenAmount,
+          collectbleAmount: loan.collectibleAmount,
+          date: loan.dateOfCreation,
+          // oldBookNumber: loan.oldBookNumber,
+          // oldBookAmount: loan.oldBookAmount,
+        ),
+      );
+    }
+    // for each emi in emis generate newEmiPrintModels
+    for (final emi in emis) {
+      newEmiPrintModels.add(
+        NewEmiPrintModel(
+          bookId: emi.loanIdentity,
+          name: emi.customerName,
+          emiAmount: emi.paidAmount!,
+          date: emi.paidDate!,
+        ),
+      );
+    }
+
+    return (
+      newCustomers: newCustomerPrintModels,
+      newEmis: newEmiPrintModels,
+    );
+  }
+
+  Future<pw.Document> generateInvoiceDocument({
+    required List<NewCustomerPrintModel> newCustomers,
+    required List<NewEmiPrintModel> newEmis,
     required Circle circle,
   }) async {
-    if (loans.isEmpty && emis.isNotEmpty) {
+    if (newCustomers.isEmpty && newEmis.isNotEmpty) {
       return PdfApi.pdfInvoiceEmis(
-        emis: emis,
+        emis: newEmis,
         circle: circle,
       );
-    } else if (loans.isNotEmpty && emis.isEmpty) {
+    } else if (newCustomers.isNotEmpty && newEmis.isEmpty) {
       return PdfApi.pdfInvoiceLoans(
-        customers: customers,
-        loans: loans,
+        customers: newCustomers,
         circle: circle,
       );
     } else {
       return PdfApi.pdfInvoice(
         circle: circle,
-        customers: customers,
-        loans: loans,
-        emis: emis,
+        customers: newCustomers,
+        emis: newEmis,
       );
     }
   }
+
+  // Future<pw.Document> generateInvoiceDocument({
+  //   required List<Customer> customers,
+  //   required List<Loan> loans,
+  //   required List<Emi> emis,
+  //   required Circle circle,
+  // }) async {
+  //   if (loans.isEmpty && emis.isNotEmpty) {
+  //     return PdfApi.pdfInvoiceEmis(
+  //       emis: emis,
+  //       circle: circle,
+  //     );
+  //   } else if (loans.isNotEmpty && emis.isEmpty) {
+  //     return PdfApi.pdfInvoiceLoans(
+  //       customers: customers,
+  //       loans: loans,
+  //       circle: circle,
+  //     );
+  //   } else {
+  //     return PdfApi.pdfInvoice(
+  //       circle: circle,
+  //       customers: customers,
+  //       loans: loans,
+  //       emis: emis,
+  //     );
+  //   }
+  // }
 }

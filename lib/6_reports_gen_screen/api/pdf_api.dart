@@ -3,35 +3,68 @@ import 'package:flutter/services.dart';
 import 'package:intl/intl.dart' as intl;
 import 'package:pdf/pdf.dart';
 import 'package:pdf/widgets.dart' as pw;
-import 'package:printing/printing.dart';
 
 import '../../../models/ModelProvider.dart';
+import '../models/new_customer_print_model.dart';
+import '../models/new_emi_print_model.dart';
 
 class PdfApi {
+  static DateTime getDate({required TemporalDate tDate}) {
+    DateTime convertedDate = tDate.getDateTime();
+    return convertedDate;
+  }
+
   static Future<pw.Document> pdfInvoice({
-    required List<Customer> customers,
-    required List<Loan> loans,
-    required List<Emi> emis,
+    required List<NewCustomerPrintModel> customers,
+    required List<NewEmiPrintModel> emis,
     required Circle circle,
   }) async {
     final doc = pw.Document(
-        compress: true,
-        pageMode: PdfPageMode.outlines,
-        author: 'Surya',
-        creator: 'CFC',
-        title: 'CREATING DAILY TRANSACTIONS PDF');
-    final customFont =
-        await fontFromAssetBundle('assets/fonts/NotoSerifTelugu-Regular.ttf');
-
-    // Calculate the total amount of loans
-    final double totalLoanAmount = loans.fold(
-      0.0,
-      (previousValue, loan) => previousValue + loan.givenAmount,
+      compress: true,
+      pageMode: PdfPageMode.outlines,
+      author: 'Surya',
+      creator: 'CFC',
+      title: 'CREATING DAILY TRANSACTIONS PDF',
+      theme: pw.ThemeData.withFont(
+        base: pw.Font.ttf(
+            await rootBundle.load("assets/fonts/NotoSerifTelugu-Regular.ttf")),
+        bold: pw.Font.ttf(
+            await rootBundle.load("assets/fonts/NotoSerifTelugu-Bold.ttf")),
+      ),
     );
 
+    // Calculate total Collectble Amount
+    final double totalCollectableAmont = customers.fold(
+        0.0,
+        (previousValue, customers) =>
+            previousValue + customers.collectbleAmount);
+    // Calculate total Interest
+    final double totalInterest = customers.fold(
+        0.0, (previousValue, customers) => previousValue + customers.interest);
+    // Calculate total Given Amount
+    final double totalGivenAmount = customers.fold(0.0,
+        (previousValue, customers) => previousValue + customers.givenAmount);
+
+    // Define the maximum number of rows that can fit on a page
+    const int maxRowsPerPage = 15;
+
+    // customers new Loan Headers
+    pw.Widget loanHeaders() {
+      return pw.Container(
+          color: PdfColors.grey100,
+          child: pw.Text(
+              'Report for the ${circle.circleName} circle on ${intl.DateFormat('dd-MM-yyyy').format(getDate(tDate: customers[0].date))}',
+              textAlign: pw.TextAlign.center,
+              style: const pw.TextStyle(fontSize: 17)),
+          width: double.infinity,
+          alignment: pw.Alignment.center);
+    }
+
+    // Create a list of rows for the loan table
     // Create a list of rows for the loan table
     final List<pw.TableRow> loanRows = [
       pw.TableRow(
+        verticalAlignment: pw.TableCellVerticalAlignment.middle,
         children: [
           pw.Container(
             height: 30,
@@ -39,16 +72,6 @@ class PdfApi {
                 style: pw.TextStyle(
                   fontWeight: pw.FontWeight.bold,
                   fontSize: 13,
-                  font: customFont,
-                )),
-          ),
-          pw.Container(
-            height: 30,
-            child: pw.Text('Loan S.No.',
-                style: pw.TextStyle(
-                  fontWeight: pw.FontWeight.bold,
-                  fontSize: 13,
-                  font: customFont,
                 )),
           ),
           pw.Container(
@@ -57,78 +80,137 @@ class PdfApi {
                 style: pw.TextStyle(
                   fontWeight: pw.FontWeight.bold,
                   fontSize: 13,
-                  font: customFont,
                 )),
           ),
           pw.Container(
             height: 30,
-            child: pw.Text('Phone',
+            child: pw.Text('Address',
                 style: pw.TextStyle(
                   fontWeight: pw.FontWeight.bold,
                   fontSize: 13,
-                  font: customFont,
                 )),
           ),
           pw.Container(
             height: 30,
-            child: pw.Text('Given Amount',
+            child: pw.Text('phone',
                 style: pw.TextStyle(
                   fontWeight: pw.FontWeight.bold,
                   fontSize: 13,
-                  font: customFont,
+                )),
+          ),
+          pw.Container(
+            height: 30,
+            child: pw.Text('tenure',
+                style: pw.TextStyle(
+                  fontWeight: pw.FontWeight.bold,
+                  fontSize: 13,
+                )),
+          ),
+          pw.Container(
+            height: 30,
+            child: pw.Text('Collectable',
+                style: pw.TextStyle(
+                  fontWeight: pw.FontWeight.bold,
+                  fontSize: 13,
+                )),
+          ),
+          pw.Container(
+            height: 30,
+            child: pw.Text('Interest',
+                style: pw.TextStyle(
+                  fontWeight: pw.FontWeight.bold,
+                  fontSize: 13,
+                )),
+          ),
+          pw.Container(
+            height: 30,
+            child: pw.Text('Given',
+                style: pw.TextStyle(
+                  fontWeight: pw.FontWeight.bold,
+                  fontSize: 13,
                 )),
           ),
         ],
       ),
-      ...loans.asMap().entries.map(
+
+      ...customers.asMap().entries.map(
         (entry) {
-          final index = entry.key + 1;
-          final loan = entry.value;
-          final customer = customers.firstWhere((c) => c.id == loan.customerID);
+          final index = entry.key;
+          // final loan = entry.value;
+          final customer = entry.value;
+          // final customer = customers.firstWhere((c) => c.id == loan.customerID);
           return pw.TableRow(
             children: [
               pw.Container(
                 height: 25,
                 color: index % 2 == 0 ? PdfColors.grey100 : PdfColors.white,
                 alignment: pw.Alignment.centerLeft,
-                child: pw.Text('$index',
-                    style: pw.TextStyle(
+                child: pw.Text(customer.bookId,
+                    style: const pw.TextStyle(
                       fontSize: 12,
-                      font: customFont,
                     )),
               ),
               pw.Container(
                 height: 25,
                 color: index % 2 == 0 ? PdfColors.grey100 : PdfColors.white,
                 alignment: pw.Alignment.centerLeft,
-                child: pw.Text(loan.loanIdentity,
-                    style: pw.TextStyle(
-                      fontSize: 12,
-                      font: customFont,
-                    )),
+                child: pw.RichText(
+                    text: pw.TextSpan(
+                        text: customer.name.length > 25
+                            ? '${customer.name.substring(0, 25)}...'
+                            : customer.name,
+                        style: const pw.TextStyle(
+                          fontSize: 12,
+                        ))),
               ),
               pw.Container(
                 height: 25,
                 color: index % 2 == 0 ? PdfColors.grey100 : PdfColors.white,
                 alignment: pw.Alignment.centerLeft,
                 child: pw.Text(
-                  customer.customerName.length > 25
-                      ? '${customer.customerName.substring(0, 25)}...'
-                      : customer.customerName,
-                  style: pw.TextStyle(
-                    fontSize: 12,
-                    font: customFont,
-                  ),
-                ),
+                    customer.city.length > 25
+                        ? '${customer.city.substring(0, 25)}...'
+                        : customer.city,
+                    style: const pw.TextStyle(
+                      fontSize: 12,
+                    )),
               ),
               pw.Container(
                 height: 25,
                 color: index % 2 == 0 ? PdfColors.grey100 : PdfColors.white,
                 alignment: pw.Alignment.centerLeft,
                 child: pw.Text(customer.phone.substring(3),
-                    style: pw.TextStyle(
+                    style: const pw.TextStyle(
                       fontSize: 12,
-                      font: customFont,
+                    )),
+              ),
+              pw.Container(
+                height: 25,
+                color: index % 2 == 0 ? PdfColors.grey100 : PdfColors.white,
+                alignment: pw.Alignment.center,
+                child: pw.Text('${customer.tenure}',
+                    style: const pw.TextStyle(
+                      fontSize: 12,
+                    )),
+              ),
+              pw.Container(
+                height: 25,
+                color: index % 2 == 0 ? PdfColors.grey100 : PdfColors.white,
+                alignment: pw.Alignment.center,
+                child: pw.Text(
+                    '\u{20B9}${intl.NumberFormat('#,##,000').format(customer.collectbleAmount)}',
+                    style: const pw.TextStyle(
+                      fontSize: 12,
+                    )),
+              ),
+              pw.Container(
+                height: 25,
+                color: index % 2 == 0 ? PdfColors.grey100 : PdfColors.white,
+                alignment: pw.Alignment.center,
+                child: pw.Text(
+                    '\u{20B9}${intl.NumberFormat('#,##,000').format(customer.interest)}',
+                    style: const pw.TextStyle(
+                      fontSize: 12,
                     )),
               ),
               pw.Container(
@@ -136,10 +218,9 @@ class PdfApi {
                 color: index % 2 == 0 ? PdfColors.grey100 : PdfColors.white,
                 alignment: pw.Alignment.centerLeft,
                 child: pw.Text(
-                    '\u{20B9}${intl.NumberFormat('#,##,000').format(loan.givenAmount)}',
-                    style: pw.TextStyle(
+                    '\u{20B9}${intl.NumberFormat('#,##,000').format(customer.givenAmount)}',
+                    style: const pw.TextStyle(
                       fontSize: 12,
-                      font: customFont,
                     )),
               ),
             ],
@@ -153,57 +234,61 @@ class PdfApi {
           pw.Text(''),
           pw.Text(''),
           pw.Text(''),
+          pw.Text(''),
           pw.Padding(
             padding: const pw.EdgeInsets.symmetric(vertical: 10),
             child: pw.Text(
-              '-----------\nTotal \u{20B9}${intl.NumberFormat('#,##,000').format(totalLoanAmount)}',
-              style: pw.TextStyle(
-                fontWeight: pw.FontWeight.bold,
-                fontSize: 13,
-                font: customFont,
-              ),
-            ),
+                '-------------\n\u{20B9}${intl.NumberFormat('#,##,###').format(totalCollectableAmont)}',
+                style: pw.TextStyle(
+                  fontWeight: pw.FontWeight.bold,
+                  fontSize: 13,
+                )),
           ),
+          pw.Padding(
+            padding: const pw.EdgeInsets.symmetric(vertical: 10),
+            child: pw.Text(
+                '-------------\n\u{20B9}${intl.NumberFormat('#,##,###').format(totalInterest)}',
+                style: pw.TextStyle(
+                  fontWeight: pw.FontWeight.bold,
+                  fontSize: 13,
+                )),
+          ),
+          pw.Padding(
+            padding: const pw.EdgeInsets.symmetric(vertical: 10),
+            child: pw.Text(
+                '-------------\n\u{20B9}${intl.NumberFormat('#,##,###').format(totalGivenAmount)}',
+                style: pw.TextStyle(
+                  fontWeight: pw.FontWeight.bold,
+                  fontSize: 13,
+                )),
+          )
         ],
       ),
     ];
 
-    pw.Widget headers() {
-      return pw.Container(
-          color: PdfColors.grey100,
-          child: pw.Text(
-              'Report for the ${circle.circleName} circle on ${intl.DateFormat('dd-MM-yyyy').format(getDate(tDate: loans[0].dateOfCreation))}',
-              textAlign: pw.TextAlign.center,
-              style: const pw.TextStyle(fontSize: 15)),
-          width: double.infinity,
-          alignment: pw.Alignment.center);
-    }
-
     // Calculate the number of pages needed for the loan table
-    final int loanPages = (loanRows.length / 20).ceil();
+    final int loanPages = (loanRows.length / maxRowsPerPage).ceil();
 
     // Add loan table pages
     for (int i = 0; i < loanPages; i++) {
-      final startIndex = i * 20;
-      final endIndex = (i + 1) * 20;
+      final startIndex = i * maxRowsPerPage;
+      final endIndex = (i + 1) * maxRowsPerPage;
       final pageLoanRows = loanRows.sublist(
           startIndex, endIndex > loanRows.length ? loanRows.length : endIndex);
 
       doc.addPage(
         pw.Page(
-          pageFormat: PdfPageFormat.a4,
+          pageFormat: PdfPageFormat.a4.landscape,
           build: (pw.Context context) => pw.Column(
             crossAxisAlignment: pw.CrossAxisAlignment.start,
             children: [
-              headers(),
+              loanHeaders(),
               pw.SizedBox(height: 20),
-              if (i == 0)
-                pw.Text('*** New Customers ***',
-                    style: pw.TextStyle(
-                      fontWeight: pw.FontWeight.bold,
-                      fontSize: 14,
-                      font: customFont,
-                    )),
+              pw.Text('*** New Customers ***',
+                  style: pw.TextStyle(
+                    fontWeight: pw.FontWeight.bold,
+                    fontSize: 14,
+                  )),
               pw.SizedBox(height: 10),
               pw.Table(
                 children: pageLoanRows,
@@ -219,9 +304,21 @@ class PdfApi {
     // Calculate the total amount of paid emis
     final double totalPaidEmiAmount = emis.fold(
       0.0,
-      (previousValue, emi) =>
-          previousValue + (emi.paidAmount != null ? emi.paidAmount! : 0),
+      (previousValue, emi) => previousValue + emi.emiAmount,
     );
+    // Define the maximum number of rows that can fit on a page
+    const int maxEmiRowsPerPage = 20;
+
+    pw.Widget emiHeaders() {
+      return pw.Container(
+          color: PdfColors.grey100,
+          child: pw.Text(
+              'Report for the ${circle.circleName} circle on ${intl.DateFormat('dd-MM-yyyy').format(getDate(tDate: customers[0].date))}',
+              textAlign: pw.TextAlign.center,
+              style: const pw.TextStyle(fontSize: 17)),
+          width: double.infinity,
+          alignment: pw.Alignment.center);
+    }
 
     // Create a list of rows for the emi table
     final List<pw.TableRow> emiRows = [
@@ -233,16 +330,6 @@ class PdfApi {
                 style: pw.TextStyle(
                   fontWeight: pw.FontWeight.bold,
                   fontSize: 13,
-                  font: customFont,
-                )),
-          ),
-          pw.Container(
-            height: 30,
-            child: pw.Text('Loan S.No.',
-                style: pw.TextStyle(
-                  fontWeight: pw.FontWeight.bold,
-                  fontSize: 13,
-                  font: customFont,
                 )),
           ),
           pw.Container(
@@ -251,32 +338,21 @@ class PdfApi {
                 style: pw.TextStyle(
                   fontWeight: pw.FontWeight.bold,
                   fontSize: 13,
-                  font: customFont,
                 )),
           ),
           pw.Container(
             height: 30,
-            child: pw.Text('EMI No.',
+            child: pw.Text('Installment',
                 style: pw.TextStyle(
                   fontWeight: pw.FontWeight.bold,
                   fontSize: 13,
-                  font: customFont,
-                )),
-          ),
-          pw.Container(
-            height: 30,
-            child: pw.Text('Paid Amount',
-                style: pw.TextStyle(
-                  fontWeight: pw.FontWeight.bold,
-                  fontSize: 13,
-                  font: customFont,
                 )),
           ),
         ],
       ),
       ...emis.asMap().entries.map(
         (entry) {
-          final index = entry.key + 1;
+          final index = entry.key;
           final emi = entry.value;
           return pw.TableRow(
             children: [
@@ -284,20 +360,9 @@ class PdfApi {
                 height: 25,
                 color: index % 2 == 0 ? PdfColors.grey100 : PdfColors.white,
                 alignment: pw.Alignment.centerLeft,
-                child: pw.Text('$index',
-                    style: pw.TextStyle(
+                child: pw.Text(emi.bookId,
+                    style: const pw.TextStyle(
                       fontSize: 12,
-                      font: customFont,
-                    )),
-              ),
-              pw.Container(
-                height: 25,
-                color: index % 2 == 0 ? PdfColors.grey100 : PdfColors.white,
-                alignment: pw.Alignment.centerLeft,
-                child: pw.Text(emi.loanIdentity,
-                    style: pw.TextStyle(
-                      fontSize: 12,
-                      font: customFont,
                     )),
               ),
               pw.Container(
@@ -305,12 +370,11 @@ class PdfApi {
                 color: index % 2 == 0 ? PdfColors.grey100 : PdfColors.white,
                 alignment: pw.Alignment.centerLeft,
                 child: pw.Text(
-                  emi.customerName.toString().length > 25
-                      ? '${emi.customerName.toString().substring(0, 25)}...'
-                      : emi.customerName.toString(),
-                  style: pw.TextStyle(
+                  emi.name.toString().length > 25
+                      ? '${emi.name.toString().substring(0, 25)}...'
+                      : emi.name.toString(),
+                  style: const pw.TextStyle(
                     fontSize: 12,
-                    font: customFont,
                   ),
                 ),
               ),
@@ -318,21 +382,10 @@ class PdfApi {
                 height: 25,
                 color: index % 2 == 0 ? PdfColors.grey100 : PdfColors.white,
                 alignment: pw.Alignment.centerLeft,
-                child: pw.Text(emi.emiNumber.toString(),
-                    style: pw.TextStyle(
-                      fontSize: 12,
-                      font: customFont,
-                    )),
-              ),
-              pw.Container(
-                height: 25,
-                color: index % 2 == 0 ? PdfColors.grey100 : PdfColors.white,
-                alignment: pw.Alignment.centerLeft,
                 child: pw.Text(
-                    '\u{20B9}${intl.NumberFormat('#,##,000').format(emi.paidAmount)}',
-                    style: pw.TextStyle(
+                    '\u{20B9}${intl.NumberFormat('#,##,###').format(emi.emiAmount)}',
+                    style: const pw.TextStyle(
                       fontSize: 12,
-                      font: customFont,
                     )),
               ),
             ],
@@ -343,16 +396,13 @@ class PdfApi {
         children: [
           pw.Text(''),
           pw.Text(''),
-          pw.Text(''),
-          pw.Text(''),
           pw.Padding(
             padding: const pw.EdgeInsets.symmetric(vertical: 10),
             child: pw.Text(
-              '-----------\nTotal \u{20B9}${intl.NumberFormat('#,##,000').format(totalPaidEmiAmount)}',
+              '-----------\n\u{20B9}${intl.NumberFormat('#,##,###').format(totalPaidEmiAmount)}',
               style: pw.TextStyle(
                 fontWeight: pw.FontWeight.bold,
                 fontSize: 13,
-                font: customFont,
               ),
             ),
           ),
@@ -361,12 +411,12 @@ class PdfApi {
     ];
 
     // Calculate the number of pages needed for the emi table
-    final int emiPages = (emiRows.length / 27).ceil();
+    final int emiPages = (emiRows.length / maxEmiRowsPerPage).ceil();
 
     // Add emi table pages
     for (int i = 0; i < emiPages; i++) {
-      final startIndex = i * 27;
-      final endIndex = (i + 1) * 27;
+      final startIndex = i * maxEmiRowsPerPage;
+      final endIndex = (i + 1) * maxEmiRowsPerPage;
       final pageEmiRows = emiRows.sublist(
         startIndex,
         endIndex > emiRows.length ? emiRows.length : endIndex,
@@ -374,17 +424,17 @@ class PdfApi {
 
       doc.addPage(
         pw.Page(
-          pageFormat: PdfPageFormat.a4,
+          pageFormat: PdfPageFormat.a4.portrait,
           build: (pw.Context context) => pw.Column(
             crossAxisAlignment: pw.CrossAxisAlignment.start,
             children: [
-              if (i == 0)
-                pw.Text('*** Collection Amount Details ***',
-                    style: pw.TextStyle(
-                      fontWeight: pw.FontWeight.bold,
-                      fontSize: 14,
-                      font: customFont,
-                    )),
+              emiHeaders(),
+              pw.SizedBox(height: 20),
+              pw.Text('*** Collection Amount Details ***',
+                  style: pw.TextStyle(
+                    fontWeight: pw.FontWeight.bold,
+                    fontSize: 14,
+                  )),
               pw.SizedBox(height: 10),
               pw.Table(
                 children: pageEmiRows,
@@ -397,38 +447,42 @@ class PdfApi {
     return doc;
   }
 
-  static DateTime getDate({required TemporalDate tDate}) {
-    DateTime convertedDate = tDate.getDateTime();
-    return convertedDate;
-  }
-
-  //! ---------ONLY NEW CUSTOMER PDF------------
+  // ! -----Generate pdf ONLY WHEN NEW CUSTOMERS are avaliable-----
 
   static Future<pw.Document> pdfInvoiceLoans({
-    required List<Customer> customers,
-    required List<Loan> loans,
+    required List<NewCustomerPrintModel> customers,
     required Circle circle,
   }) async {
     final doc = pw.Document(
         pageMode: PdfPageMode.outlines,
+        title: 'ONLY NEW CUSTOMER PDF',
         author: 'Surya',
         creator: 'CFC',
-        title: 'ONLY NEW CUSTOMER PDF');
-    final font =
-        await rootBundle.load("assets/fonts/NotoSerifTelugu-Regular.ttf");
-    final poppins = pw.Font.ttf(font);
-    // await fontFromAssetBundle('assets/fonts/NotoSansTelugu-Regular.ttf');
+        theme: pw.ThemeData.withFont(
+          base: pw.Font.ttf(await rootBundle
+              .load("assets/fonts/NotoSerifTelugu-Regular.ttf")),
+          bold: pw.Font.ttf(
+              await rootBundle.load("assets/fonts/NotoSerifTelugu-Bold.ttf")),
+        ));
 
-    // Calculate the total amount of loans
-    final double totalLoanAmount = loans.fold(
-        0.0, (previousValue, loan) => previousValue + loan.givenAmount);
+    // Calculate total Collectble Amount
+    final double totalCollectableAmont = customers.fold(
+        0.0,
+        (previousValue, customers) =>
+            previousValue + customers.collectbleAmount);
+    // Calculate total Interest
+    final double totalInterest = customers.fold(
+        0.0, (previousValue, customers) => previousValue + customers.interest);
+    // Calculate total Given Amount
+    final double totalGivenAmount = customers.fold(0.0,
+        (previousValue, customers) => previousValue + customers.givenAmount);
 
-    // header
+    // Page Heading
     pw.Widget headers() {
       return pw.Container(
           color: PdfColors.grey100,
           child: pw.Text(
-              'Report for the ${circle.circleName} circle on ${intl.DateFormat('dd-MM-yyyy').format(getDate(tDate: loans[0].dateOfCreation))}',
+              'Report for the ${circle.circleName} circle on ${intl.DateFormat('dd-MM-yyyy').format(getDate(tDate: customers[0].date))}',
               textAlign: pw.TextAlign.center,
               style: const pw.TextStyle(fontSize: 17)),
           width: double.infinity,
@@ -436,11 +490,12 @@ class PdfApi {
     }
 
     // Define the maximum number of rows that can fit on a page
-    const int maxRowsPerPage = 30;
+    const int maxRowsPerPage = 15;
 
     // Create a list of rows for the loan table
     final List<pw.TableRow> loanRows = [
       pw.TableRow(
+        verticalAlignment: pw.TableCellVerticalAlignment.middle,
         children: [
           pw.Container(
             height: 30,
@@ -448,7 +503,6 @@ class PdfApi {
                 style: pw.TextStyle(
                   fontWeight: pw.FontWeight.bold,
                   fontSize: 13,
-                  font: poppins,
                 )),
           ),
           pw.Container(
@@ -457,42 +511,72 @@ class PdfApi {
                 style: pw.TextStyle(
                   fontWeight: pw.FontWeight.bold,
                   fontSize: 13,
-                  font: poppins,
                 )),
           ),
           pw.Container(
             height: 30,
-            child: pw.Text('Phone',
+            child: pw.Text('Address',
                 style: pw.TextStyle(
                   fontWeight: pw.FontWeight.bold,
                   fontSize: 13,
-                  font: poppins,
                 )),
           ),
           pw.Container(
             height: 30,
-            child: pw.Text('Given Amount',
+            child: pw.Text('phone',
                 style: pw.TextStyle(
                   fontWeight: pw.FontWeight.bold,
                   fontSize: 13,
-                  font: poppins,
+                )),
+          ),
+          pw.Container(
+            height: 30,
+            child: pw.Text('tenure',
+                style: pw.TextStyle(
+                  fontWeight: pw.FontWeight.bold,
+                  fontSize: 13,
+                )),
+          ),
+          pw.Container(
+            height: 30,
+            child: pw.Text('Collectable',
+                style: pw.TextStyle(
+                  fontWeight: pw.FontWeight.bold,
+                  fontSize: 13,
+                )),
+          ),
+          pw.Container(
+            height: 30,
+            child: pw.Text('Interest',
+                style: pw.TextStyle(
+                  fontWeight: pw.FontWeight.bold,
+                  fontSize: 13,
+                )),
+          ),
+          pw.Container(
+            height: 30,
+            child: pw.Text('Given',
+                style: pw.TextStyle(
+                  fontWeight: pw.FontWeight.bold,
+                  fontSize: 13,
                 )),
           ),
         ],
       ),
 
-      ...loans.asMap().entries.map(
+      ...customers.asMap().entries.map(
         (entry) {
-          final index = entry.key + 1;
-          final loan = entry.value;
-          final customer = customers.firstWhere((c) => c.id == loan.customerID);
+          final index = entry.key;
+          // final loan = entry.value;
+          final customer = entry.value;
+          // final customer = customers.firstWhere((c) => c.id == loan.customerID);
           return pw.TableRow(
             children: [
               pw.Container(
                 height: 25,
                 color: index % 2 == 0 ? PdfColors.grey100 : PdfColors.white,
                 alignment: pw.Alignment.centerLeft,
-                child: pw.Text('$index',
+                child: pw.Text(customer.bookId,
                     style: const pw.TextStyle(
                       fontSize: 12,
                     )),
@@ -503,12 +587,24 @@ class PdfApi {
                 alignment: pw.Alignment.centerLeft,
                 child: pw.RichText(
                     text: pw.TextSpan(
-                        text: customer.customerName.length > 25
-                            ? '${customer.customerName.substring(0, 25)}...'
-                            : customer.customerName,
+                        text: customer.name.length > 25
+                            ? '${customer.name.substring(0, 25)}...'
+                            : customer.name,
                         style: const pw.TextStyle(
                           fontSize: 12,
                         ))),
+              ),
+              pw.Container(
+                height: 25,
+                color: index % 2 == 0 ? PdfColors.grey100 : PdfColors.white,
+                alignment: pw.Alignment.centerLeft,
+                child: pw.Text(
+                    customer.city.length > 25
+                        ? '${customer.city.substring(0, 25)}...'
+                        : customer.city,
+                    style: const pw.TextStyle(
+                      fontSize: 12,
+                    )),
               ),
               pw.Container(
                 height: 25,
@@ -522,9 +618,38 @@ class PdfApi {
               pw.Container(
                 height: 25,
                 color: index % 2 == 0 ? PdfColors.grey100 : PdfColors.white,
+                alignment: pw.Alignment.center,
+                child: pw.Text('${customer.tenure}',
+                    style: const pw.TextStyle(
+                      fontSize: 12,
+                    )),
+              ),
+              pw.Container(
+                height: 25,
+                color: index % 2 == 0 ? PdfColors.grey100 : PdfColors.white,
+                alignment: pw.Alignment.center,
+                child: pw.Text(
+                    '\u{20B9}${intl.NumberFormat('#,##,000').format(customer.collectbleAmount)}',
+                    style: const pw.TextStyle(
+                      fontSize: 12,
+                    )),
+              ),
+              pw.Container(
+                height: 25,
+                color: index % 2 == 0 ? PdfColors.grey100 : PdfColors.white,
+                alignment: pw.Alignment.center,
+                child: pw.Text(
+                    '\u{20B9}${intl.NumberFormat('#,##,000').format(customer.interest)}',
+                    style: const pw.TextStyle(
+                      fontSize: 12,
+                    )),
+              ),
+              pw.Container(
+                height: 25,
+                color: index % 2 == 0 ? PdfColors.grey100 : PdfColors.white,
                 alignment: pw.Alignment.centerLeft,
                 child: pw.Text(
-                    '\u{20B9}${intl.NumberFormat('#,##,000').format(loan.givenAmount)}',
+                    '\u{20B9}${intl.NumberFormat('#,##,000').format(customer.givenAmount)}',
                     style: const pw.TextStyle(
                       fontSize: 12,
                     )),
@@ -539,10 +664,30 @@ class PdfApi {
           pw.Text(''),
           pw.Text(''),
           pw.Text(''),
+          pw.Text(''),
+          pw.Text(''),
           pw.Padding(
             padding: const pw.EdgeInsets.symmetric(vertical: 10),
             child: pw.Text(
-                '-----------\nTotal \u{20B9}${intl.NumberFormat('#,##,000').format(totalLoanAmount)}',
+                '-------------\n\u{20B9}${intl.NumberFormat('#,##,###').format(totalCollectableAmont)}',
+                style: pw.TextStyle(
+                  fontWeight: pw.FontWeight.bold,
+                  fontSize: 13,
+                )),
+          ),
+          pw.Padding(
+            padding: const pw.EdgeInsets.symmetric(vertical: 10),
+            child: pw.Text(
+                '-------------\n\u{20B9}${intl.NumberFormat('#,##,###').format(totalInterest)}',
+                style: pw.TextStyle(
+                  fontWeight: pw.FontWeight.bold,
+                  fontSize: 13,
+                )),
+          ),
+          pw.Padding(
+            padding: const pw.EdgeInsets.symmetric(vertical: 10),
+            child: pw.Text(
+                '-------------\n\u{20B9}${intl.NumberFormat('#,##,###').format(totalGivenAmount)}',
                 style: pw.TextStyle(
                   fontWeight: pw.FontWeight.bold,
                   fontSize: 13,
@@ -565,7 +710,7 @@ class PdfApi {
 
       doc.addPage(
         pw.Page(
-          theme: pw.ThemeData(defaultTextStyle: pw.TextStyle(font: poppins)),
+          pageFormat: PdfPageFormat.a4.landscape,
           build: (pw.Context context) => pw.Column(
             crossAxisAlignment: pw.CrossAxisAlignment.start,
             children: [
@@ -590,28 +735,35 @@ class PdfApi {
 
   //! ---------ONLY EMI PDF---------------------
   static Future<pw.Document> pdfInvoiceEmis({
-    required List<Emi> emis,
+    required List<NewEmiPrintModel> emis,
     required Circle circle,
   }) async {
     final doc = pw.Document(
-        pageMode: PdfPageMode.outlines,
-        author: 'Surya',
-        creator: 'CFC',
-        title: 'ONLY EMIS PDF');
-    final poppins =
-        await fontFromAssetBundle('assets/fonts/NotoSerifTelugu-Regular.ttf');
+      pageMode: PdfPageMode.outlines,
+      author: 'Surya',
+      creator: 'CFC',
+      title: 'ONLY EMIS PDF',
+      theme: pw.ThemeData.withFont(
+        base: pw.Font.ttf(
+            await rootBundle.load("assets/fonts/NotoSerifTelugu-Regular.ttf")),
+        bold: pw.Font.ttf(
+            await rootBundle.load("assets/fonts/NotoSerifTelugu-Bold.ttf")),
+      ),
+    );
 
     // Calculate the total amount of paid emis
-    final double totalEmiAmount = emis.fold(
+    final double totalPaidEmiAmount = emis.fold(
       0.0,
-      (previousValue, emi) =>
-          previousValue + (emi.paidAmount != null ? emi.paidAmount! : 0),
+      (previousValue, emi) => previousValue + emi.emiAmount,
     );
-    pw.Widget headers() {
+    // Define the maximum number of rows that can fit on a page
+    const int maxEmiRowsPerPage = 25;
+
+    pw.Widget emiHeaders() {
       return pw.Container(
           color: PdfColors.grey100,
           child: pw.Text(
-              'Report for the ${circle.circleName} circle on ${intl.DateFormat('dd-MM-yyyy').format(getDate(tDate: emis[0].paidDate!))}',
+              'Report for the ${circle.circleName} circle on ${intl.DateFormat('dd-MM-yyyy').format(getDate(tDate: emis[0].date))}',
               textAlign: pw.TextAlign.center,
               style: const pw.TextStyle(fontSize: 17)),
           width: double.infinity,
@@ -628,7 +780,6 @@ class PdfApi {
                 style: pw.TextStyle(
                   fontWeight: pw.FontWeight.bold,
                   fontSize: 13,
-                  font: poppins,
                 )),
           ),
           pw.Container(
@@ -637,145 +788,111 @@ class PdfApi {
                 style: pw.TextStyle(
                   fontWeight: pw.FontWeight.bold,
                   fontSize: 13,
-                  font: poppins,
                 )),
           ),
           pw.Container(
             height: 30,
-            child: pw.Text('EMI No.',
+            child: pw.Text('Installment',
                 style: pw.TextStyle(
                   fontWeight: pw.FontWeight.bold,
                   fontSize: 13,
-                  font: poppins,
                 )),
           ),
-          pw.Container(
-            height: 30,
-            child: pw.Text('Paid Amount',
-                style: pw.TextStyle(
-                  fontWeight: pw.FontWeight.bold,
-                  fontSize: 13,
-                  font: poppins,
-                )),
+        ],
+      ),
+      ...emis.asMap().entries.map(
+        (entry) {
+          final index = entry.key;
+          final emi = entry.value;
+          return pw.TableRow(
+            children: [
+              pw.Container(
+                height: 25,
+                color: index % 2 == 0 ? PdfColors.grey100 : PdfColors.white,
+                alignment: pw.Alignment.centerLeft,
+                child: pw.Text(emi.bookId,
+                    style: const pw.TextStyle(
+                      fontSize: 12,
+                    )),
+              ),
+              pw.Container(
+                height: 25,
+                color: index % 2 == 0 ? PdfColors.grey100 : PdfColors.white,
+                alignment: pw.Alignment.centerLeft,
+                child: pw.Text(
+                  emi.name.toString().length > 25
+                      ? '${emi.name.toString().substring(0, 25)}...'
+                      : emi.name.toString(),
+                  style: const pw.TextStyle(
+                    fontSize: 12,
+                  ),
+                ),
+              ),
+              pw.Container(
+                height: 25,
+                color: index % 2 == 0 ? PdfColors.grey100 : PdfColors.white,
+                alignment: pw.Alignment.centerLeft,
+                child: pw.Text(
+                    '\u{20B9}${intl.NumberFormat('#,##,###').format(emi.emiAmount)}',
+                    style: const pw.TextStyle(
+                      fontSize: 12,
+                    )),
+              ),
+            ],
+          );
+        },
+      ),
+      pw.TableRow(
+        children: [
+          pw.Text(''),
+          pw.Text(''),
+          pw.Padding(
+            padding: const pw.EdgeInsets.symmetric(vertical: 10),
+            child: pw.Text(
+              '-----------\n\u{20B9}${intl.NumberFormat('#,##,###').format(totalPaidEmiAmount)}',
+              style: pw.TextStyle(
+                fontWeight: pw.FontWeight.bold,
+                fontSize: 13,
+              ),
+            ),
           ),
         ],
       ),
     ];
 
-    int serialNumber = 1;
-    for (final emi in emis) {
-      emiRows.add(
-        pw.TableRow(
-          children: [
-            pw.Container(
-              height: 25,
-              color:
-                  serialNumber % 2 == 0 ? PdfColors.grey100 : PdfColors.white,
-              alignment: pw.Alignment.centerLeft,
-              child: pw.Text(serialNumber.toString(),
-                  style: pw.TextStyle(
-                    fontSize: 12,
-                    font: poppins,
-                  )),
-            ),
-            pw.Container(
-              height: 25,
-              color:
-                  serialNumber % 2 == 0 ? PdfColors.grey100 : PdfColors.white,
-              alignment: pw.Alignment.centerLeft,
-              child: pw.Text(
-                  emi.customerName.toString().length > 25
-                      ? '${emi.customerName.toString().substring(0, 25)}...'
-                      : emi.customerName.toString(),
-                  style: pw.TextStyle(
-                    fontSize: 12,
-                    font: poppins,
-                  )),
-            ),
-            pw.Container(
-              height: 25,
-              color:
-                  serialNumber % 2 == 0 ? PdfColors.grey100 : PdfColors.white,
-              alignment: pw.Alignment.centerLeft,
-              child: pw.Text(emi.emiNumber.toString(),
-                  style: pw.TextStyle(
-                    fontSize: 12,
-                    font: poppins,
-                  )),
-            ),
-            pw.Container(
-              height: 25,
-              color:
-                  serialNumber % 2 == 0 ? PdfColors.grey100 : PdfColors.white,
-              alignment: pw.Alignment.centerLeft,
-              child: pw.Text(
-                  '\u{20B9}${intl.NumberFormat('#,##,000').format(emi.paidAmount)}',
-                  style: pw.TextStyle(
-                    fontSize: 12,
-                    font: poppins,
-                  )),
-            ),
-          ],
-        ),
+    // Calculate the number of pages needed for the emi table
+    final int emiPages = (emiRows.length / maxEmiRowsPerPage).ceil();
+
+    // Add emi table pages
+    for (int i = 0; i < emiPages; i++) {
+      final startIndex = i * maxEmiRowsPerPage;
+      final endIndex = (i + 1) * maxEmiRowsPerPage;
+      final pageEmiRows = emiRows.sublist(
+        startIndex,
+        endIndex > emiRows.length ? emiRows.length : endIndex,
       );
-      serialNumber++;
-    }
-
-    const int maxRowsPerPage = 30;
-    int numRows = emiRows.length;
-    int startIndex = 0;
-
-    while (startIndex < numRows) {
-      int endIndex = startIndex + maxRowsPerPage;
-      if (endIndex > numRows) {
-        endIndex = numRows;
-      }
-
-      final List<pw.TableRow> currentPageRows =
-          emiRows.sublist(startIndex, endIndex);
 
       doc.addPage(
         pw.Page(
+          pageFormat: PdfPageFormat.a4.portrait,
           build: (pw.Context context) => pw.Column(
             crossAxisAlignment: pw.CrossAxisAlignment.start,
             children: [
-              headers(),
+              emiHeaders(),
               pw.SizedBox(height: 20),
-              pw.Text(
-                '*** Collection Amount Details ***',
-                style: pw.TextStyle(
-                  fontWeight: pw.FontWeight.bold,
-                  fontSize: 14,
-                  font: poppins,
-                ),
-              ),
+              pw.Text('*** Collection Amount Details ***',
+                  style: pw.TextStyle(
+                    fontWeight: pw.FontWeight.bold,
+                    fontSize: 14,
+                  )),
               pw.SizedBox(height: 10),
               pw.Table(
-                children: currentPageRows,
-              ),
-              pw.SizedBox(height: 10),
-              pw.Row(
-                mainAxisAlignment: pw.MainAxisAlignment.end,
-                crossAxisAlignment: pw.CrossAxisAlignment.end,
-                children: [
-                  pw.Padding(
-                    padding: const pw.EdgeInsets.symmetric(vertical: 10),
-                    child: pw.Text(
-                      '-----------\nTotal \u{20B9}${intl.NumberFormat('#,##,000').format(totalEmiAmount)}',
-                      style: pw.TextStyle(
-                        fontWeight: pw.FontWeight.bold,
-                        fontSize: 13,
-                        font: poppins,
-                      ),
-                    ),
-                  )
-                ],
+                children: pageEmiRows,
               ),
             ],
           ),
         ),
       );
-      startIndex = endIndex;
     }
     return doc;
   }
