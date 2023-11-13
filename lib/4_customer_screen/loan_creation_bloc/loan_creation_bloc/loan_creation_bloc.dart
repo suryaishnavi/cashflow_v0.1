@@ -104,6 +104,7 @@ class LoanCreationBloc extends Bloc<LoanCreationEvent, LoanCreationState> {
             paidEmis: int.parse(event.paidEmis),
             isAddtionalLoan: false,
             loanIdentity: customerDetails.loanIdentity,
+            city: customerDetails.city.name,
           );
 
     if (result) {
@@ -183,6 +184,7 @@ class LoanCreationBloc extends Bloc<LoanCreationEvent, LoanCreationState> {
             paidEmis: int.parse(event.paidEmis),
             isAddtionalLoan: true,
             loanIdentity: event.loanIdentity,
+            city: customer.city.name,
           );
 
     if (result) {

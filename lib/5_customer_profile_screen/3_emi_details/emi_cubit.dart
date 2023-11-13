@@ -58,6 +58,7 @@ class EmiCubit extends Cubit<EmiState> {
           sub: loan.sub,
           customerName: '',
           loanIdentity: '',
+          city: '',
           emiAmount: loan.emiAmount,
           status: EmiStatus.NOTPAID,
           dueDate: TemporalDate.fromString(

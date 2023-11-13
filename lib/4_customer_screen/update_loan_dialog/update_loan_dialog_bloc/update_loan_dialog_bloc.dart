@@ -142,6 +142,7 @@ class UpdateLoanDialogBloc
       appUserId: updatedLoan.sub,
       customerName: updatedCustomer.customerName,
       loanIdentity: updatedLoan.loanIdentity,
+      city: updatedCustomer.city.name,
       emiAmount: emiAmount,
       loanId: updatedLoan.id,
       paidAmount: paidAmount,
@@ -180,7 +181,7 @@ class UpdateLoanDialogBloc
     await customerDataRepository.markAsInactive(customer: event.customer);
   }
 
-// * Observing emi stream
+  // * Observing emi stream
   observeEmi() {
     emiStreamSubscription = emisDataRepository.observeEmi().listen((event) {
       add(GetLoanDataEvent(customer: (state as CreatedChatViewState).customer));

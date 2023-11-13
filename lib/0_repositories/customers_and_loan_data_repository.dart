@@ -158,6 +158,7 @@ class CustomerAndLoanDataRepository {
     required bool isAddtionalLoan,
     required int paidEmis,
     required String loanIdentity,
+    required String city,
   }) async {
     bool allEmisCreated = true;
 
@@ -183,6 +184,7 @@ class CustomerAndLoanDataRepository {
               paidDate: dueDate,
               paidAmount: singleEmiAmount,
               loanIdentity: loanIdentity,
+              city: city,
               status: EmiStatus.PAID,
             );
           } catch (e) {
@@ -213,6 +215,7 @@ class CustomerAndLoanDataRepository {
               paidDate: dueDate,
               paidAmount: singleEmiAmount,
               loanIdentity: loanIdentity,
+              city: city,
               status: EmiStatus.PAID,
             );
           } catch (e) {
@@ -241,6 +244,7 @@ class CustomerAndLoanDataRepository {
               paidDate: dueDate,
               paidAmount: singleEmiAmount,
               loanIdentity: loanIdentity,
+              city: city,
               status: EmiStatus.PAID,
             );
           } catch (e) {
@@ -264,6 +268,7 @@ class CustomerAndLoanDataRepository {
     required bool isAddtionalLoan,
     required EmiStatus status,
     required String loanIdentity,
+    required String city,
     DateTime? paidDate,
     int? paidAmount,
   }) async {
@@ -276,6 +281,7 @@ class CustomerAndLoanDataRepository {
       customerName: customer.customerName,
       isExtraEmi: false,
       loanIdentity: loanIdentity,
+      city: city,
       paidDate: paidDate != null
           ? TemporalDate.fromString(paidDate.toString().split(' ')[0])
           : null,

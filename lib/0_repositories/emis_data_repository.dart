@@ -55,6 +55,7 @@ class EmisDataRepository {
     required String appUserId,
     required String customerName,
     required String loanIdentity,
+    required String city,
     required int emiAmount,
     required int paidAmount,
     required String loanId,
@@ -73,6 +74,7 @@ class EmisDataRepository {
         isExtraEmi: isExtraEmi,
         customerName: customerName,
         loanIdentity: loanIdentity,
+        city: city,
         status: EmiStatus.PAID,
       );
       await Amplify.DataStore.save(newEmi);

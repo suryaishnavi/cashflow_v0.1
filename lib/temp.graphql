@@ -122,6 +122,7 @@ type Emi @model @auth(rules: [{ allow: owner }]) {
   sub: String!
   customerName: String!
   loanIdentity: String!
+  city: String!
   emiAmount: Int!
   paidDate: AWSDate
   updatedDate: AWSDate

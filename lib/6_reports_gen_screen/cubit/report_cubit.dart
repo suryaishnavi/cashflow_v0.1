@@ -117,6 +117,7 @@ class ReportCubit extends Cubit<ReportState> {
       emit(ReportError(e.toString()));
     }
   }
+  
 
   ({
     List<NewCustomerPrintModel> newCustomers,
@@ -188,31 +189,4 @@ class ReportCubit extends Cubit<ReportState> {
       );
     }
   }
-
-  // Future<pw.Document> generateInvoiceDocument({
-  //   required List<Customer> customers,
-  //   required List<Loan> loans,
-  //   required List<Emi> emis,
-  //   required Circle circle,
-  // }) async {
-  //   if (loans.isEmpty && emis.isNotEmpty) {
-  //     return PdfApi.pdfInvoiceEmis(
-  //       emis: emis,
-  //       circle: circle,
-  //     );
-  //   } else if (loans.isNotEmpty && emis.isEmpty) {
-  //     return PdfApi.pdfInvoiceLoans(
-  //       customers: customers,
-  //       loans: loans,
-  //       circle: circle,
-  //     );
-  //   } else {
-  //     return PdfApi.pdfInvoice(
-  //       circle: circle,
-  //       customers: customers,
-  //       loans: loans,
-  //       emis: emis,
-  //     );
-  //   }
-  // }
 }

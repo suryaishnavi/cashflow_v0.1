@@ -291,6 +291,7 @@ class TestCustomers {
             paidEmis: 0,
             isAddtionalLoan: false,
             loanIdentity: currentSerialNumber.toString(),
+            city: customer.city.name,
           );
     return result;
   }
