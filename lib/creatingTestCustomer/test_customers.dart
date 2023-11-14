@@ -32,59 +32,59 @@ class GetCity {
 
 class NameGenerator {
   static final List<String> _firstNames = [
-    'Sandeep',
-    'Shalini',
-    'Arun',
-    'Deepak',
-    'Divya',
-    'Harish',
-    'Jyoti',
-    'Kiran',
-    'Madhavi',
-    'Nikhil',
-    'Pooja',
-    'Rajesh',
-    'Shruti',
-    'Suresh',
-    'Swati',
-    'Varun',
-    'Vidya',
-    'Asha',
-    'Karthik',
-    'Rahul',
-    'Rekha',
-    'Vijaya',
-    'Vishal',
-    'Nandini',
-    'Rohit',
+    'సందీప్',
+    'శాలిని',
+    'అరుణ్',
+    'దీపక్',
+    'దివ్య',
+    'హరీష్',
+    'జ్యోతి',
+    'కిరణ్',
+    'మాధవి',
+    'నిఖిల్',
+    'పూజ',
+    'రాజేష్',
+    'శ్రుతి',
+    'సురేష్',
+    'స్వాతి',
+    'వరుణ్',
+    'విద్య',
+    'ఆశ',
+    'కార్తిక్',
+    'రాహుల్',
+    'రేఖ',
+    'విజయ',
+    'విషాల్',
+    'నందిని',
+    'రోహిత్',
   ];
 
   static final List<String> _lastNames = [
-    'Choudhary',
-    'Gowda',
-    'Joshi',
-    'Kumar',
-    'Mishra',
-    'Nair',
-    'Patel',
-    'Rajput',
-    'Seth',
-    'Sharma',
-    'Singh',
-    'Verma',
-    'Yadav',
-    'Reddy',
-    'Gupta',
-    'Rao',
-    'Malhotra',
-    'Shah',
-    'Chopra',
-    'Mehta',
-    'Agarwal',
-    'Gandhi',
-    'Bhat',
-    'Mukherjee',
-    'Thakur',
+    'చౌధరి',
+    'గౌడ',
+    'జోషి',
+    'కుమార్',
+    'మిశ్ర',
+    'నాయిర్',
+    'పటేల్',
+    'రాజ్పుత్',
+    'సేత్',
+    'శర్మ',
+    'సింగ్',
+    'వెర్మా',
+    'యాదవ్',
+    'రెడ్డి',
+    'గుప్త',
+    'రావు',
+    'మల్హోత్ర',
+    'షా',
+    'చోప్రా',
+    'మేహతా',
+    'అగర్వాల్',
+    'గాంధి',
+    'భట్',
+    'ముఖర్జీ',
+    'తాకూర్',
   ];
 
 // You can add more first and last names as needed.
@@ -102,90 +102,91 @@ class CityDetailsProvider {
   // List<City> cities = [];
   List<City> cities = [
     City(
-        id: "34c8dec4-9d26-4ec7-b06a-403537f11c00",
-        name: "Tirupati",
-        circleID: "037b860f-c574-4d9c-aa90-2eb6756a4153"),
+        id: "5c1e4c02-b65f-4c59-862f-e0a8f268903c",
+        name: "tirupati",
+        circleID: "2263ba92-73d7-4c78-9030-86f36ece811f"),
     City(
-        id: "cb567c56-8721-43c9-9409-acd184bd397f",
+        id: "a4ff3f37-8672-465f-80e5-62a9ae9b4ecc",
         name: "Talakona",
-        circleID: "037b860f-c574-4d9c-aa90-2eb6756a4153"),
+        circleID: "2263ba92-73d7-4c78-9030-86f36ece811f"),
     City(
-        id: "30b6681f-d0e1-42d3-9d6d-686bec729ed1",
+        id: "d9d4b5b0-0237-4129-931d-3307679e5a26",
         name: "Chittoor",
-        circleID: "037b860f-c574-4d9c-aa90-2eb6756a4153"),
+        circleID: "2263ba92-73d7-4c78-9030-86f36ece811f"),
     City(
-        id: "36358d9f-063b-415f-9b1c-10acf53044f5",
+        id: "16b3528b-1005-4c11-87f0-e8ae19b7627f",
         name: "Madanapalle",
-        circleID: "037b860f-c574-4d9c-aa90-2eb6756a4153"),
+        circleID: "2263ba92-73d7-4c78-9030-86f36ece811f"),
     City(
-        id: "3e27885f-afb2-4214-b496-9032e7096177",
+        id: "5dd9cfee-cf17-4490-bef8-bd09d7f889b8",
         name: "Puttur",
-        circleID: "037b860f-c574-4d9c-aa90-2eb6756a4153"),
+        circleID: "2263ba92-73d7-4c78-9030-86f36ece811f"),
     City(
-        id: "e90d85ed-166e-4c74-aa83-c0af9ea5ea31",
+        id: "7d5511af-4066-46e5-9891-c8a7c6b42d13",
         name: "Nagari",
-        circleID: "037b860f-c574-4d9c-aa90-2eb6756a4153"),
+        circleID: "2263ba92-73d7-4c78-9030-86f36ece811f"),
     City(
-        id: "40fecba6-4bad-4e60-a082-729ae074dc1f",
+        id: "28f0ae7f-6605-4a1d-a736-3124edeb2254",
         name: "Punganur",
-        circleID: "037b860f-c574-4d9c-aa90-2eb6756a4153"),
+        circleID: "2263ba92-73d7-4c78-9030-86f36ece811f"),
     City(
-        id: "c295418c-5447-493d-b2fc-0a6e5f66cfd0",
+        id: "175c24c0-460f-4a04-a3e7-e57cd35d807e",
         name: "Srikalahasti",
-        circleID: "037b860f-c574-4d9c-aa90-2eb6756a4153"),
+        circleID: "2263ba92-73d7-4c78-9030-86f36ece811f"),
     City(
-        id: "d9551f0f-1d32-4465-9884-8355a455d327",
+        id: "0b3b34a0-ad78-48e0-a43a-5952a1e1b2f6",
         name: "Renigunta",
-        circleID: "037b860f-c574-4d9c-aa90-2eb6756a4153"),
+        circleID: "2263ba92-73d7-4c78-9030-86f36ece811f"),
     City(
-        id: "b579e30f-f028-4fba-abaa-ca347743e9da",
+        id: "f66d210c-7129-434d-8f3a-a361a2e762f4",
         name: "Kuppam",
-        circleID: "037b860f-c574-4d9c-aa90-2eb6756a4153"),
+        circleID: "2263ba92-73d7-4c78-9030-86f36ece811f"),
     City(
-        id: "031bed85-2568-4f79-9ca6-9b2f2dfd3eff",
+        id: "a9c7779b-3a79-4604-ab6d-759bc6e7256a",
         name: "Palamaner",
-        circleID: "037b860f-c574-4d9c-aa90-2eb6756a4153"),
+        circleID: "2263ba92-73d7-4c78-9030-86f36ece811f"),
     City(
-        id: "33d1f593-4811-4774-a594-57ba1860c9eb",
+        id: "ee48ddd4-d980-4b11-a953-60be48aadebc",
         name: "Kanipakam",
-        circleID: "037b860f-c574-4d9c-aa90-2eb6756a4153"),
+        circleID: "2263ba92-73d7-4c78-9030-86f36ece811f"),
     City(
-        id: "1a42fed1-1e10-4f36-82a9-b8e0bdbcd723",
+        id: "ad305ef6-d5a1-4d7c-a08d-f45c8f9d79af",
         name: "Tirumala",
-        circleID: "037b860f-c574-4d9c-aa90-2eb6756a4153"),
+        circleID: "2263ba92-73d7-4c78-9030-86f36ece811f"),
     City(
-        id: "313f42d0-0aa3-4817-9fa3-e49ebf0ec842",
+        id: "4496a6b5-4f8a-42cb-a7dd-4b9c817b3b3d",
         name: "Pileru",
-        circleID: "037b860f-c574-4d9c-aa90-2eb6756a4153"),
+        circleID: "2263ba92-73d7-4c78-9030-86f36ece811f"),
     City(
-        id: "3425436f-0a08-4dd3-8b0b-41abab24dc81",
+        id: "eaed70e6-7332-4ce4-b384-831e8594e5f7",
         name: "Narayanavanam",
-        circleID: "037b860f-c574-4d9c-aa90-2eb6756a4153"),
+        circleID: "2263ba92-73d7-4c78-9030-86f36ece811f"),
     City(
-        id: "d3455d00-a2fd-48ba-9a94-273a38e9ab45",
+        id: "d6f5f1bc-cd7f-4293-a335-c83b645a3faa",
         name: "Vayalpad",
-        circleID: "037b860f-c574-4d9c-aa90-2eb6756a4153"),
+        circleID: "2263ba92-73d7-4c78-9030-86f36ece811f"),
     City(
-        id: "36464783-94d0-4b30-9964-e09abde65c1a",
+        id: "a585364c-3dd3-42cf-b6de-eb1cc3198367",
         name: "Nagapattinam",
-        circleID: "037b860f-c574-4d9c-aa90-2eb6756a4153"),
+        circleID: "2263ba92-73d7-4c78-9030-86f36ece811f"),
     City(
-        id: "aca97821-34a4-48dd-8414-0ab418893d20",
+        id: "4c9ea943-6fde-42b4-a9e3-f5cfeade481c",
         name: "K.V. B. Puram",
-        circleID: "037b860f-c574-4d9c-aa90-2eb6756a4153"),
+        circleID: "2263ba92-73d7-4c78-9030-86f36ece811f"),
     City(
-        id: "969563f5-a378-40c7-8062-56eb6d7ac491",
+        id: "fdd6fd32-2db8-41c9-a80d-4b911c11d969",
         name: "Shantipuram",
-        circleID: "037b860f-c574-4d9c-aa90-2eb6756a4153"),
+        circleID: "2263ba92-73d7-4c78-9030-86f36ece811f"),
     City(
-        id: "0cb8942e-cc80-47ee-a60d-b1ff178283fd",
+        id: "878fa170-d307-4e56-8eaa-7eb2331b89b9",
         name: "Thamballapalle",
-        circleID: "037b860f-c574-4d9c-aa90-2eb6756a4153"),
+        circleID: "2263ba92-73d7-4c78-9030-86f36ece811f"),
     City(
-        id: "dae273e8-91b7-45de-9d1a-a5fc4a5f8989",
+        id: "bc6c4bbe-9a89-42d7-b262-40d8412f3b0e",
         name: "Puthalapattu",
-        circleID: "037b860f-c574-4d9c-aa90-2eb6756a4153")
+        circleID: "2263ba92-73d7-4c78-9030-86f36ece811f")
   ];
+
   static final Random _random = Random();
 
   City getRandomCity() {
@@ -197,9 +198,9 @@ class CityDetailsProvider {
 class TestCustomers {
   CustomerAndLoanDataRepository customerAndLoanDataRepository =
       CustomerAndLoanDataRepository();
-  // final String sub = '11830dfa-6021-7040-3211-405b458b4f9f'; // raisingStar
-  final String sub = 'd1afb895-274a-4ed5-95ef-c5c3ab9f9be4'; // arr9182
-  final String circleId = '037b860f-c574-4d9c-aa90-2eb6756a4153';
+  final String sub = '11830dfa-6021-7040-3211-405b458b4f9f'; // raisingStar
+  // final String sub = 'd1afb895-274a-4ed5-95ef-c5c3ab9f9be4'; // arr9182
+  final String circleId = '2263ba92-73d7-4c78-9030-86f36ece811f';
   final String date = DateTime.now().toString().split(' ')[0];
   String generateUniqueRandomNumber() {
     Random random = Random();
@@ -238,7 +239,7 @@ class TestCustomers {
   }
 
 // creating 4 digit sequential number
-  int currentSerialNumber = 1114;
+  int currentSerialNumber = 7777;
   String fourDigitSequencialNumber() {
     currentSerialNumber = currentSerialNumber + 1;
     return currentSerialNumber.toString();
@@ -318,7 +319,7 @@ class TestCustomers {
     for (int i = 0; i < 20; i++) {
       await cityRepository.addNewCity(
         name: GetCity._names[i],
-        circleID: '037b860f-c574-4d9c-aa90-2eb6756a4153',
+        circleID: '2263ba92-73d7-4c78-9030-86f36ece811f',
       );
     }
   }

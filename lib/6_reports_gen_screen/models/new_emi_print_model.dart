@@ -5,11 +5,13 @@ class NewEmiPrintModel extends Equatable {
   final String bookId;
   final String name;
   final int emiAmount;
+  final String city;
   final TemporalDate date;
   const NewEmiPrintModel({
     required this.bookId,
     required this.name,
     required this.emiAmount,
+    required this.city,
     required this.date,
   });
   @override
@@ -17,5 +19,7 @@ class NewEmiPrintModel extends Equatable {
         bookId,
         name,
         emiAmount,
+        city,
+        date,
       ];
 }

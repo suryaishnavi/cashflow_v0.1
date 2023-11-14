@@ -342,6 +342,14 @@ class PdfApi {
           ),
           pw.Container(
             height: 30,
+            child: pw.Text('City',
+                style: pw.TextStyle(
+                  fontWeight: pw.FontWeight.bold,
+                  fontSize: 13,
+                )),
+          ),
+          pw.Container(
+            height: 30,
             child: pw.Text('Installment',
                 style: pw.TextStyle(
                   fontWeight: pw.FontWeight.bold,
@@ -383,6 +391,19 @@ class PdfApi {
                 color: index % 2 == 0 ? PdfColors.grey100 : PdfColors.white,
                 alignment: pw.Alignment.centerLeft,
                 child: pw.Text(
+                  emi.city.toString().length > 25
+                      ? '${emi.city.toString().substring(0, 25)}...'
+                      : emi.city.toString(),
+                  style: const pw.TextStyle(
+                    fontSize: 12,
+                  ),
+                ),
+              ),
+              pw.Container(
+                height: 25,
+                color: index % 2 == 0 ? PdfColors.grey100 : PdfColors.white,
+                alignment: pw.Alignment.centerLeft,
+                child: pw.Text(
                     '\u{20B9}${intl.NumberFormat('#,##,###').format(emi.emiAmount)}',
                     style: const pw.TextStyle(
                       fontSize: 12,
@@ -394,6 +415,7 @@ class PdfApi {
       ),
       pw.TableRow(
         children: [
+          pw.Text(''),
           pw.Text(''),
           pw.Text(''),
           pw.Padding(
@@ -792,6 +814,14 @@ class PdfApi {
           ),
           pw.Container(
             height: 30,
+            child: pw.Text('City',
+                style: pw.TextStyle(
+                  fontWeight: pw.FontWeight.bold,
+                  fontSize: 13,
+                )),
+          ),
+          pw.Container(
+            height: 30,
             child: pw.Text('Installment',
                 style: pw.TextStyle(
                   fontWeight: pw.FontWeight.bold,
@@ -833,6 +863,19 @@ class PdfApi {
                 color: index % 2 == 0 ? PdfColors.grey100 : PdfColors.white,
                 alignment: pw.Alignment.centerLeft,
                 child: pw.Text(
+                  emi.city.toString().length > 25
+                      ? '${emi.city.toString().substring(0, 25)}...'
+                      : emi.city.toString(),
+                  style: const pw.TextStyle(
+                    fontSize: 12,
+                  ),
+                ),
+              ),
+              pw.Container(
+                height: 25,
+                color: index % 2 == 0 ? PdfColors.grey100 : PdfColors.white,
+                alignment: pw.Alignment.centerLeft,
+                child: pw.Text(
                     '\u{20B9}${intl.NumberFormat('#,##,###').format(emi.emiAmount)}',
                     style: const pw.TextStyle(
                       fontSize: 12,
@@ -844,6 +887,7 @@ class PdfApi {
       ),
       pw.TableRow(
         children: [
+          pw.Text(''),
           pw.Text(''),
           pw.Text(''),
           pw.Padding(

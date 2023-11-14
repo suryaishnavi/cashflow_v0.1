@@ -89,7 +89,7 @@ class ReportCubit extends Cubit<ReportState> {
       final List<Emi> filteredEmis = emis
           .where((e) => e.paidDate == temporalDate)
           .toList()
-        ..sort((a, b) => a.loanIdentity.compareTo(b.loanIdentity));
+        ..sort((a, b) => a.city.compareTo(b.city));
 
       if (filteredLoans.isEmpty && filteredEmis.isEmpty) {
         emit(const EmptyState(
@@ -117,8 +117,6 @@ class ReportCubit extends Cubit<ReportState> {
       emit(ReportError(e.toString()));
     }
   }
-  
-
   ({
     List<NewCustomerPrintModel> newCustomers,
     List<NewEmiPrintModel> newEmis,
@@ -156,6 +154,7 @@ class ReportCubit extends Cubit<ReportState> {
           name: emi.customerName,
           emiAmount: emi.paidAmount!,
           date: emi.paidDate!,
+          city: emi.city,
         ),
       );
     }
