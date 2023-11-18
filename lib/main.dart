@@ -221,7 +221,6 @@ Future<void> _configureAmplify() async {
     authModeStrategy: AuthModeStrategy.multiAuth,
     errorHandler: ((error) async {
       safePrint('Amplify DataStore error: $error');
-      // TODO: Handle error
     }),
   );
   await Amplify.addPlugins([api, cognito, dataStore]);

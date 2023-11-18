@@ -117,6 +117,7 @@ class ReportCubit extends Cubit<ReportState> {
       emit(ReportError(e.toString()));
     }
   }
+
   ({
     List<NewCustomerPrintModel> newCustomers,
     List<NewEmiPrintModel> newEmis,
@@ -141,8 +142,8 @@ class ReportCubit extends Cubit<ReportState> {
           givenAmount: loan.givenAmount,
           collectbleAmount: loan.collectibleAmount,
           date: loan.dateOfCreation,
-          // oldBookNumber: loan.oldBookNumber,
-          // oldBookAmount: loan.oldBookAmount,
+          oldBookNumber: customer.oldLoanInfo?.loanIdentity,
+          oldBookAmount: customer.oldLoanInfo?.totalCollectedAmount,
         ),
       );
     }

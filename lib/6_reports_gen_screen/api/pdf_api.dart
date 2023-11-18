@@ -92,7 +92,7 @@ class PdfApi {
           ),
           pw.Container(
             height: 30,
-            child: pw.Text('phone',
+            child: pw.Text('Phone',
                 style: pw.TextStyle(
                   fontWeight: pw.FontWeight.bold,
                   fontSize: 13,
@@ -100,7 +100,7 @@ class PdfApi {
           ),
           pw.Container(
             height: 30,
-            child: pw.Text('tenure',
+            child: pw.Text('Tenure',
                 style: pw.TextStyle(
                   fontWeight: pw.FontWeight.bold,
                   fontSize: 13,
@@ -125,6 +125,22 @@ class PdfApi {
           pw.Container(
             height: 30,
             child: pw.Text('Given',
+                style: pw.TextStyle(
+                  fontWeight: pw.FontWeight.bold,
+                  fontSize: 13,
+                )),
+          ),
+          pw.Container(
+            height: 30,
+            child: pw.Text('Old Id',
+                style: pw.TextStyle(
+                  fontWeight: pw.FontWeight.bold,
+                  fontSize: 13,
+                )),
+          ),
+          pw.Container(
+            height: 30,
+            child: pw.Text('Old Amount',
                 style: pw.TextStyle(
                   fontWeight: pw.FontWeight.bold,
                   fontSize: 13,
@@ -198,7 +214,7 @@ class PdfApi {
                 color: index % 2 == 0 ? PdfColors.grey100 : PdfColors.white,
                 alignment: pw.Alignment.center,
                 child: pw.Text(
-                    '\u{20B9}${intl.NumberFormat('#,##,000').format(customer.collectbleAmount)}',
+                    '\u{20B9}${intl.NumberFormat('#,##,###').format(customer.collectbleAmount)}',
                     style: const pw.TextStyle(
                       fontSize: 12,
                     )),
@@ -208,7 +224,7 @@ class PdfApi {
                 color: index % 2 == 0 ? PdfColors.grey100 : PdfColors.white,
                 alignment: pw.Alignment.center,
                 child: pw.Text(
-                    '\u{20B9}${intl.NumberFormat('#,##,000').format(customer.interest)}',
+                    '\u{20B9}${intl.NumberFormat('#,##,###').format(customer.interest)}',
                     style: const pw.TextStyle(
                       fontSize: 12,
                     )),
@@ -218,7 +234,32 @@ class PdfApi {
                 color: index % 2 == 0 ? PdfColors.grey100 : PdfColors.white,
                 alignment: pw.Alignment.centerLeft,
                 child: pw.Text(
-                    '\u{20B9}${intl.NumberFormat('#,##,000').format(customer.givenAmount)}',
+                    '\u{20B9}${intl.NumberFormat('#,##,###').format(customer.givenAmount)}',
+                    style: const pw.TextStyle(
+                      fontSize: 12,
+                    )),
+              ),
+              pw.Container(
+                height: 25,
+                color: index % 2 == 0 ? PdfColors.grey100 : PdfColors.white,
+                alignment: pw.Alignment.centerLeft,
+                child: pw.Text(
+                    customer.oldBookNumber == null
+                        ? '---'
+                        : customer.oldBookNumber!,
+                    style: const pw.TextStyle(
+                      fontSize: 12,
+                    )),
+              ),
+              pw.Container(
+                height: 25,
+                color: index % 2 == 0 ? PdfColors.grey100 : PdfColors.white,
+                alignment: pw.Alignment.centerLeft,
+                child: pw.Text(
+                    customer.oldBookAmount == null
+                        ? '---'
+                        : '\u{20B9}${intl.NumberFormat('#,##,###').format(customer.oldBookAmount)}',
+                    // '\u{20B9}${intl.NumberFormat('#,##,###').format(customer.givenAmount)}',
                     style: const pw.TextStyle(
                       fontSize: 12,
                     )),
@@ -261,7 +302,9 @@ class PdfApi {
                   fontWeight: pw.FontWeight.bold,
                   fontSize: 13,
                 )),
-          )
+          ),
+          pw.Text(''),
+          pw.Text(''),
         ],
       ),
     ];
@@ -545,7 +588,7 @@ class PdfApi {
           ),
           pw.Container(
             height: 30,
-            child: pw.Text('phone',
+            child: pw.Text('Phone',
                 style: pw.TextStyle(
                   fontWeight: pw.FontWeight.bold,
                   fontSize: 13,
@@ -553,7 +596,7 @@ class PdfApi {
           ),
           pw.Container(
             height: 30,
-            child: pw.Text('tenure',
+            child: pw.Text('Tenure',
                 style: pw.TextStyle(
                   fontWeight: pw.FontWeight.bold,
                   fontSize: 13,
@@ -578,6 +621,22 @@ class PdfApi {
           pw.Container(
             height: 30,
             child: pw.Text('Given',
+                style: pw.TextStyle(
+                  fontWeight: pw.FontWeight.bold,
+                  fontSize: 13,
+                )),
+          ),
+          pw.Container(
+            height: 30,
+            child: pw.Text('Old Id',
+                style: pw.TextStyle(
+                  fontWeight: pw.FontWeight.bold,
+                  fontSize: 13,
+                )),
+          ),
+          pw.Container(
+            height: 30,
+            child: pw.Text('Old Amount',
                 style: pw.TextStyle(
                   fontWeight: pw.FontWeight.bold,
                   fontSize: 13,
@@ -651,7 +710,7 @@ class PdfApi {
                 color: index % 2 == 0 ? PdfColors.grey100 : PdfColors.white,
                 alignment: pw.Alignment.center,
                 child: pw.Text(
-                    '\u{20B9}${intl.NumberFormat('#,##,000').format(customer.collectbleAmount)}',
+                    '\u{20B9}${intl.NumberFormat('#,##,###').format(customer.collectbleAmount)}',
                     style: const pw.TextStyle(
                       fontSize: 12,
                     )),
@@ -661,7 +720,29 @@ class PdfApi {
                 color: index % 2 == 0 ? PdfColors.grey100 : PdfColors.white,
                 alignment: pw.Alignment.center,
                 child: pw.Text(
-                    '\u{20B9}${intl.NumberFormat('#,##,000').format(customer.interest)}',
+                    '\u{20B9}${intl.NumberFormat('#,##,###').format(customer.interest)}',
+                    style: const pw.TextStyle(
+                      fontSize: 12,
+                    )),
+              ),
+              pw.Container(
+                height: 25,
+                color: index % 2 == 0 ? PdfColors.grey100 : PdfColors.white,
+                alignment: pw.Alignment.center,
+                child: pw.Text(
+                    '\u{20B9}${intl.NumberFormat('#,##,###').format(customer.givenAmount)}',
+                    style: const pw.TextStyle(
+                      fontSize: 12,
+                    )),
+              ),
+              pw.Container(
+                height: 25,
+                color: index % 2 == 0 ? PdfColors.grey100 : PdfColors.white,
+                alignment: pw.Alignment.center,
+                child: pw.Text(
+                    customer.oldBookNumber == null
+                        ? '---'
+                        : customer.oldBookNumber!,
                     style: const pw.TextStyle(
                       fontSize: 12,
                     )),
@@ -671,7 +752,10 @@ class PdfApi {
                 color: index % 2 == 0 ? PdfColors.grey100 : PdfColors.white,
                 alignment: pw.Alignment.centerLeft,
                 child: pw.Text(
-                    '\u{20B9}${intl.NumberFormat('#,##,000').format(customer.givenAmount)}',
+                    customer.oldBookAmount == null
+                        ? '---'
+                        : '\u{20B9}${intl.NumberFormat('#,##,###').format(customer.oldBookAmount)}',
+                    // '\u{20B9}${intl.NumberFormat('#,##,###').format(customer.givenAmount)}',
                     style: const pw.TextStyle(
                       fontSize: 12,
                     )),
@@ -714,7 +798,9 @@ class PdfApi {
                   fontWeight: pw.FontWeight.bold,
                   fontSize: 13,
                 )),
-          )
+          ),
+          pw.Text(''),
+          pw.Text(''),
         ],
       ),
     ];

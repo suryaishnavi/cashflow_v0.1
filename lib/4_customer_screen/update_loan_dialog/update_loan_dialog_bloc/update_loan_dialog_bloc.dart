@@ -90,7 +90,7 @@ class UpdateLoanDialogBloc
     );
   }
 
-  // ! update loan amount on popup
+  // ! update Loan
   Future<void> updateLoan({
     required String emiValue,
     required Loan loan,
@@ -172,6 +172,7 @@ class UpdateLoanDialogBloc
       paidAmount: paidAmount,
       emiAmount: emiAmount,
       loanStatus: loanStatus,
+      totalCollectedAmount: paidAmount,
     );
   }
 
@@ -184,7 +185,10 @@ class UpdateLoanDialogBloc
   // * Observing emi stream
   observeEmi() {
     emiStreamSubscription = emisDataRepository.observeEmi().listen((event) {
-      add(GetLoanDataEvent(customer: (state as CreatedChatViewState).customer));
+      if (state is CreatedChatViewState) {
+        add(GetLoanDataEvent(
+            customer: (state as CreatedChatViewState).customer));
+      }
     });
   }
 

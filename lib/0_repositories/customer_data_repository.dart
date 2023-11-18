@@ -45,6 +45,7 @@ class CustomerDataRepository {
     required int paidAmount,
     required String loanIdentity,
     required LoanStatus loanStatus,
+    required int totalCollectedAmount,
     DateTime? paidDate,
   }) async {
     TemporalDate newpaidDate({required DateTime date}) =>
@@ -60,6 +61,14 @@ class CustomerDataRepository {
 
       // return updatedLoanIdentity;
       return listOfLoanId;
+    }
+
+    oldLoanInfo() {
+      return OldLoanDetails(
+          customerID: customer.id,
+          totalCollectedAmount: totalCollectedAmount,
+          loanIdentity: loanIdentity,
+          ClosedDate: TemporalDate.fromString(today));
     }
 
     //  if one or more loans paid then update the loan paid amount
@@ -84,6 +93,7 @@ class CustomerDataRepository {
 
     final updatedCustomer = customer.copyWith(
       loanIdentity: getLoanIdentity(),
+      oldLoanInfo: (loanStatus != LoanStatus.ACTIVE) ? oldLoanInfo() : null,
       paymentInfo: PaymentDetails(
         customerID: customer.id,
         emiAmount: getPaymentInfo().emiAmount,

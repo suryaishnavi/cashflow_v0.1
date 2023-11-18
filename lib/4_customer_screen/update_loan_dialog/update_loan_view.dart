@@ -159,101 +159,6 @@ class CurrentLoanTrack extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       mainAxisAlignment: MainAxisAlignment.end,
       children: [
-        // TransprentCard(
-        //   child: RichText(
-        //     textAlign: TextAlign.center,
-        //     text: TextSpan(
-        //         text: 'Balance: ',
-        //         style: DefaultTextStyle.of(context).style,
-        //         children: <TextSpan>[
-        //           TextSpan(
-        //             text:
-        //                 '\n\u{20B9}${intl.NumberFormat('#,##,###').format(loan.collectibleAmount)} - \u{20B9}${intl.NumberFormat('#,##,###').format(loan.paidAmount)} = ',
-        //             style: const TextStyle(
-        //               color: Colors.black,
-        //               fontWeight: FontWeight.w500,
-        //             ),
-        //           ),
-        //           TextSpan(
-        //             text:
-        //                 '\n\u{20B9}${intl.NumberFormat('#,##,###').format(loan.collectibleAmount - loan.paidAmount)}',
-        //             style: TextStyle(
-        //               color: Colors.red[700],
-        //               fontWeight: FontWeight.bold,
-        //             ),
-        //           ),
-        //         ]),
-        //   ),
-        // ),
-        TransprentCard(
-          child: Column(
-            children: [
-              RichText(
-                textAlign: TextAlign.center,
-                text: TextSpan(
-                  text: AppLocalizations.of(context)!.loanDate,
-                  style: DefaultTextStyle.of(context).style,
-                  children: <TextSpan>[
-                    TextSpan(
-                      text:
-                          '\n${intl.DateFormat('dd-MM-yyyy').format(loan.dateOfCreation.getDateTime())}',
-                      style: const TextStyle(fontWeight: FontWeight.bold),
-                    ),
-                  ],
-                ),
-              ),
-              const SizedBox(height: 16.0),
-              RichText(
-                textAlign: TextAlign.center,
-                text: TextSpan(
-                  text: AppLocalizations.of(context)!.loanEnd,
-                  style: DefaultTextStyle.of(context).style,
-                  children: <TextSpan>[
-                    TextSpan(
-                      text:
-                          '\n${intl.DateFormat('dd-MM-yyyy').format(loan.endDate.getDateTime())}',
-                      style: const TextStyle(fontWeight: FontWeight.bold),
-                    ),
-                    // !-----------------Remaining Days-----------------
-                    getRemainingDays(dueDate: loan.endDate.getDateTime()),
-                  ],
-                ),
-              ),
-            ],
-          ),
-        ),
-        // TransprentCard(
-        //   child: Column(
-        //     children: [
-        //       RichText(
-        //         textAlign: TextAlign.center,
-        //         text: TextSpan(
-        //           text: AppLocalizations.of(context)!.paidInstallments,
-        //           style: DefaultTextStyle.of(context).style,
-        //           children: <TextSpan>[
-        //             TextSpan(
-        //                 text: '\n${loan.paidEmis}/${loan.totalEmis}',
-        //                 style: const TextStyle(fontWeight: FontWeight.bold)),
-        //           ],
-        //         ),
-        //       ),
-        //       const SizedBox(height: 8.0),
-        //       RichText(
-        //         textAlign: TextAlign.center,
-        //         text: TextSpan(
-        //           text: AppLocalizations.of(context)!.installmentAmount,
-        //           style: DefaultTextStyle.of(context).style,
-        //           children: <TextSpan>[
-        //             TextSpan(
-        //                 text:
-        //                     '\n\u{20B9}${intl.NumberFormat('#,##,###').format(loan.emiAmount)}',
-        //                 style: const TextStyle(fontWeight: FontWeight.bold)),
-        //           ],
-        //         ),
-        //       ),
-        //     ],
-        //   ),
-        // ),
         TransprentCard(
           child: RichText(
             textAlign: TextAlign.center,
@@ -266,8 +171,26 @@ class CurrentLoanTrack extends StatelessWidget {
                       '\n${intl.DateFormat('dd-MM-yyyy').format(loan.nextDueDate.getDateTime())}',
                   style: const TextStyle(fontWeight: FontWeight.bold),
                 ),
-                // !-----------------Remaining Days-----------------
+                // !-----------------Loan Due Date-----------------
                 getRemainingDays(dueDate: loan.nextDueDate.getDateTime()),
+              ],
+            ),
+          ),
+        ),
+        TransprentCard(
+          child: RichText(
+            textAlign: TextAlign.center,
+            text: TextSpan(
+              text: AppLocalizations.of(context)!.loanEnd,
+              style: DefaultTextStyle.of(context).style,
+              children: <TextSpan>[
+                TextSpan(
+                  text:
+                      '\n${intl.DateFormat('dd-MM-yyyy').format(loan.endDate.getDateTime())}',
+                  style: const TextStyle(fontWeight: FontWeight.bold),
+                ),
+                // !-----------------Loan End Date-----------------
+                getRemainingDays(dueDate: loan.endDate.getDateTime()),
               ],
             ),
           ),

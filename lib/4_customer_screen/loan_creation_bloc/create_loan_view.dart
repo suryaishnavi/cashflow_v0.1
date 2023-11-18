@@ -164,7 +164,7 @@ class _CreateLoanViewState extends State<CreateLoanView> {
           },
         ),
       ],
-      maxLength: 7,
+      maxLength: 10,
       decoration: InputDecoration(
         isDense: !widget.isNewLoan,
         icon: const Icon(Icons.currency_rupee),
@@ -189,7 +189,7 @@ class _CreateLoanViewState extends State<CreateLoanView> {
     return TextFormField(
       controller: _emiAmountController,
       style: getLabelStyle(),
-      maxLength: 6,
+      maxLength: 9,
       keyboardType: TextInputType.number,
       textInputAction: TextInputAction.next,
       inputFormatters: [
@@ -310,7 +310,7 @@ class _CreateLoanViewState extends State<CreateLoanView> {
           context: context,
           initialDate: date,
           firstDate: DateTime(2000),
-          lastDate: DateTime(2050),
+          lastDate: DateTime(2100),
         );
         if (selectedDate != null) {
           setState(() {

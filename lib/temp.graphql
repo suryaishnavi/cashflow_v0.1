@@ -59,6 +59,7 @@ type Customer @model @auth(rules: [{ allow: owner }]) {
   phone: AWSPhone!
   address: String!
   loanIdentity: [String]!
+  oldLoanInfo: OldLoanDetails
   dateOfCreation: AWSDate!
   newLoanAddedDate: AWSDate
   paymentInfo: PaymentDetails
@@ -69,6 +70,15 @@ type Customer @model @auth(rules: [{ allow: owner }]) {
   circleID: ID! @index(name: "byCircle")
   loans: [Loan] @hasMany(indexName: "byCustomer", fields: ["id"])
 }
+
+type OldLoanDetails {
+  id: String!
+  customerID: String!
+  totalCollectedAmount: Int!
+  loanIdentity: String!
+  ClosedDate: AWSDate!
+}
+
 
 type PaymentDetails {
   id: String!
