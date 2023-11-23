@@ -126,11 +126,18 @@ class PreviewScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return WillPopScope(
-      onWillPop: () async {
+    return PopScope(
+      canPop: false,
+      onPopInvoked: (bool isPop) async {
         context.read<ReportCubit>().getCircles();
-        return true;
+        Future.delayed(Duration.zero, () {
+          Navigator.pop(context);
+        });
       },
+      // onWillPop: () async {
+      //   context.read<ReportCubit>().getCircles();
+      //   return true;
+      // },
       child: Scaffold(
         appBar: AppBar(
           leading: IconButton(

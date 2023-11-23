@@ -22,7 +22,7 @@ import '0_repositories/for_reports_generation/get_customer_data.dart';
 import '0_repositories/loans_data_repository.dart';
 import '1_session/onboarding_screens/language_bloc/language_bloc.dart';
 import '1_session/session_cubit/session_cubit.dart';
-import '1_session/sync_data_screen/cubit/sync_data_cubit.dart';
+// import '1_session/sync_data_screen/cubit/sync_data_cubit.dart';
 import '2_auth/auth_helper_cubit/auth_cubit.dart';
 import '2_auth/password_reset/bloc/password_reset_bloc.dart';
 import '3_circle_screen/circles_bloc/circle_bloc.dart';
@@ -46,11 +46,11 @@ import 'models/ModelProvider.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  unawaited(_configureAmplify());
   AppLifecycleStates().initialize();
   AuthEventHandler().initialize();
   DataStoreEventHandler().initialize();
   setupDependencyInjection();
-  unawaited(_configureAmplify());
   await Future.delayed(const Duration(milliseconds: 500));
   runApp(
     MultiRepositoryProvider(
@@ -90,9 +90,6 @@ void main() async {
         providers: [
           BlocProvider<LanguageBloc>(
             create: (context) => LanguageBloc()..add(GetLanguage()),
-          ),
-          BlocProvider<SyncDataCubit>(
-            create: (context) => SyncDataCubit(),
           ),
           BlocProvider<SessionCubit>(
             create: (context) => SessionCubit(

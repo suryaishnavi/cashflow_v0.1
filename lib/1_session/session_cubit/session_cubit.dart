@@ -71,7 +71,7 @@ class SessionCubit extends Cubit<SessionState> {
     try {
       userId = await getCognitoUserSub();
       if (userId.isEmpty) {
-        throw Exception('User not logged in: $userId');
+        throw Exception('User not logIn');
       } else {
         safePrint('User is already Authenticated with UserID: $userId');
       }

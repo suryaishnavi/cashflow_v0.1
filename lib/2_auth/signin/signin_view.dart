@@ -102,6 +102,7 @@ class _SigninViewState extends State<SigninView> {
       builder: (context, state) {
         return TextFormField(
             controller: phoneNumberController,
+            autofillHints: const [AutofillHints.email],
             keyboardType: TextInputType.emailAddress,
             textInputAction: TextInputAction.next,
             decoration: InputDecoration(
@@ -165,6 +166,7 @@ class _SigninViewState extends State<SigninView> {
         return TextFormField(
           controller: passwordController,
           keyboardType: TextInputType.visiblePassword,
+          autofillHints: const [AutofillHints.email],
           textInputAction: TextInputAction.done,
           decoration: InputDecoration(
             icon: const Icon(Icons.security),

@@ -122,14 +122,13 @@ class EmiCubit extends Cubit<EmiState> {
       final customer =
           await customerDataRepo.getCustomerById(customerID: loan.customerID);
       await customerDataRepo.updateCustomerLoanUpdatedDate(
-        customer: customer,
-        emiAmount: loan.emiAmount,
-        paidAmount: newAmount,
-        paidDate: newDate,
-        totalCollectedAmount: newAmount,
-        loanIdentity: loan.loanIdentity,
-        loanStatus: loan.status
-      );
+          customer: customer,
+          emiAmount: loan.emiAmount,
+          paidAmount: newAmount,
+          paidDate: newDate,
+          totalCollectedAmount: loan.collectibleAmount,
+          loanIdentity: loan.loanIdentity,
+          loanStatus: loan.status);
     }
     getEmis(loan: loan);
     loanDataCubit.getLoans(customerId: loan.customerID);
